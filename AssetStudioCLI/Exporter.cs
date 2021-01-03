@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using AssetStudio;
 using Newtonsoft.Json;
@@ -47,9 +49,16 @@ namespace AssetStudioCLI
                 }
                 else
                 {
-                    bitmap.Save(exportFullPath, format);
+                    try
+                    {
+                        bitmap.Save(exportFullPath, format);
+                        bitmap.Dispose();
+                    }
+                    catch (ExternalException)
+                    {
+                        return ExportTexture2D(item, exportPath);
+                    }
                 }
-                bitmap.Dispose();
                 return true;
             }
             else
@@ -345,9 +354,16 @@ namespace AssetStudioCLI
                 }
                 else
                 {
-                    bitmap.Save(exportFullPath, format);
+                    try
+                    {
+                        bitmap.Save(exportFullPath, format);
+                        bitmap.Dispose();
+                    }
+                    catch (ExternalException)
+                    {
+                        return ExportSprite(item, exportPath);
+                    }
                 }
-                bitmap.Dispose();
                 return true;
             }
             return false;

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using static AssetStudio.ImportHelper;
 
 namespace AssetStudio
@@ -344,13 +345,13 @@ namespace AssetStudio
                     }
                     catch (Exception e)
                     {
-                        /*var sb = new StringBuilder();
+                        var sb = new StringBuilder();
                         sb.AppendLine("Unable to load object")
                             .AppendLine($"Assets {assetsFile.fileName}")
                             .AppendLine($"Type {objectReader.type}")
                             .AppendLine($"PathID {objectInfo.m_PathID}")
                             .Append(e);
-                        Logger.Error(sb.ToString());*/
+                        Logger.Error(sb.ToString());
                     }
 
                     Progress.Report(++i, progressCount);

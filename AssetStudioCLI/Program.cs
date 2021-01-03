@@ -51,6 +51,7 @@ namespace AssetStudioCLI
 
         static int Main(string[] args)
         {
+            Console.WriteLine("AssetStudio CLI activated.");
             var exitCode = Parser.Default.ParseArguments<ExtractOptions, ConvertOptions>(args)
                 .MapResult(
                     (ExtractOptions o) => ExtractFolder(o),

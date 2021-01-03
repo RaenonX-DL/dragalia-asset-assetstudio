@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using static AssetStudioCLI.Exporter;
 using Object = AssetStudio.Object;
@@ -355,90 +356,96 @@ namespace AssetStudioCLI
             return typeMap;
         }
 
+        private static string GetExportPath(string savePath, AssetItem asset)
+        {
+            string exportPath;
+            switch (Properties.Settings.Default.assetGroupOption)
+            {
+                case 0: //type name
+                    exportPath = Path.Combine(savePath, asset.TypeString);
+                    break;
+                case 1: //container path
+                    if (!string.IsNullOrEmpty(asset.Container))
+                    {
+                        exportPath = Path.Combine(savePath, Path.GetDirectoryName(asset.Container));
+                    }
+                    else
+                    {
+                        exportPath = Path.Combine(savePath, "unknown");
+                    }
+                    break;
+                case 2: //source file
+                    exportPath = Path.Combine(savePath, asset.SourceFile.fullName + "_export");
+                    break;
+                default:
+                    exportPath = savePath;
+                    break;
+            }
+            exportPath += Path.DirectorySeparatorChar;
+
+            return exportPath;
+        }
+
+        private static void ExportAsset(string exportPath, AssetItem asset, ExportType exportType, ref List<string> exportFailedNames)
+        {
+            StatusStripUpdate($"{DateTime.UtcNow:yyyy-MM-ddTHH:mm:ss.ffffff}: Exporting {asset.TypeString}: {asset.Text}");
+            switch (exportType)
+            {
+                case ExportType.Raw:
+                    if (!ExportRawFile(asset, exportPath))
+                    {
+                        exportFailedNames.Add(asset.SourceFile.fullName);
+                    }
+                    break;
+                case ExportType.Dump:
+                    if (!ExportDumpFile(asset, exportPath))
+                    {
+                        exportFailedNames.Add(asset.SourceFile.fullName);
+                    }
+                    break;
+                case ExportType.Convert:
+                    if (!ExportConvertFile(asset, exportPath))
+                    {
+                        exportFailedNames.Add(asset.SourceFile.fullName);
+                    }
+                    break;
+            }
+        }
+
         public static void ExportAssets(string savePath, List<AssetItem> toExportAssets, ExportType exportType)
         {
-            //ThreadPool.QueueUserWorkItem(state =>
-            //{
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 
-            int toExportCount = toExportAssets.Count;
-            int exportedCount = 0;
-            int i = 0;
-            Progress.Reset();
-            foreach (var asset in toExportAssets)
-            {
-                string exportPath;
-                switch (Properties.Settings.Default.assetGroupOption)
+            List<string> exportFailedNames = new List<string>();
+
+            // Some assets export to the same path while some assets export to multiple paths
+            var tasks = toExportAssets
+                .GroupBy(asset => asset.SourceFile.originalPath)
+                .Select(group =>
                 {
-                    case 0: //type name
-                        exportPath = Path.Combine(savePath, asset.TypeString);
-                        break;
-                    case 1: //container path
-                        if (!string.IsNullOrEmpty(asset.Container))
-                        {
-                            exportPath = Path.Combine(savePath, Path.GetDirectoryName(asset.Container));
-                        }
-                        else
-                        {
-                            exportPath = Path.Combine(savePath, "unknown");
-                        }
-                        break;
-                    case 2: //source file
-                        exportPath = Path.Combine(savePath, asset.SourceFile.fullName + "_export");
-                        break;
-                    default:
-                        exportPath = savePath;
-                        break;
-                }
-                exportPath += Path.DirectorySeparatorChar;
-                StatusStripUpdate($"Exporting {asset.TypeString}: {asset.Text}");
-                try
-                {
-                    switch (exportType)
+                    return Task.Factory.StartNew(() =>
                     {
-                        case ExportType.Raw:
-                            if (ExportRawFile(asset, exportPath))
-                            {
-                                exportedCount++;
-                            }
-                            break;
-                        case ExportType.Dump:
-                            if (ExportDumpFile(asset, exportPath))
-                            {
-                                exportedCount++;
-                            }
-                            break;
-                        case ExportType.Convert:
-                            if (ExportConvertFile(asset, exportPath))
-                            {
-                                exportedCount++;
-                            }
-                            break;
-                    }
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"Export {asset.Type}:{asset.Text} error\r\n{ex.Message}\r\n{ex.StackTrace}");
-                }
+                        foreach (var asset in group)
+                        {
+                            ExportAsset(GetExportPath(savePath, asset), asset, exportType, ref exportFailedNames);
+                        }
+                    });
+                })
+                .ToArray();
 
-                Progress.Report(++i, toExportCount);
-            }
+            Task.WaitAll(tasks);
 
-            var statusText = exportedCount == 0 ? "Nothing exported." : $"Finished exporting {exportedCount} assets.";
+            StatusStripUpdate(tasks.Length == 0 ? "Nothing exported." : "Finished exporting assets.");
 
-            if (toExportCount > exportedCount)
+            if (exportFailedNames.Count > 0)
             {
-                statusText += $" {toExportCount - exportedCount} assets skipped (not extractable or files already exist)";
+                StatusStripUpdate($"{exportFailedNames.Count} assets were skipped: {string.Join(", ", exportFailedNames)}");
             }
 
-            StatusStripUpdate(statusText);
-
-            if (Properties.Settings.Default.openAfterExport && exportedCount > 0)
+            if (Properties.Settings.Default.openAfterExport && tasks.Length > 0)
             {
                 Process.Start(savePath);
             }
-            //}
-            //);
         }
 
         public static void ExportSplitObjects(string savePath, TreeNodeCollection nodes)
