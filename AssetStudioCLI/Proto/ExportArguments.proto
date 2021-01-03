@@ -1,0 +1,14 @@
+﻿
+syntax = "proto3";
+
+package AssetStudioCLI.Proto;
+
+message ExportContainerWithType {
+	repeated string Types = 1;
+	repeated string Containers = 2;
+	string ExportType = 3;
+}
+
+message ExportArguments {
+	repeated ExportContainerWithType Exports = 1;
+}

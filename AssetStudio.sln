@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Texture2DDecoderWrapper", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetStudio.PInvoke", "AssetStudio.PInvoke\AssetStudio.PInvoke.csproj", "{40C796B5-88CE-4ADC-ACD6-2F4862B7F136}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AssetStudioCLI", "AssetStudioCLI\AssetStudioCLI.csproj", "{96B97581-E4CA-4AC9-A149-5494D649FE6A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -131,6 +133,18 @@ Global
 		{40C796B5-88CE-4ADC-ACD6-2F4862B7F136}.Release|x64.Build.0 = Release|Any CPU
 		{40C796B5-88CE-4ADC-ACD6-2F4862B7F136}.Release|x86.ActiveCfg = Release|Any CPU
 		{40C796B5-88CE-4ADC-ACD6-2F4862B7F136}.Release|x86.Build.0 = Release|Any CPU
+		{96B97581-E4CA-4AC9-A149-5494D649FE6A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{96B97581-E4CA-4AC9-A149-5494D649FE6A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{96B97581-E4CA-4AC9-A149-5494D649FE6A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{96B97581-E4CA-4AC9-A149-5494D649FE6A}.Debug|x64.Build.0 = Debug|Any CPU
+		{96B97581-E4CA-4AC9-A149-5494D649FE6A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{96B97581-E4CA-4AC9-A149-5494D649FE6A}.Debug|x86.Build.0 = Debug|Any CPU
+		{96B97581-E4CA-4AC9-A149-5494D649FE6A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{96B97581-E4CA-4AC9-A149-5494D649FE6A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{96B97581-E4CA-4AC9-A149-5494D649FE6A}.Release|x64.ActiveCfg = Release|Any CPU
+		{96B97581-E4CA-4AC9-A149-5494D649FE6A}.Release|x64.Build.0 = Release|Any CPU
+		{96B97581-E4CA-4AC9-A149-5494D649FE6A}.Release|x86.ActiveCfg = Release|Any CPU
+		{96B97581-E4CA-4AC9-A149-5494D649FE6A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
