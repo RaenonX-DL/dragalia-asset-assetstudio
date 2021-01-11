@@ -394,19 +394,19 @@ namespace AssetStudioCLI
                 case ExportType.Raw:
                     if (!ExportRawFile(asset, exportPath))
                     {
-                        exportFailedNames.Add(asset.SourceFile.fileName);
+                        exportFailedNames.Add(asset.SourceFile.originalPath);
                     }
                     break;
                 case ExportType.Dump:
                     if (!ExportDumpFile(asset, exportPath))
                     {
-                        exportFailedNames.Add(asset.SourceFile.fileName);
+                        exportFailedNames.Add(asset.SourceFile.originalPath);
                     }
                     break;
                 case ExportType.Convert:
                     if (!ExportConvertFile(asset, exportPath))
                     {
-                        exportFailedNames.Add(asset.SourceFile.fileName);
+                        exportFailedNames.Add(asset.SourceFile.originalPath);
                     }
                     break;
             }

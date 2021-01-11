@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+# Project file
+.wakatime-project
+
 # User-specific files
 *.rsuser
 *.suo
