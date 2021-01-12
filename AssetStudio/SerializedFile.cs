@@ -87,9 +87,9 @@ namespace AssetStudio
             }
 
             //ReadTypes
-            int typeCount = reader.ReadInt32();
+            var typeCount = reader.ReadInt32();
             m_Types = new List<SerializedType>(typeCount);
-            for (int i = 0; i < typeCount; i++)
+            for (var i = 0; i < typeCount; i++)
             {
                 m_Types.Add(ReadSerializedType());
             }
@@ -101,11 +101,11 @@ namespace AssetStudio
             }
 
             //ReadObjects
-            int objectCount = reader.ReadInt32();
+            var objectCount = reader.ReadInt32();
             m_Objects = new List<ObjectInfo>(objectCount);
             Objects = new List<Object>(objectCount);
             ObjectsDic = new Dictionary<long, Object>(objectCount);
-            for (int i = 0; i < objectCount; i++)
+            for (var i = 0; i < objectCount; i++)
             {
                 var objectInfo = new ObjectInfo();
                 if (bigIDEnabled != 0)
@@ -160,9 +160,9 @@ namespace AssetStudio
 
             if (header.m_Version >= 11)
             {
-                int scriptCount = reader.ReadInt32();
+                var scriptCount = reader.ReadInt32();
                 m_ScriptTypes = new List<LocalSerializedObjectIdentifier>(scriptCount);
-                for (int i = 0; i < scriptCount; i++)
+                for (var i = 0; i < scriptCount; i++)
                 {
                     var m_ScriptType = new LocalSerializedObjectIdentifier();
                     m_ScriptType.localSerializedFileIndex = reader.ReadInt32();
@@ -179,9 +179,9 @@ namespace AssetStudio
                 }
             }
 
-            int externalsCount = reader.ReadInt32();
+            var externalsCount = reader.ReadInt32();
             m_Externals = new List<FileIdentifier>(externalsCount);
-            for (int i = 0; i < externalsCount; i++)
+            for (var i = 0; i < externalsCount; i++)
             {
                 var m_External = new FileIdentifier();
                 if (header.m_Version >= 6)
@@ -200,9 +200,9 @@ namespace AssetStudio
 
             if (header.m_Version >= 20)
             {
-                int refTypesCount = reader.ReadInt32();
+                var refTypesCount = reader.ReadInt32();
                 m_RefTypes = new List<SerializedType>(refTypesCount);
-                for (int i = 0; i < refTypesCount; i++)
+                for (var i = 0; i < refTypesCount; i++)
                 {
                     m_RefTypes.Add(ReadSerializedType());
                 }
@@ -296,8 +296,8 @@ namespace AssetStudio
                 typeTreeNode.m_MetaFlag = reader.ReadInt32();
             }
 
-            int childrenCount = reader.ReadInt32();
-            for (int i = 0; i < childrenCount; i++)
+            var childrenCount = reader.ReadInt32();
+            for (var i = 0; i < childrenCount; i++)
             {
                 ReadTypeTree(typeTree, level + 1);
             }
@@ -305,9 +305,9 @@ namespace AssetStudio
 
         private void TypeTreeBlobRead(List<TypeTreeNode> typeTree)
         {
-            int numberOfNodes = reader.ReadInt32();
-            int stringBufferSize = reader.ReadInt32();
-            for (int i = 0; i < numberOfNodes; i++)
+            var numberOfNodes = reader.ReadInt32();
+            var stringBufferSize = reader.ReadInt32();
+            for (var i = 0; i < numberOfNodes; i++)
             {
                 var typeTreeNode = new TypeTreeNode();
                 typeTree.Add(typeTreeNode);
@@ -328,7 +328,7 @@ namespace AssetStudio
 
             using (var stringBufferReader = new BinaryReader(new MemoryStream(m_StringBuffer)))
             {
-                for (int i = 0; i < numberOfNodes; i++)
+                for (var i = 0; i < numberOfNodes; i++)
                 {
                     var typeTreeNode = typeTree[i];
                     typeTreeNode.m_Type = ReadString(stringBufferReader, typeTreeNode.m_TypeStrOffset);

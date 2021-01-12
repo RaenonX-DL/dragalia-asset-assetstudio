@@ -17,16 +17,16 @@ namespace AssetStudio
             var m_ArraySize = reader.ReadInt32();
             var m_StructSize = reader.ReadInt32();
 
-            int numVectorParams = reader.ReadInt32();
+            var numVectorParams = reader.ReadInt32();
             m_VectorParams = new VectorParameter[numVectorParams];
-            for (int i = 0; i < numVectorParams; i++)
+            for (var i = 0; i < numVectorParams; i++)
             {
                 m_VectorParams[i] = new VectorParameter(reader);
             }
 
-            int numMatrixParams = reader.ReadInt32();
+            var numMatrixParams = reader.ReadInt32();
             m_MatrixParams = new MatrixParameter[numMatrixParams];
-            for (int i = 0; i < numMatrixParams; i++)
+            for (var i = 0; i < numMatrixParams; i++)
             {
                 m_MatrixParams[i] = new MatrixParameter(reader);
             }
@@ -106,9 +106,9 @@ namespace AssetStudio
 
         public SerializedProperties(BinaryReader reader)
         {
-            int numProps = reader.ReadInt32();
+            var numProps = reader.ReadInt32();
             m_Props = new SerializedProperty[numProps];
-            for (int i = 0; i < numProps; i++)
+            for (var i = 0; i < numProps; i++)
             {
                 m_Props[i] = new SerializedProperty(reader);
             }
@@ -227,7 +227,7 @@ namespace AssetStudio
 
             m_Name = reader.ReadAlignedString();
             rtBlend = new SerializedShaderRTBlendState[8];
-            for (int i = 0; i < 8; i++)
+            for (var i = 0; i < 8; i++)
             {
                 rtBlend[i] = new SerializedShaderRTBlendState(reader);
             }
@@ -285,9 +285,9 @@ namespace AssetStudio
 
         public ParserBindChannels(BinaryReader reader)
         {
-            int numChannels = reader.ReadInt32();
+            var numChannels = reader.ReadInt32();
             m_Channels = new ShaderBindChannel[numChannels];
-            for (int i = 0; i < numChannels; i++)
+            for (var i = 0; i < numChannels; i++)
             {
                 m_Channels[i] = new ShaderBindChannel(reader);
             }
@@ -391,24 +391,24 @@ namespace AssetStudio
 
             m_NameIndex = reader.ReadInt32();
 
-            int numMatrixParams = reader.ReadInt32();
+            var numMatrixParams = reader.ReadInt32();
             m_MatrixParams = new MatrixParameter[numMatrixParams];
-            for (int i = 0; i < numMatrixParams; i++)
+            for (var i = 0; i < numMatrixParams; i++)
             {
                 m_MatrixParams[i] = new MatrixParameter(reader);
             }
 
-            int numVectorParams = reader.ReadInt32();
+            var numVectorParams = reader.ReadInt32();
             m_VectorParams = new VectorParameter[numVectorParams];
-            for (int i = 0; i < numVectorParams; i++)
+            for (var i = 0; i < numVectorParams; i++)
             {
                 m_VectorParams[i] = new VectorParameter(reader);
             }
             if (version[0] > 2017 || (version[0] == 2017 && version[1] >= 3)) //2017.3 and up
             {
-                int numStructParams = reader.ReadInt32();
+                var numStructParams = reader.ReadInt32();
                 m_StructParams = new StructParameter[numStructParams];
-                for (int i = 0; i < numStructParams; i++)
+                for (var i = 0; i < numStructParams; i++)
                 {
                     m_StructParams[i] = new StructParameter(reader);
                 }
@@ -510,60 +510,60 @@ namespace AssetStudio
             m_GpuProgramType = (ShaderGpuProgramType)reader.ReadSByte();
             reader.AlignStream();
 
-            int numVectorParams = reader.ReadInt32();
+            var numVectorParams = reader.ReadInt32();
             m_VectorParams = new VectorParameter[numVectorParams];
-            for (int i = 0; i < numVectorParams; i++)
+            for (var i = 0; i < numVectorParams; i++)
             {
                 m_VectorParams[i] = new VectorParameter(reader);
             }
 
-            int numMatrixParams = reader.ReadInt32();
+            var numMatrixParams = reader.ReadInt32();
             m_MatrixParams = new MatrixParameter[numMatrixParams];
-            for (int i = 0; i < numMatrixParams; i++)
+            for (var i = 0; i < numMatrixParams; i++)
             {
                 m_MatrixParams[i] = new MatrixParameter(reader);
             }
 
-            int numTextureParams = reader.ReadInt32();
+            var numTextureParams = reader.ReadInt32();
             m_TextureParams = new TextureParameter[numTextureParams];
-            for (int i = 0; i < numTextureParams; i++)
+            for (var i = 0; i < numTextureParams; i++)
             {
                 m_TextureParams[i] = new TextureParameter(reader);
             }
 
-            int numBufferParams = reader.ReadInt32();
+            var numBufferParams = reader.ReadInt32();
             m_BufferParams = new BufferBinding[numBufferParams];
-            for (int i = 0; i < numBufferParams; i++)
+            for (var i = 0; i < numBufferParams; i++)
             {
                 m_BufferParams[i] = new BufferBinding(reader);
             }
 
-            int numConstantBuffers = reader.ReadInt32();
+            var numConstantBuffers = reader.ReadInt32();
             m_ConstantBuffers = new ConstantBuffer[numConstantBuffers];
-            for (int i = 0; i < numConstantBuffers; i++)
+            for (var i = 0; i < numConstantBuffers; i++)
             {
                 m_ConstantBuffers[i] = new ConstantBuffer(reader);
             }
 
-            int numConstantBufferBindings = reader.ReadInt32();
+            var numConstantBufferBindings = reader.ReadInt32();
             m_ConstantBufferBindings = new BufferBinding[numConstantBufferBindings];
-            for (int i = 0; i < numConstantBufferBindings; i++)
+            for (var i = 0; i < numConstantBufferBindings; i++)
             {
                 m_ConstantBufferBindings[i] = new BufferBinding(reader);
             }
 
-            int numUAVParams = reader.ReadInt32();
+            var numUAVParams = reader.ReadInt32();
             m_UAVParams = new UAVParameter[numUAVParams];
-            for (int i = 0; i < numUAVParams; i++)
+            for (var i = 0; i < numUAVParams; i++)
             {
                 m_UAVParams[i] = new UAVParameter(reader);
             }
 
             if (version[0] >= 2017) //2017 and up
             {
-                int numSamplers = reader.ReadInt32();
+                var numSamplers = reader.ReadInt32();
                 m_Samplers = new SamplerParameter[numSamplers];
-                for (int i = 0; i < numSamplers; i++)
+                for (var i = 0; i < numSamplers; i++)
                 {
                     m_Samplers[i] = new SamplerParameter(reader);
                 }
@@ -581,9 +581,9 @@ namespace AssetStudio
 
         public SerializedProgram(ObjectReader reader)
         {
-            int numSubPrograms = reader.ReadInt32();
+            var numSubPrograms = reader.ReadInt32();
             m_SubPrograms = new SerializedSubProgram[numSubPrograms];
-            for (int i = 0; i < numSubPrograms; i++)
+            for (var i = 0; i < numSubPrograms; i++)
             {
                 m_SubPrograms[i] = new SerializedSubProgram(reader);
             }
@@ -619,9 +619,9 @@ namespace AssetStudio
         {
             var version = reader.version;
 
-            int numIndices = reader.ReadInt32();
+            var numIndices = reader.ReadInt32();
             m_NameIndices = new KeyValuePair<string, int>[numIndices];
-            for (int i = 0; i < numIndices; i++)
+            for (var i = 0; i < numIndices; i++)
             {
                 m_NameIndices[i] = new KeyValuePair<string, int>(reader.ReadAlignedString(), reader.ReadInt32());
             }
@@ -657,9 +657,9 @@ namespace AssetStudio
 
         public SerializedTagMap(BinaryReader reader)
         {
-            int numTags = reader.ReadInt32();
+            var numTags = reader.ReadInt32();
             tags = new KeyValuePair<string, string>[numTags];
-            for (int i = 0; i < numTags; i++)
+            for (var i = 0; i < numTags; i++)
             {
                 tags[i] = new KeyValuePair<string, string>(reader.ReadAlignedString(), reader.ReadAlignedString());
             }
@@ -674,9 +674,9 @@ namespace AssetStudio
 
         public SerializedSubShader(ObjectReader reader)
         {
-            int numPasses = reader.ReadInt32();
+            var numPasses = reader.ReadInt32();
             m_Passes = new SerializedPass[numPasses];
-            for (int i = 0; i < numPasses; i++)
+            for (var i = 0; i < numPasses; i++)
             {
                 m_Passes[i] = new SerializedPass(reader);
             }
@@ -712,9 +712,9 @@ namespace AssetStudio
         {
             m_PropInfo = new SerializedProperties(reader);
 
-            int numSubShaders = reader.ReadInt32();
+            var numSubShaders = reader.ReadInt32();
             m_SubShaders = new SerializedSubShader[numSubShaders];
-            for (int i = 0; i < numSubShaders; i++)
+            for (var i = 0; i < numSubShaders; i++)
             {
                 m_SubShaders[i] = new SerializedSubShader(reader);
             }
@@ -723,9 +723,9 @@ namespace AssetStudio
             m_CustomEditorName = reader.ReadAlignedString();
             m_FallbackName = reader.ReadAlignedString();
 
-            int numDependencies = reader.ReadInt32();
+            var numDependencies = reader.ReadInt32();
             m_Dependencies = new SerializedShaderDependency[numDependencies];
-            for (int i = 0; i < numDependencies; i++)
+            for (var i = 0; i < numDependencies; i++)
             {
                 m_Dependencies[i] = new SerializedShaderDependency(reader);
             }

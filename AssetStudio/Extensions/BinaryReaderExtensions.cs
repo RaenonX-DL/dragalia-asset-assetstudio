@@ -38,7 +38,7 @@ namespace AssetStudio
         public static string ReadStringToNull(this BinaryReader reader, int maxLength = 32767)
         {
             var bytes = new List<byte>();
-            int count = 0;
+            var count = 0;
             while (reader.BaseStream.Position != reader.BaseStream.Length && count < maxLength)
             {
                 var b = reader.ReadByte();
@@ -90,7 +90,7 @@ namespace AssetStudio
         private static T[] ReadArray<T>(Func<T> del, int length)
         {
             var array = new T[length];
-            for (int i = 0; i < length; i++)
+            for (var i = 0; i < length; i++)
             {
                 array[i] = del();
             }

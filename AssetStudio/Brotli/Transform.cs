@@ -23,8 +23,8 @@ namespace Org.Brotli.Dec
 
 		internal static byte[] ReadUniBytes(string uniBytes)
 		{
-			byte[] result = new byte[uniBytes.Length];
-			for (int i = 0; i < result.Length; ++i)
+			var result = new byte[uniBytes.Length];
+			for (var i = 0; i < result.Length; ++i)
 			{
 				result[i] = unchecked((byte)uniBytes[i]);
 			}
@@ -81,18 +81,18 @@ namespace Org.Brotli.Dec
 
 		internal static int TransformDictionaryWord(byte[] dst, int dstOffset, byte[] word, int wordOffset, int len, Org.Brotli.Dec.Transform transform)
 		{
-			int offset = dstOffset;
+			var offset = dstOffset;
 			// Copy prefix.
-			byte[] @string = transform.prefix;
-			int tmp = @string.Length;
-			int i = 0;
+			var @string = transform.prefix;
+			var tmp = @string.Length;
+			var i = 0;
 			// In most cases tmp < 10 -> no benefits from System.arrayCopy
 			while (i < tmp)
 			{
 				dst[offset++] = @string[i++];
 			}
 			// Copy trimmed word.
-			int op = transform.type;
+			var op = transform.type;
 			tmp = Org.Brotli.Dec.WordTransformType.GetOmitFirst(op);
 			if (tmp > len)
 			{
@@ -109,7 +109,7 @@ namespace Org.Brotli.Dec
 			}
 			if (op == Org.Brotli.Dec.WordTransformType.UppercaseAll || op == Org.Brotli.Dec.WordTransformType.UppercaseFirst)
 			{
-				int uppercaseOffset = offset - len;
+				var uppercaseOffset = offset - len;
 				if (op == Org.Brotli.Dec.WordTransformType.UppercaseFirst)
 				{
 					len = 1;

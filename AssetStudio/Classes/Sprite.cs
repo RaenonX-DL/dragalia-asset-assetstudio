@@ -109,7 +109,7 @@ namespace AssetStudio
             {
                 var secondaryTexturesSize = reader.ReadInt32();
                 secondaryTextures = new SecondarySpriteTexture[secondaryTexturesSize];
-                for (int i = 0; i < secondaryTexturesSize; i++)
+                for (var i = 0; i < secondaryTexturesSize; i++)
                 {
                     secondaryTextures[i] = new SecondarySpriteTexture(reader);
                 }
@@ -119,7 +119,7 @@ namespace AssetStudio
             {
                 var m_SubMeshesSize = reader.ReadInt32();
                 m_SubMeshes = new SubMesh[m_SubMeshesSize];
-                for (int i = 0; i < m_SubMeshesSize; i++)
+                for (var i = 0; i < m_SubMeshesSize; i++)
                 {
                     m_SubMeshes[i] = new SubMesh(reader);
                 }
@@ -133,7 +133,7 @@ namespace AssetStudio
             {
                 var verticesSize = reader.ReadInt32();
                 vertices = new SpriteVertex[verticesSize];
-                for (int i = 0; i < verticesSize; i++)
+                for (var i = 0; i < verticesSize; i++)
                 {
                     vertices[i] = new SpriteVertex(reader);
                 }
@@ -149,7 +149,7 @@ namespace AssetStudio
                 if (version[0] == 2018 && version[1] < 2) //2018.2 down
                 {
                     var m_SourceSkinSize = reader.ReadInt32();
-                    for (int i = 0; i < m_SourceSkinSize; i++)
+                    for (var i = 0; i < m_SourceSkinSize; i++)
                     {
                         m_SourceSkin[i] = new BoneWeights4(reader);
                     }
@@ -233,7 +233,7 @@ namespace AssetStudio
             {
                 var m_PhysicsShapeSize = reader.ReadInt32();
                 m_PhysicsShape = new Vector2[m_PhysicsShapeSize][];
-                for (int i = 0; i < m_PhysicsShapeSize; i++)
+                for (var i = 0; i < m_PhysicsShapeSize; i++)
                 {
                     m_PhysicsShape[i] = reader.ReadVector2Array();
                 }

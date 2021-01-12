@@ -67,15 +67,15 @@ namespace Org.Brotli.Dec
 				}
 				throw new Org.Brotli.Dec.BrotliRuntimeException("No more input");
 			}
-			int readOffset = br.intOffset << 2;
-			int bytesRead = ByteReadSize - readOffset;
+			var readOffset = br.intOffset << 2;
+			var bytesRead = ByteReadSize - readOffset;
 			System.Array.Copy(br.byteBuffer, readOffset, br.byteBuffer, 0, bytesRead);
 			br.intOffset = 0;
 			try
 			{
 				while (bytesRead < ByteReadSize)
 				{
-					int len = br.input.Read(br.byteBuffer, bytesRead, ByteReadSize - bytesRead);
+					var len = br.input.Read(br.byteBuffer, bytesRead, ByteReadSize - bytesRead);
 					// EOF is -1 in Java, but 0 in C#.
 					if (len <= 0)
 					{
@@ -100,7 +100,7 @@ namespace Org.Brotli.Dec
 			{
 				return;
 			}
-			int byteOffset = (br.intOffset << 2) + ((br.bitOffset + 7) >> 3) - 8;
+			var byteOffset = (br.intOffset << 2) + ((br.bitOffset + 7) >> 3) - 8;
 			if (byteOffset > br.tailBytes)
 			{
 				throw new Org.Brotli.Dec.BrotliRuntimeException("Read after end");
@@ -125,7 +125,7 @@ namespace Org.Brotli.Dec
 		internal static int ReadBits(Org.Brotli.Dec.BitReader br, int n)
 		{
 			FillBitWindow(br);
-			int val = (int)((long)(((ulong)br.accumulator) >> br.bitOffset)) & ((1 << n) - 1);
+			var val = (int)((long)(((ulong)br.accumulator) >> br.bitOffset)) & ((1 << n) - 1);
 			br.bitOffset += n;
 			return val;
 		}
@@ -172,7 +172,7 @@ namespace Org.Brotli.Dec
 		/// <exception cref="System.IO.IOException"/>
 		internal static void Close(Org.Brotli.Dec.BitReader br)
 		{
-			System.IO.Stream @is = br.input;
+			var @is = br.input;
 			br.input = null;
 			if (@is != null)
 			{
@@ -182,10 +182,10 @@ namespace Org.Brotli.Dec
 
 		internal static void JumpToByteBoundary(Org.Brotli.Dec.BitReader br)
 		{
-			int padding = (64 - br.bitOffset) & 7;
+			var padding = (64 - br.bitOffset) & 7;
 			if (padding != 0)
 			{
-				int paddingBits = Org.Brotli.Dec.BitReader.ReadBits(br, padding);
+				var paddingBits = Org.Brotli.Dec.BitReader.ReadBits(br, padding);
 				if (paddingBits != 0)
 				{
 					throw new Org.Brotli.Dec.BrotliRuntimeException("Corrupted padding bits");
@@ -195,7 +195,7 @@ namespace Org.Brotli.Dec
 
 		internal static int IntAvailable(Org.Brotli.Dec.BitReader br)
 		{
-			int limit = Capacity;
+			var limit = Capacity;
 			if (br.endOfStreamReached)
 			{
 				limit = (br.tailBytes + 3) >> 2;
@@ -221,10 +221,10 @@ namespace Org.Brotli.Dec
 				return;
 			}
 			// Get data from shadow buffer with "sizeof(int)" granularity.
-			int copyInts = System.Math.Min(IntAvailable(br), length >> 2);
+			var copyInts = System.Math.Min(IntAvailable(br), length >> 2);
 			if (copyInts > 0)
 			{
-				int readOffset = br.intOffset << 2;
+				var readOffset = br.intOffset << 2;
 				System.Array.Copy(br.byteBuffer, readOffset, data, offset, copyInts << 2);
 				offset += copyInts << 2;
 				length -= copyInts << 2;
@@ -253,7 +253,7 @@ namespace Org.Brotli.Dec
 			{
 				while (length > 0)
 				{
-					int len = br.input.Read(data, offset, length);
+					var len = br.input.Read(data, offset, length);
 					if (len == -1)
 					{
 						throw new Org.Brotli.Dec.BrotliRuntimeException("Unexpected end of input");

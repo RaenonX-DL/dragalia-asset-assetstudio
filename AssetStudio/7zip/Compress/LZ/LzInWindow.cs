@@ -23,12 +23,12 @@ namespace SevenZip.Compression.LZ
 
 		public void MoveBlock()
 		{
-			UInt32 offset = (UInt32)(_bufferOffset) + _pos - _keepSizeBefore;
+			var offset = (UInt32)(_bufferOffset) + _pos - _keepSizeBefore;
 			// we need one additional byte, since MovePos moves on 1 byte.
 			if (offset > 0)
 				offset--;
 			
-			UInt32 numBytes = (UInt32)(_bufferOffset) + _streamPos - offset;
+			var numBytes = (UInt32)(_bufferOffset) + _streamPos - offset;
 
 			// check negative offset ????
 			for (UInt32 i = 0; i < numBytes; i++)
@@ -42,14 +42,14 @@ namespace SevenZip.Compression.LZ
 				return;
 			while (true)
 			{
-				int size = (int)((0 - _bufferOffset) + _blockSize - _streamPos);
+				var size = (int)((0 - _bufferOffset) + _blockSize - _streamPos);
 				if (size == 0)
 					return;
-				int numReadBytes = _stream.Read(_bufferBase, (int)(_bufferOffset + _streamPos), size);
+				var numReadBytes = _stream.Read(_bufferBase, (int)(_bufferOffset + _streamPos), size);
 				if (numReadBytes == 0)
 				{
 					_posLimit = _streamPos;
-					UInt32 pointerToPostion = _bufferOffset + _posLimit;
+					var pointerToPostion = _bufferOffset + _posLimit;
 					if (pointerToPostion > _pointerToLastSafePosition)
 						_posLimit = (UInt32)(_pointerToLastSafePosition - _bufferOffset);
 
@@ -68,7 +68,7 @@ namespace SevenZip.Compression.LZ
 		{
 			_keepSizeBefore = keepSizeBefore;
 			_keepSizeAfter = keepSizeAfter;
-			UInt32 blockSize = keepSizeBefore + keepSizeAfter + keepSizeReserv;
+			var blockSize = keepSizeBefore + keepSizeAfter + keepSizeReserv;
 			if (_bufferBase == null || _blockSize != blockSize)
 			{
 				Free();
@@ -95,7 +95,7 @@ namespace SevenZip.Compression.LZ
 			_pos++;
 			if (_pos > _posLimit)
 			{
-				UInt32 pointerToPostion = _bufferOffset + _pos;
+				var pointerToPostion = _bufferOffset + _pos;
 				if (pointerToPostion > _pointerToLastSafePosition)
 					MoveBlock();
 				ReadBlock();
@@ -112,7 +112,7 @@ namespace SevenZip.Compression.LZ
 					limit = _streamPos - (UInt32)(_pos + index);
 			distance++;
 			// Byte *pby = _buffer + (size_t)_pos + index;
-			UInt32 pby = _bufferOffset + _pos + (UInt32)index;
+			var pby = _bufferOffset + _pos + (UInt32)index;
 
 			UInt32 i;
 			for (i = 0; i < limit && _bufferBase[pby + i] == _bufferBase[pby + i - distance]; i++);

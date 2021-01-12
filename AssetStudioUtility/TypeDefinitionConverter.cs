@@ -26,11 +26,11 @@ namespace AssetStudio
         {
             var nodes = new List<TypeTreeNode>();
 
-            Stack<TypeReference> baseTypes = new Stack<TypeReference>();
-            TypeReference baseType = TypeDef.BaseType;
+            var baseTypes = new Stack<TypeReference>();
+            var baseType = TypeDef.BaseType;
             while (!UnitySerializationLogic.IsNonSerialized(baseType))
             {
-                GenericInstanceType genericInstanceType = baseType as GenericInstanceType;
+                var genericInstanceType = baseType as GenericInstanceType;
                 if (genericInstanceType != null)
                 {
                     TypeResolver.Add(genericInstanceType);
@@ -40,8 +40,8 @@ namespace AssetStudio
             }
             while (baseTypes.Count > 0)
             {
-                TypeReference typeReference = baseTypes.Pop();
-                TypeDefinition typeDefinition = typeReference.Resolve();
+                var typeReference = baseTypes.Pop();
+                var typeDefinition = typeReference.Resolve();
                 foreach (var fieldDefinition in typeDefinition.Fields.Where(WillUnitySerialize))
                 {
                     if (!IsHiddenByParentClass(baseTypes, fieldDefinition, TypeDef))
@@ -56,7 +56,7 @@ namespace AssetStudio
                     TypeResolver.Remove(genericInstanceType2);
                 }
             }
-            foreach (FieldDefinition fieldDefinition2 in FilteredFields())
+            foreach (var fieldDefinition2 in FilteredFields())
             {
                 nodes.AddRange(ProcessingFieldRef(fieldDefinition2));
             }
@@ -69,7 +69,7 @@ namespace AssetStudio
             bool result;
             try
             {
-                TypeReference typeReference = TypeResolver.Resolve(fieldDefinition.FieldType);
+                var typeReference = TypeResolver.Resolve(fieldDefinition.FieldType);
                 if (UnitySerializationLogic.ShouldNotTryToResolve(typeReference))
                 {
                     result = false;
@@ -113,13 +113,13 @@ namespace AssetStudio
 
         private FieldReference ResolveGenericFieldReference(FieldReference fieldRef)
         {
-            FieldReference field = new FieldReference(fieldRef.Name, fieldRef.FieldType, ResolveDeclaringType(fieldRef.DeclaringType));
+            var field = new FieldReference(fieldRef.Name, fieldRef.FieldType, ResolveDeclaringType(fieldRef.DeclaringType));
             return TypeDef.Module.ImportReference(field);
         }
 
         private TypeReference ResolveDeclaringType(TypeReference declaringType)
         {
-            TypeDefinition typeDefinition = declaringType.Resolve();
+            var typeDefinition = declaringType.Resolve();
             TypeReference result;
             if (typeDefinition == null || !typeDefinition.HasGenericParameters)
             {
@@ -127,8 +127,8 @@ namespace AssetStudio
             }
             else
             {
-                GenericInstanceType genericInstanceType = new GenericInstanceType(typeDefinition);
-                foreach (GenericParameter item in typeDefinition.GenericParameters)
+                var genericInstanceType = new GenericInstanceType(typeDefinition);
+                foreach (var item in typeDefinition.GenericParameters)
                 {
                     genericInstanceType.GenericArguments.Add(item);
                 }

@@ -26,7 +26,7 @@ namespace Org.Brotli.Dec
 		/// </remarks>
 		internal static void Convert(Org.Brotli.Dec.IntReader ir, int intLen)
 		{
-			for (int i = 0; i < intLen; ++i)
+			for (var i = 0; i < intLen; ++i)
 			{
 				ir.intBuffer[i] = ((ir.byteBuffer[i * 4] & unchecked((int)(0xFF)))) | ((ir.byteBuffer[(i * 4) + 1] & unchecked((int)(0xFF))) << 8) | ((ir.byteBuffer[(i * 4) + 2] & unchecked((int)(0xFF))) << 16) | ((ir.byteBuffer[(i * 4) + 3] & unchecked((int
 					)(0xFF))) << 24);

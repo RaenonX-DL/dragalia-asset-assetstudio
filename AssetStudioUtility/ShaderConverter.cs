@@ -182,7 +182,7 @@ namespace AssetStudio
                 var programs = group.GroupBy(x => x.m_GpuProgramType);
                 foreach (var program in programs)
                 {
-                    for (int i = 0; i < platforms.Length; i++)
+                    for (var i = 0; i < platforms.Length; i++)
                     {
                         var platform = platforms[i];
                         if (CheckGpuProgramUsable(platform, program.Key))
@@ -602,7 +602,7 @@ namespace AssetStudio
             {
                 entrySize = 8;
             }
-            for (int i = 0; i < subProgramsCapacity; i++)
+            for (var i = 0; i < subProgramsCapacity; i++)
             {
                 reader.BaseStream.Position = 4 + i * entrySize;
                 var offset = reader.ReadInt32();
@@ -650,7 +650,7 @@ namespace AssetStudio
             }
             var m_KeywordsSize = reader.ReadInt32();
             m_Keywords = new string[m_KeywordsSize];
-            for (int i = 0; i < m_KeywordsSize; i++)
+            for (var i = 0; i < m_KeywordsSize; i++)
             {
                 m_Keywords[i] = reader.ReadAlignedString();
             }
@@ -658,7 +658,7 @@ namespace AssetStudio
             {
                 var m_LocalKeywordsSize = reader.ReadInt32();
                 m_LocalKeywords = new string[m_LocalKeywordsSize];
-                for (int i = 0; i < m_LocalKeywordsSize; i++)
+                for (var i = 0; i < m_LocalKeywordsSize; i++)
                 {
                     m_LocalKeywords[i] = reader.ReadAlignedString();
                 }
@@ -675,7 +675,7 @@ namespace AssetStudio
             if (m_Keywords.Length > 0)
             {
                 sb.Append("Keywords { ");
-                foreach (string keyword in m_Keywords)
+                foreach (var keyword in m_Keywords)
                 {
                     sb.Append($"\"{keyword}\" ");
                 }
@@ -684,7 +684,7 @@ namespace AssetStudio
             if (m_LocalKeywords != null && m_LocalKeywords.Length > 0)
             {
                 sb.Append("Local Keywords { ");
-                foreach (string keyword in m_LocalKeywords)
+                foreach (var keyword in m_LocalKeywords)
                 {
                     sb.Append($"\"{keyword}\" ");
                 }
@@ -746,7 +746,7 @@ namespace AssetStudio
                             var fourCC = reader.ReadUInt32();
                             if (fourCC == 0xf00dcafe)
                             {
-                                int offset = reader.ReadInt32();
+                                var offset = reader.ReadInt32();
                                 reader.BaseStream.Position = offset;
                             }
                             var entryName = reader.ReadStringToNull();

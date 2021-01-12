@@ -142,7 +142,7 @@ namespace AssetStudio
             {
                 var m_ChannelsSize = reader.ReadInt32();
                 m_Channels = new ChannelInfo[m_ChannelsSize];
-                for (int i = 0; i < m_ChannelsSize; i++)
+                for (var i = 0; i < m_ChannelsSize; i++)
                 {
                     m_Channels[i] = new ChannelInfo(reader);
                 }
@@ -159,7 +159,7 @@ namespace AssetStudio
                     m_Streams = new StreamInfo[reader.ReadInt32()];
                 }
 
-                for (int i = 0; i < m_Streams.Length; i++)
+                for (var i = 0; i < m_Streams.Length; i++)
                 {
                     m_Streams[i] = new StreamInfo(reader);
                 }
@@ -183,11 +183,11 @@ namespace AssetStudio
             var streamCount = m_Channels.Max(x => x.stream) + 1;
             m_Streams = new StreamInfo[streamCount];
             uint offset = 0;
-            for (int s = 0; s < streamCount; s++)
+            for (var s = 0; s < streamCount; s++)
             {
                 uint chnMask = 0;
                 uint stride = 0;
-                for (int chn = 0; chn < m_Channels.Length; chn++)
+                for (var chn = 0; chn < m_Channels.Length; chn++)
                 {
                     var m_Channel = m_Channels[chn];
                     if (m_Channel.stream == s)
@@ -216,7 +216,7 @@ namespace AssetStudio
         private void GetChannels(int[] version)
         {
             m_Channels = new ChannelInfo[6];
-            for (int i = 0; i < 6; i++)
+            for (var i = 0; i < 6; i++)
             {
                 m_Channels[i] = new ChannelInfo();
             }
@@ -225,7 +225,7 @@ namespace AssetStudio
                 var m_Stream = m_Streams[s];
                 var channelMask = new BitArray(new[] { (int)m_Stream.channelMask });
                 byte offset = 0;
-                for (int i = 0; i < 6; i++)
+                for (var i = 0; i < 6; i++)
                 {
                     if (channelMask.Get(i))
                     {
@@ -354,23 +354,23 @@ namespace AssetStudio
 
             if (version[0] > 4 || (version[0] == 4 && version[1] >= 3)) //4.3 and up
             {
-                int numVerts = reader.ReadInt32();
+                var numVerts = reader.ReadInt32();
                 vertices = new BlendShapeVertex[numVerts];
-                for (int i = 0; i < numVerts; i++)
+                for (var i = 0; i < numVerts; i++)
                 {
                     vertices[i] = new BlendShapeVertex(reader);
                 }
 
-                int numShapes = reader.ReadInt32();
+                var numShapes = reader.ReadInt32();
                 shapes = new MeshBlendShape[numShapes];
-                for (int i = 0; i < numShapes; i++)
+                for (var i = 0; i < numShapes; i++)
                 {
                     shapes[i] = new MeshBlendShape(reader);
                 }
 
-                int numChannels = reader.ReadInt32();
+                var numChannels = reader.ReadInt32();
                 channels = new MeshBlendShapeChannel[numChannels];
-                for (int i = 0; i < numChannels; i++)
+                for (var i = 0; i < numChannels; i++)
                 {
                     channels[i] = new MeshBlendShapeChannel(reader);
                 }
@@ -381,14 +381,14 @@ namespace AssetStudio
             {
                 var m_ShapesSize = reader.ReadInt32();
                 var m_Shapes = new MeshBlendShape[m_ShapesSize];
-                for (int i = 0; i < m_ShapesSize; i++)
+                for (var i = 0; i < m_ShapesSize; i++)
                 {
                     m_Shapes[i] = new MeshBlendShape(reader);
                 }
                 reader.AlignStream();
                 var m_ShapeVerticesSize = reader.ReadInt32();
                 var m_ShapeVertices = new BlendShapeVertex[m_ShapeVerticesSize]; //MeshBlendShapeVertex
-                for (int i = 0; i < m_ShapeVerticesSize; i++)
+                for (var i = 0; i < m_ShapeVerticesSize; i++)
                 {
                     m_ShapeVertices[i] = new BlendShapeVertex(reader);
                 }
@@ -481,12 +481,12 @@ namespace AssetStudio
 
             if (version[0] == 2 && version[1] <= 5) //2.5 and down
             {
-                int m_IndexBuffer_size = reader.ReadInt32();
+                var m_IndexBuffer_size = reader.ReadInt32();
 
                 if (m_Use16BitIndices)
                 {
                     m_IndexBuffer = new uint[m_IndexBuffer_size / 2];
-                    for (int i = 0; i < m_IndexBuffer_size / 2; i++)
+                    for (var i = 0; i < m_IndexBuffer_size / 2; i++)
                     {
                         m_IndexBuffer[i] = reader.ReadUInt16();
                     }
@@ -498,9 +498,9 @@ namespace AssetStudio
                 }
             }
 
-            int m_SubMeshesSize = reader.ReadInt32();
+            var m_SubMeshesSize = reader.ReadInt32();
             m_SubMeshes = new SubMesh[m_SubMeshesSize];
-            for (int i = 0; i < m_SubMeshesSize; i++)
+            for (var i = 0; i < m_SubMeshesSize; i++)
             {
                 m_SubMeshes[i] = new SubMesh(reader);
             }
@@ -523,7 +523,7 @@ namespace AssetStudio
                 {
                     var m_BonesAABBSize = reader.ReadInt32();
                     var m_BonesAABB = new MinMaxAABB[m_BonesAABBSize];
-                    for (int i = 0; i < m_BonesAABBSize; i++)
+                    for (var i = 0; i < m_BonesAABBSize; i++)
                     {
                         m_BonesAABB[i] = new MinMaxAABB(reader);
                     }
@@ -553,11 +553,11 @@ namespace AssetStudio
                     m_Use16BitIndices = m_IndexFormat == 0;
                 }
 
-                int m_IndexBuffer_size = reader.ReadInt32();
+                var m_IndexBuffer_size = reader.ReadInt32();
                 if (m_Use16BitIndices)
                 {
                     m_IndexBuffer = new uint[m_IndexBuffer_size / 2];
-                    for (int i = 0; i < m_IndexBuffer_size / 2; i++)
+                    for (var i = 0; i < m_IndexBuffer_size / 2; i++)
                     {
                         m_IndexBuffer[i] = reader.ReadUInt16();
                     }
@@ -575,7 +575,7 @@ namespace AssetStudio
                 m_Vertices = reader.ReadSingleArray(m_VertexCount * 3); //Vector3
 
                 m_Skin = new BoneWeights4[reader.ReadInt32()];
-                for (int s = 0; s < m_Skin.Length; s++)
+                for (var s = 0; s < m_Skin.Length; s++)
                 {
                     m_Skin[s] = new BoneWeights4(reader);
                 }
@@ -588,10 +588,10 @@ namespace AssetStudio
 
                 if (version[0] == 2 && version[1] <= 5) //2.5 and down
                 {
-                    int m_TangentSpace_size = reader.ReadInt32();
+                    var m_TangentSpace_size = reader.ReadInt32();
                     m_Normals = new float[m_TangentSpace_size * 3];
                     m_Tangents = new float[m_TangentSpace_size * 4];
-                    for (int v = 0; v < m_TangentSpace_size; v++)
+                    for (var v = 0; v < m_TangentSpace_size; v++)
                     {
                         m_Normals[v * 3] = reader.ReadSingle();
                         m_Normals[v * 3 + 1] = reader.ReadSingle();
@@ -614,7 +614,7 @@ namespace AssetStudio
                 if (version[0] < 2018 || (version[0] == 2018 && version[1] < 2)) //2018.2 down
                 {
                     m_Skin = new BoneWeights4[reader.ReadInt32()];
-                    for (int s = 0; s < m_Skin.Length; s++)
+                    for (var s = 0; s < m_Skin.Length; s++)
                     {
                         m_Skin[s] = new BoneWeights4(reader);
                     }
@@ -637,19 +637,19 @@ namespace AssetStudio
 
             if (version[0] < 3 || (version[0] == 3 && version[1] <= 4)) //3.4.2 and earlier
             {
-                int m_Colors_size = reader.ReadInt32();
+                var m_Colors_size = reader.ReadInt32();
                 m_Colors = new float[m_Colors_size * 4];
-                for (int v = 0; v < m_Colors_size * 4; v++)
+                for (var v = 0; v < m_Colors_size * 4; v++)
                 {
                     m_Colors[v] = (float)reader.ReadByte() / 0xFF;
                 }
 
-                int m_CollisionTriangles_size = reader.ReadInt32();
+                var m_CollisionTriangles_size = reader.ReadInt32();
                 reader.Position += m_CollisionTriangles_size * 4; //UInt32 indices
-                int m_CollisionVertexCount = reader.ReadInt32();
+                var m_CollisionVertexCount = reader.ReadInt32();
             }
 
-            int m_MeshUsageFlags = reader.ReadInt32();
+            var m_MeshUsageFlags = reader.ReadInt32();
 
             if (version[0] >= 5) //5.0 and up
             {
@@ -718,10 +718,10 @@ namespace AssetStudio
 
                         var componentByteSize = (int)MeshHelper.GetFormatSize(version, m_Channel.format);
                         var componentBytes = new byte[m_VertexCount * m_Channel.dimension * componentByteSize];
-                        for (int v = 0; v < m_VertexCount; v++)
+                        for (var v = 0; v < m_VertexCount; v++)
                         {
                             var vertexOffset = (int)m_Stream.offset + m_Channel.offset + (int)m_Stream.stride * v;
-                            for (int d = 0; d < m_Channel.dimension; d++)
+                            for (var d = 0; d < m_Channel.dimension; d++)
                             {
                                 var componentOffset = vertexOffset + componentByteSize * d;
                                 Buffer.BlockCopy(m_VertexData.m_DataSize, componentOffset, componentBytes, componentByteSize * (v * m_Channel.dimension + d), componentByteSize);
@@ -792,9 +792,9 @@ namespace AssetStudio
                                     {
                                         InitMSkin();
                                     }
-                                    for (int i = 0; i < m_VertexCount; i++)
+                                    for (var i = 0; i < m_VertexCount; i++)
                                     {
-                                        for (int j = 0; j < m_Channel.dimension; j++)
+                                        for (var j = 0; j < m_Channel.dimension; j++)
                                         {
                                             m_Skin[i].weight[j] = componentsFloatArray[i * m_Channel.dimension + j];
                                         }
@@ -805,9 +805,9 @@ namespace AssetStudio
                                     {
                                         InitMSkin();
                                     }
-                                    for (int i = 0; i < m_VertexCount; i++)
+                                    for (var i = 0; i < m_VertexCount; i++)
                                     {
-                                        for (int j = 0; j < m_Channel.dimension; j++)
+                                        for (var j = 0; j < m_Channel.dimension; j++)
                                         {
                                             m_Skin[i].boneIndex[j] = componentsIntArray[i * m_Channel.dimension + j];
                                         }
@@ -876,8 +876,8 @@ namespace AssetStudio
                     const int kUVChannelExists = 4;
                     const int kMaxTexCoordShaderChannels = 8;
 
-                    int uvSrcOffset = 0;
-                    for (int uv = 0; uv < kMaxTexCoordShaderChannels; uv++)
+                    var uvSrcOffset = 0;
+                    for (var uv = 0; uv < kMaxTexCoordShaderChannels; uv++)
                     {
                         var texCoordBits = m_UVInfo >> (uv * kInfoBitsPerUV);
                         texCoordBits &= (1u << kInfoBitsPerUV) - 1u;
@@ -907,7 +907,7 @@ namespace AssetStudio
                     m_BindPose = new Matrix4x4[m_CompressedMesh.m_BindPoses.m_NumItems / 16];
                     var m_BindPoses_Unpacked = m_CompressedMesh.m_BindPoses.UnpackFloats(16, 4 * 16);
                     var buffer = new float[16];
-                    for (int i = 0; i < m_BindPose.Length; i++)
+                    for (var i = 0; i < m_BindPose.Length; i++)
                     {
                         Array.Copy(m_BindPoses_Unpacked, i * 16, buffer, 0, 16);
                         m_BindPose[i] = new Matrix4x4(buffer);
@@ -920,7 +920,7 @@ namespace AssetStudio
                 var normalData = m_CompressedMesh.m_Normals.UnpackFloats(2, 4 * 2);
                 var signs = m_CompressedMesh.m_NormalSigns.UnpackInts();
                 m_Normals = new float[m_CompressedMesh.m_Normals.m_NumItems / 2 * 3];
-                for (int i = 0; i < m_CompressedMesh.m_Normals.m_NumItems / 2; ++i)
+                for (var i = 0; i < m_CompressedMesh.m_Normals.m_NumItems / 2; ++i)
                 {
                     var x = normalData[i * 2 + 0];
                     var y = normalData[i * 2 + 1];
@@ -950,7 +950,7 @@ namespace AssetStudio
                 var tangentData = m_CompressedMesh.m_Tangents.UnpackFloats(2, 4 * 2);
                 var signs = m_CompressedMesh.m_TangentSigns.UnpackInts();
                 m_Tangents = new float[m_CompressedMesh.m_Tangents.m_NumItems / 2 * 4];
-                for (int i = 0; i < m_CompressedMesh.m_Tangents.m_NumItems / 2; ++i)
+                for (var i = 0; i < m_CompressedMesh.m_Tangents.m_NumItems / 2; ++i)
                 {
                     var x = tangentData[i * 2 + 0];
                     var y = tangentData[i * 2 + 1];
@@ -992,12 +992,12 @@ namespace AssetStudio
 
                 InitMSkin();
 
-                int bonePos = 0;
-                int boneIndexPos = 0;
-                int j = 0;
-                int sum = 0;
+                var bonePos = 0;
+                var boneIndexPos = 0;
+                var j = 0;
+                var sum = 0;
 
-                for (int i = 0; i < m_CompressedMesh.m_Weights.m_NumItems; i++)
+                for (var i = 0; i < m_CompressedMesh.m_Weights.m_NumItems; i++)
                 {
                     //read bone index and weight.
                     m_Skin[bonePos].weight[j] = weights[i] / 31.0f;
@@ -1041,7 +1041,7 @@ namespace AssetStudio
                 m_CompressedMesh.m_Colors.m_BitSize /= 4;
                 var tempColors = m_CompressedMesh.m_Colors.UnpackInts();
                 m_Colors = new float[m_CompressedMesh.m_Colors.m_NumItems];
-                for (int v = 0; v < m_CompressedMesh.m_Colors.m_NumItems; v++)
+                for (var v = 0; v < m_CompressedMesh.m_Colors.m_NumItems; v++)
                 {
                     m_Colors[v] = tempColors[v] / 255f;
                 }
@@ -1061,7 +1061,7 @@ namespace AssetStudio
                 var topology = m_SubMesh.topology;
                 if (topology == GfxPrimitiveType.kPrimitiveTriangles)
                 {
-                    for (int i = 0; i < indexCount; i += 3)
+                    for (var i = 0; i < indexCount; i += 3)
                     {
                         m_Indices.Add(m_IndexBuffer[firstIndex + i]);
                         m_Indices.Add(m_IndexBuffer[firstIndex + i + 1]);
@@ -1072,7 +1072,7 @@ namespace AssetStudio
                 {
                     // de-stripify :
                     uint triIndex = 0;
-                    for (int i = 0; i < indexCount - 2; i++)
+                    for (var i = 0; i < indexCount - 2; i++)
                     {
                         var a = m_IndexBuffer[firstIndex + i];
                         var b = m_IndexBuffer[firstIndex + i + 1];
@@ -1101,7 +1101,7 @@ namespace AssetStudio
                 }
                 else if (topology == GfxPrimitiveType.kPrimitiveQuads)
                 {
-                    for (int q = 0; q < indexCount; q += 4)
+                    for (var q = 0; q < indexCount; q += 4)
                     {
                         m_Indices.Add(m_IndexBuffer[firstIndex + q]);
                         m_Indices.Add(m_IndexBuffer[firstIndex + q + 1]);
@@ -1123,7 +1123,7 @@ namespace AssetStudio
         private void InitMSkin()
         {
             m_Skin = new BoneWeights4[m_VertexCount];
-            for (int i = 0; i < m_VertexCount; i++)
+            for (var i = 0; i < m_VertexCount; i++)
             {
                 m_Skin[i] = new BoneWeights4();
             }
@@ -1339,7 +1339,7 @@ namespace AssetStudio
         public static float[] BytesToFloatArray(byte[] inputBytes, int size)
         {
             var result = new float[inputBytes.Length / size];
-            for (int i = 0; i < inputBytes.Length / size; i++)
+            for (var i = 0; i < inputBytes.Length / size; i++)
             {
                 var value = 0f;
                 switch (size)
@@ -1362,7 +1362,7 @@ namespace AssetStudio
         public static int[] BytesToIntArray(byte[] inputBytes, int size)
         {
             var result = new int[inputBytes.Length / size];
-            for (int i = 0; i < inputBytes.Length / size; i++)
+            for (var i = 0; i < inputBytes.Length / size; i++)
             {
                 switch (size)
                 {

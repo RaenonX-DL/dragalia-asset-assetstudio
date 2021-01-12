@@ -13,7 +13,7 @@ namespace AssetStudio
 
         public SkinnedMeshRenderer(ObjectReader reader) : base(reader)
         {
-            int m_Quality = reader.ReadInt32();
+            var m_Quality = reader.ReadInt32();
             var m_UpdateWhenOffscreen = reader.ReadBoolean();
             var m_SkinNormals = reader.ReadBoolean(); //3.1.0 and below
             reader.AlignStream();
@@ -26,7 +26,7 @@ namespace AssetStudio
             m_Mesh = new PPtr<Mesh>(reader);
 
             m_Bones = new PPtr<Transform>[reader.ReadInt32()];
-            for (int b = 0; b < m_Bones.Length; b++)
+            for (var b = 0; b < m_Bones.Length; b++)
             {
                 m_Bones[b] = new PPtr<Transform>(reader);
             }

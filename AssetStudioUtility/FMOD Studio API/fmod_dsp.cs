@@ -594,7 +594,7 @@ namespace FMOD
             {
                 var buffer = new float[numchannels][];
                 
-                for (int i = 0; i < numchannels; ++i)
+                for (var i = 0; i < numchannels; ++i)
                 {
                     buffer[i] = new float[length];
                     Marshal.Copy(spectrum_internal[i], buffer[i], 0, length);

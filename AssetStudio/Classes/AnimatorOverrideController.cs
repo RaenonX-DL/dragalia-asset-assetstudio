@@ -26,9 +26,9 @@ namespace AssetStudio
         {
             m_Controller = new PPtr<RuntimeAnimatorController>(reader);
 
-            int numOverrides = reader.ReadInt32();
+            var numOverrides = reader.ReadInt32();
             m_Clips = new AnimationClipOverride[numOverrides];
-            for (int i = 0; i < numOverrides; i++)
+            for (var i = 0; i < numOverrides; i++)
             {
                 m_Clips[i] = new AnimationClipOverride(reader);
             }

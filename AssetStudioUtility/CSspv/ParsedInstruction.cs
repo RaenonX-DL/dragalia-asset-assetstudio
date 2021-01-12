@@ -8,8 +8,8 @@ namespace SpirV
 	{
 		public ParsedOperand(IReadOnlyList<uint> words, int index, int count, object value, Operand operand)
 		{
-			uint[] array = new uint[count];
-			for (int i = 0; i < count; i++)
+			var array = new uint[count];
+			for (var i = 0; i < count; i++)
 			{
 				array[i] = words[index + i];
 			}
@@ -22,7 +22,7 @@ namespace SpirV
 		public T GetSingleEnumValue<T>()
 			where T : Enum
 		{
-			IValueEnumOperandValue v = (IValueEnumOperandValue)Value;
+			var v = (IValueEnumOperandValue)Value;
 			if (v.Value.Count == 0)
 			{
 				// If there's no value at all, the enum is probably something like ImageFormat.
@@ -69,14 +69,14 @@ namespace SpirV
 
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			ToString(sb);
 			return sb.ToString();
 		}
 
 		public StringBuilder ToString(StringBuilder sb)
 		{
-			for (int i = 0; i < Values.Count; ++i)
+			for (var i = 0; i < Values.Count; ++i)
 			{
 				if (Values[i] is ObjectReference objRef)
 				{
@@ -182,16 +182,16 @@ namespace SpirV
 			}
 
 			// Word 0 describes this instruction so we can ignore it
-			int currentWord = 1;
-			int currentOperand = 0;
-			List<object> varyingOperandValues = new List<object>();
-			int varyingWordStart = 0;
+			var currentWord = 1;
+			var currentOperand = 0;
+			var varyingOperandValues = new List<object>();
+			var varyingWordStart = 0;
 			Operand varyingOperand = null;
 
 			while (currentWord < Words.Count)
 			{
-				Operand operand = Instruction.Operands[currentOperand];
-				operand.Type.ReadValue(Words, currentWord, out object value, out int wordsUsed);
+				var operand = Instruction.Operands[currentOperand];
+				operand.Type.ReadValue(Words, currentWord, out var value, out var wordsUsed);
 				if (operand.Quantifier == OperandQuantifier.Varying)
 				{
 					varyingOperandValues.Add(value);
@@ -200,8 +200,8 @@ namespace SpirV
 				}
 				else
 				{
-					int wordCount = Math.Min(Words.Count - currentWord, wordsUsed);
-					ParsedOperand parsedOperand = new ParsedOperand(Words, currentWord, wordCount, value, operand);
+					var wordCount = Math.Min(Words.Count - currentWord, wordsUsed);
+					var parsedOperand = new ParsedOperand(Words, currentWord, wordCount, value, operand);
 					Operands.Add(parsedOperand);
 				}
 
@@ -214,8 +214,8 @@ namespace SpirV
 
 			if (varyingOperand != null)
 			{
-				VaryingOperandValue varOperantValue = new VaryingOperandValue(varyingOperandValues);
-				ParsedOperand parsedOperand = new ParsedOperand(Words, currentWord, Words.Count - currentWord, varOperantValue, varyingOperand);
+				var varOperantValue = new VaryingOperandValue(varyingOperandValues);
+				var parsedOperand = new ParsedOperand(Words, currentWord, Words.Count - currentWord, varOperantValue, varyingOperand);
 				Operands.Add(parsedOperand);
 			}
 		}
@@ -244,7 +244,7 @@ namespace SpirV
 		{
 			get
 			{
-				for (int i = 0; i < Instruction.Operands.Count; ++i)
+				for (var i = 0; i < Instruction.Operands.Count; ++i)
 				{
 					if (Instruction.Operands[i].Type is IdResult)
 					{

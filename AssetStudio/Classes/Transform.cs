@@ -19,9 +19,9 @@ namespace AssetStudio
             m_LocalPosition = reader.ReadVector3();
             m_LocalScale = reader.ReadVector3();
 
-            int m_ChildrenCount = reader.ReadInt32();
+            var m_ChildrenCount = reader.ReadInt32();
             m_Children = new PPtr<Transform>[m_ChildrenCount];
-            for (int i = 0; i < m_ChildrenCount; i++)
+            for (var i = 0; i < m_ChildrenCount; i++)
             {
                 m_Children[i] = new PPtr<Transform>(reader);
             }

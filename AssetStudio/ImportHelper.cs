@@ -27,7 +27,7 @@ namespace AssetStudio
                     var splitParts = Directory.GetFiles(destPath, destFile + ".split*");
                     using (var destStream = File.Create(destFull))
                     {
-                        for (int i = 0; i < splitParts.Length; i++)
+                        for (var i = 0; i < splitParts.Length; i++)
                         {
                             var splitPart = destFull + ".split" + i;
                             using (var sourceStream = File.OpenRead(splitPart))

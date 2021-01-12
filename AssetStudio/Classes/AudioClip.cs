@@ -43,7 +43,7 @@ namespace AssetStudio
 
                 if (version[0] >= 4 || (version[0] == 3 && version[1] >= 2)) //3.2.0 to 5
                 {
-                    int m_Stream = reader.ReadInt32();
+                    var m_Stream = reader.ReadInt32();
                     m_Size = reader.ReadInt32();
                     var tsize = m_Size % 4 != 0 ? m_Size + 4 - m_Size % 4 : m_Size;
                     if (reader.byteSize + reader.byteStart - reader.Position != tsize)

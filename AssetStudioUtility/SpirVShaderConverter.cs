@@ -15,22 +15,22 @@ namespace AssetStudio
             {
                 using (var reader = new BinaryReader(ms))
                 {
-                    int requirements = reader.ReadInt32();
-                    int minOffset = m_ProgramCode.Length;
-                    int snippetCount = 5;
+                    var requirements = reader.ReadInt32();
+                    var minOffset = m_ProgramCode.Length;
+                    var snippetCount = 5;
                     /*if (version[0] > 2019 || (version[0] == 2019 && version[1] >= 3)) //2019.3 and up
                     {
                         snippetCount = 6;
                     }*/
-                    for (int i = 0; i < snippetCount; i++)
+                    for (var i = 0; i < snippetCount; i++)
                     {
                         if (reader.BaseStream.Position >= minOffset)
                         {
                             break;
                         }
 
-                        int offset = reader.ReadInt32();
-                        int size = reader.ReadInt32();
+                        var offset = reader.ReadInt32();
+                        var size = reader.ReadInt32();
                         if (size > 0)
                         {
                             if (offset < minOffset)
@@ -50,7 +50,7 @@ namespace AssetStudio
         private static string ExportSnippet(Stream stream, int offset, int size)
         {
             stream.Position = offset;
-            int decodedSize = SmolvDecoder.GetDecodedBufferSize(stream);
+            var decodedSize = SmolvDecoder.GetDecodedBufferSize(stream);
             if (decodedSize == 0)
             {
                 throw new Exception("Invalid SMOL-V shader header");

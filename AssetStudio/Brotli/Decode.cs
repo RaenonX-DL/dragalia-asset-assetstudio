@@ -46,7 +46,7 @@ namespace Org.Brotli.Dec
 		{
 			if (Org.Brotli.Dec.BitReader.ReadBits(br, 1) != 0)
 			{
-				int n = Org.Brotli.Dec.BitReader.ReadBits(br, 3);
+				var n = Org.Brotli.Dec.BitReader.ReadBits(br, 3);
 				if (n == 0)
 				{
 					return 1;
@@ -69,7 +69,7 @@ namespace Org.Brotli.Dec
 			{
 				return;
 			}
-			int sizeNibbles = Org.Brotli.Dec.BitReader.ReadBits(br, 2) + 4;
+			var sizeNibbles = Org.Brotli.Dec.BitReader.ReadBits(br, 2) + 4;
 			if (sizeNibbles == 7)
 			{
 				state.isMetadata = true;
@@ -77,14 +77,14 @@ namespace Org.Brotli.Dec
 				{
 					throw new Org.Brotli.Dec.BrotliRuntimeException("Corrupted reserved bit");
 				}
-				int sizeBytes = Org.Brotli.Dec.BitReader.ReadBits(br, 2);
+				var sizeBytes = Org.Brotli.Dec.BitReader.ReadBits(br, 2);
 				if (sizeBytes == 0)
 				{
 					return;
 				}
-				for (int i = 0; i < sizeBytes; i++)
+				for (var i = 0; i < sizeBytes; i++)
 				{
-					int bits = Org.Brotli.Dec.BitReader.ReadBits(br, 8);
+					var bits = Org.Brotli.Dec.BitReader.ReadBits(br, 8);
 					if (bits == 0 && i + 1 == sizeBytes && sizeBytes > 1)
 					{
 						throw new Org.Brotli.Dec.BrotliRuntimeException("Exuberant nibble");
@@ -94,9 +94,9 @@ namespace Org.Brotli.Dec
 			}
 			else
 			{
-				for (int i = 0; i < sizeNibbles; i++)
+				for (var i = 0; i < sizeNibbles; i++)
 				{
-					int bits = Org.Brotli.Dec.BitReader.ReadBits(br, 4);
+					var bits = Org.Brotli.Dec.BitReader.ReadBits(br, 4);
 					if (bits == 0 && i + 1 == sizeNibbles && sizeNibbles > 4)
 					{
 						throw new Org.Brotli.Dec.BrotliRuntimeException("Exuberant nibble");
@@ -114,17 +114,17 @@ namespace Org.Brotli.Dec
 		/// <summary>Decodes the next Huffman code from bit-stream.</summary>
 		private static int ReadSymbol(int[] table, int offset, Org.Brotli.Dec.BitReader br)
 		{
-			int val = (int)((long)(((ulong)br.accumulator) >> br.bitOffset));
+			var val = (int)((long)(((ulong)br.accumulator) >> br.bitOffset));
 			offset += val & HuffmanTableMask;
-			int bits = table[offset] >> 16;
-			int sym = table[offset] & unchecked((int)(0xFFFF));
+			var bits = table[offset] >> 16;
+			var sym = table[offset] & unchecked((int)(0xFFFF));
 			if (bits <= HuffmanTableBits)
 			{
 				br.bitOffset += bits;
 				return sym;
 			}
 			offset += sym;
-			int mask = (1 << bits) - 1;
+			var mask = (1 << bits) - 1;
 			offset += (int)(((uint)(val & mask)) >> HuffmanTableBits);
 			br.bitOffset += ((table[offset] >> 16) + HuffmanTableBits);
 			return table[offset] & unchecked((int)(0xFFFF));
@@ -133,8 +133,8 @@ namespace Org.Brotli.Dec
 		private static int ReadBlockLength(int[] table, int offset, Org.Brotli.Dec.BitReader br)
 		{
 			Org.Brotli.Dec.BitReader.FillBitWindow(br);
-			int code = ReadSymbol(table, offset, br);
-			int n = Org.Brotli.Dec.Prefix.BlockLengthNBits[code];
+			var code = ReadSymbol(table, offset, br);
+			var n = Org.Brotli.Dec.Prefix.BlockLengthNBits[code];
 			return Org.Brotli.Dec.Prefix.BlockLengthOffset[code] + Org.Brotli.Dec.BitReader.ReadBits(br, n);
 		}
 
@@ -151,7 +151,7 @@ namespace Org.Brotli.Dec
 
 		private static void MoveToFront(int[] v, int index)
 		{
-			int value = v[index];
+			var value = v[index];
 			for (; index > 0; index--)
 			{
 				v[index] = v[index - 1];
@@ -161,14 +161,14 @@ namespace Org.Brotli.Dec
 
 		private static void InverseMoveToFrontTransform(byte[] v, int vLen)
 		{
-			int[] mtf = new int[256];
-			for (int i = 0; i < 256; i++)
+			var mtf = new int[256];
+			for (var i = 0; i < 256; i++)
 			{
 				mtf[i] = i;
 			}
-			for (int i = 0; i < vLen; i++)
+			for (var i = 0; i < vLen; i++)
 			{
-				int index = v[i] & unchecked((int)(0xFF));
+				var index = v[i] & unchecked((int)(0xFF));
 				v[i] = unchecked((byte)mtf[index]);
 				if (index != 0)
 				{
@@ -179,20 +179,20 @@ namespace Org.Brotli.Dec
 
 		private static void ReadHuffmanCodeLengths(int[] codeLengthCodeLengths, int numSymbols, int[] codeLengths, Org.Brotli.Dec.BitReader br)
 		{
-			int symbol = 0;
-			int prevCodeLen = DefaultCodeLength;
-			int repeat = 0;
-			int repeatCodeLen = 0;
-			int space = 32768;
-			int[] table = new int[32];
+			var symbol = 0;
+			var prevCodeLen = DefaultCodeLength;
+			var repeat = 0;
+			var repeatCodeLen = 0;
+			var space = 32768;
+			var table = new int[32];
 			Org.Brotli.Dec.Huffman.BuildHuffmanTable(table, 0, 5, codeLengthCodeLengths, CodeLengthCodes);
 			while (symbol < numSymbols && space > 0)
 			{
 				Org.Brotli.Dec.BitReader.ReadMoreInput(br);
 				Org.Brotli.Dec.BitReader.FillBitWindow(br);
-				int p = (int)(((long)(((ulong)br.accumulator) >> br.bitOffset))) & 31;
+				var p = (int)(((long)(((ulong)br.accumulator) >> br.bitOffset))) & 31;
 				br.bitOffset += table[p] >> 16;
-				int codeLen = table[p] & unchecked((int)(0xFFFF));
+				var codeLen = table[p] & unchecked((int)(0xFFFF));
 				if (codeLen < CodeLengthRepeatCode)
 				{
 					repeat = 0;
@@ -205,8 +205,8 @@ namespace Org.Brotli.Dec
 				}
 				else
 				{
-					int extraBits = codeLen - 14;
-					int newLen = 0;
+					var extraBits = codeLen - 14;
+					var newLen = 0;
 					if (codeLen == CodeLengthRepeatCode)
 					{
 						newLen = prevCodeLen;
@@ -216,20 +216,20 @@ namespace Org.Brotli.Dec
 						repeat = 0;
 						repeatCodeLen = newLen;
 					}
-					int oldRepeat = repeat;
+					var oldRepeat = repeat;
 					if (repeat > 0)
 					{
 						repeat -= 2;
 						repeat <<= extraBits;
 					}
 					repeat += Org.Brotli.Dec.BitReader.ReadBits(br, extraBits) + 3;
-					int repeatDelta = repeat - oldRepeat;
+					var repeatDelta = repeat - oldRepeat;
 					if (symbol + repeatDelta > numSymbols)
 					{
 						throw new Org.Brotli.Dec.BrotliRuntimeException("symbol + repeatDelta > numSymbols");
 					}
 					// COV_NF_LINE
-					for (int i = 0; i < repeatDelta; i++)
+					for (var i = 0; i < repeatDelta; i++)
 					{
 						codeLengths[symbol++] = repeatCodeLen;
 					}
@@ -251,19 +251,19 @@ namespace Org.Brotli.Dec
 		// TODO: Use specialized versions for smaller tables.
 		internal static void ReadHuffmanCode(int alphabetSize, int[] table, int offset, Org.Brotli.Dec.BitReader br)
 		{
-			bool ok = true;
+			var ok = true;
 			int simpleCodeOrSkip;
 			Org.Brotli.Dec.BitReader.ReadMoreInput(br);
 			// TODO: Avoid allocation.
-			int[] codeLengths = new int[alphabetSize];
+			var codeLengths = new int[alphabetSize];
 			simpleCodeOrSkip = Org.Brotli.Dec.BitReader.ReadBits(br, 2);
 			if (simpleCodeOrSkip == 1)
 			{
 				// Read symbols, codes & code lengths directly.
-				int maxBitsCounter = alphabetSize - 1;
-				int maxBits = 0;
-				int[] symbols = new int[4];
-				int numSymbols = Org.Brotli.Dec.BitReader.ReadBits(br, 2) + 1;
+				var maxBitsCounter = alphabetSize - 1;
+				var maxBits = 0;
+				var symbols = new int[4];
+				var numSymbols = Org.Brotli.Dec.BitReader.ReadBits(br, 2) + 1;
 				while (maxBitsCounter != 0)
 				{
 					maxBitsCounter >>= 1;
@@ -271,7 +271,7 @@ namespace Org.Brotli.Dec
 				}
 				// TODO: uncomment when codeLengths is reused.
 				// Utils.fillWithZeroes(codeLengths, 0, alphabetSize);
-				for (int i = 0; i < numSymbols; i++)
+				for (var i = 0; i < numSymbols; i++)
 				{
 					symbols[i] = Org.Brotli.Dec.BitReader.ReadBits(br, maxBits) % alphabetSize;
 					codeLengths[symbols[i]] = 2;
@@ -317,17 +317,17 @@ namespace Org.Brotli.Dec
 			else
 			{
 				// Decode Huffman-coded code lengths.
-				int[] codeLengthCodeLengths = new int[CodeLengthCodes];
-				int space = 32;
-				int numCodes = 0;
-				for (int i = simpleCodeOrSkip; i < CodeLengthCodes && space > 0; i++)
+				var codeLengthCodeLengths = new int[CodeLengthCodes];
+				var space = 32;
+				var numCodes = 0;
+				for (var i = simpleCodeOrSkip; i < CodeLengthCodes && space > 0; i++)
 				{
-					int codeLenIdx = CodeLengthCodeOrder[i];
+					var codeLenIdx = CodeLengthCodeOrder[i];
 					Org.Brotli.Dec.BitReader.FillBitWindow(br);
-					int p = (int)((long)(((ulong)br.accumulator) >> br.bitOffset)) & 15;
+					var p = (int)((long)(((ulong)br.accumulator) >> br.bitOffset)) & 15;
 					// TODO: Demultiplex FIXED_TABLE.
 					br.bitOffset += FixedTable[p] >> 16;
-					int v = FixedTable[p] & unchecked((int)(0xFFFF));
+					var v = FixedTable[p] & unchecked((int)(0xFFFF));
 					codeLengthCodeLengths[codeLenIdx] = v;
 					if (v != 0)
 					{
@@ -349,25 +349,25 @@ namespace Org.Brotli.Dec
 		private static int DecodeContextMap(int contextMapSize, byte[] contextMap, Org.Brotli.Dec.BitReader br)
 		{
 			Org.Brotli.Dec.BitReader.ReadMoreInput(br);
-			int numTrees = DecodeVarLenUnsignedByte(br) + 1;
+			var numTrees = DecodeVarLenUnsignedByte(br) + 1;
 			if (numTrees == 1)
 			{
 				Org.Brotli.Dec.Utils.FillWithZeroes(contextMap, 0, contextMapSize);
 				return numTrees;
 			}
-			bool useRleForZeros = Org.Brotli.Dec.BitReader.ReadBits(br, 1) == 1;
-			int maxRunLengthPrefix = 0;
+			var useRleForZeros = Org.Brotli.Dec.BitReader.ReadBits(br, 1) == 1;
+			var maxRunLengthPrefix = 0;
 			if (useRleForZeros)
 			{
 				maxRunLengthPrefix = Org.Brotli.Dec.BitReader.ReadBits(br, 4) + 1;
 			}
-			int[] table = new int[Org.Brotli.Dec.Huffman.HuffmanMaxTableSize];
+			var table = new int[Org.Brotli.Dec.Huffman.HuffmanMaxTableSize];
 			ReadHuffmanCode(numTrees + maxRunLengthPrefix, table, 0, br);
-			for (int i = 0; i < contextMapSize; )
+			for (var i = 0; i < contextMapSize; )
 			{
 				Org.Brotli.Dec.BitReader.ReadMoreInput(br);
 				Org.Brotli.Dec.BitReader.FillBitWindow(br);
-				int code = ReadSymbol(table, 0, br);
+				var code = ReadSymbol(table, 0, br);
 				if (code == 0)
 				{
 					contextMap[i] = 0;
@@ -375,7 +375,7 @@ namespace Org.Brotli.Dec
 				}
 				else if (code <= maxRunLengthPrefix)
 				{
-					int reps = (1 << code) + Org.Brotli.Dec.BitReader.ReadBits(br, code);
+					var reps = (1 << code) + Org.Brotli.Dec.BitReader.ReadBits(br, code);
 					while (reps != 0)
 					{
 						if (i >= contextMapSize)
@@ -403,11 +403,11 @@ namespace Org.Brotli.Dec
 
 		private static void DecodeBlockTypeAndLength(Org.Brotli.Dec.State state, int treeType)
 		{
-			Org.Brotli.Dec.BitReader br = state.br;
-			int[] ringBuffers = state.blockTypeRb;
-			int offset = treeType * 2;
+			var br = state.br;
+			var ringBuffers = state.blockTypeRb;
+			var offset = treeType * 2;
 			Org.Brotli.Dec.BitReader.FillBitWindow(br);
-			int blockType = ReadSymbol(state.blockTypeTrees, treeType * Org.Brotli.Dec.Huffman.HuffmanMaxTableSize, br);
+			var blockType = ReadSymbol(state.blockTypeTrees, treeType * Org.Brotli.Dec.Huffman.HuffmanMaxTableSize, br);
 			state.blockLength[treeType] = ReadBlockLength(state.blockLenTrees, treeType * Org.Brotli.Dec.Huffman.HuffmanMaxTableSize, br);
 			if (blockType == 1)
 			{
@@ -432,7 +432,7 @@ namespace Org.Brotli.Dec
 		private static void DecodeLiteralBlockSwitch(Org.Brotli.Dec.State state)
 		{
 			DecodeBlockTypeAndLength(state, 0);
-			int literalBlockType = state.blockTypeRb[1];
+			var literalBlockType = state.blockTypeRb[1];
 			state.contextMapSlice = literalBlockType << LiteralContextBits;
 			state.literalTreeIndex = state.contextMap[state.contextMapSlice] & unchecked((int)(0xFF));
 			state.literalTree = state.hGroup0.trees[state.literalTreeIndex];
@@ -455,11 +455,11 @@ namespace Org.Brotli.Dec
 
 		private static void MaybeReallocateRingBuffer(Org.Brotli.Dec.State state)
 		{
-			int newSize = state.maxRingBufferSize;
+			var newSize = state.maxRingBufferSize;
 			if ((long)newSize > state.expectedTotalSize)
 			{
 				/* TODO: Handle 2GB+ cases more gracefully. */
-				int minimalNewSize = (int)state.expectedTotalSize + state.customDictionary.Length;
+				var minimalNewSize = (int)state.expectedTotalSize + state.customDictionary.Length;
 				while ((newSize >> 1) > minimalNewSize)
 				{
 					newSize >>= 1;
@@ -473,8 +473,8 @@ namespace Org.Brotli.Dec
 			{
 				return;
 			}
-			int ringBufferSizeWithSlack = newSize + Org.Brotli.Dec.Dictionary.MaxTransformedWordLength;
-			byte[] newBuffer = new byte[ringBufferSizeWithSlack];
+			var ringBufferSizeWithSlack = newSize + Org.Brotli.Dec.Dictionary.MaxTransformedWordLength;
+			var newBuffer = new byte[ringBufferSizeWithSlack];
 			if (state.ringBuffer != null)
 			{
 				System.Array.Copy(state.ringBuffer, 0, newBuffer, 0, state.ringBufferSize);
@@ -482,8 +482,8 @@ namespace Org.Brotli.Dec
 			else if (state.customDictionary.Length != 0)
 			{
 				/* Prepend custom dictionary, if any. */
-				int length = state.customDictionary.Length;
-				int offset = 0;
+				var length = state.customDictionary.Length;
+				var offset = 0;
 				if (length > state.maxBackwardDistance)
 				{
 					offset = length - state.maxBackwardDistance;
@@ -501,7 +501,7 @@ namespace Org.Brotli.Dec
 		/// <param name="state">decoding state</param>
 		private static void ReadMetablockInfo(Org.Brotli.Dec.State state)
 		{
-			Org.Brotli.Dec.BitReader br = state.br;
+			var br = state.br;
 			if (state.inputEnd)
 			{
 				state.nextRunningState = Org.Brotli.Dec.RunningState.Finished;
@@ -545,8 +545,8 @@ namespace Org.Brotli.Dec
 
 		private static void ReadMetablockHuffmanCodesAndContextMaps(Org.Brotli.Dec.State state)
 		{
-			Org.Brotli.Dec.BitReader br = state.br;
-			for (int i = 0; i < 3; i++)
+			var br = state.br;
+			for (var i = 0; i < 3; i++)
 			{
 				state.numBlockTypes[i] = DecodeVarLenUnsignedByte(br) + 1;
 				state.blockLength[i] = 1 << 28;
@@ -561,13 +561,13 @@ namespace Org.Brotli.Dec
 			state.distancePostfixBits = Org.Brotli.Dec.BitReader.ReadBits(br, 2);
 			state.numDirectDistanceCodes = NumDistanceShortCodes + (Org.Brotli.Dec.BitReader.ReadBits(br, 4) << state.distancePostfixBits);
 			state.distancePostfixMask = (1 << state.distancePostfixBits) - 1;
-			int numDistanceCodes = state.numDirectDistanceCodes + (48 << state.distancePostfixBits);
+			var numDistanceCodes = state.numDirectDistanceCodes + (48 << state.distancePostfixBits);
 			// TODO: Reuse?
 			state.contextModes = new byte[state.numBlockTypes[0]];
-			for (int i = 0; i < state.numBlockTypes[0]; )
+			for (var i = 0; i < state.numBlockTypes[0]; )
 			{
 				/* Ensure that less than 256 bits read between readMoreInput. */
-				int limit = System.Math.Min(i + 96, state.numBlockTypes[0]);
+				var limit = System.Math.Min(i + 96, state.numBlockTypes[0]);
 				for (; i < limit; ++i)
 				{
 					state.contextModes[i] = unchecked((byte)(Org.Brotli.Dec.BitReader.ReadBits(br, 2) << 1));
@@ -576,9 +576,9 @@ namespace Org.Brotli.Dec
 			}
 			// TODO: Reuse?
 			state.contextMap = new byte[state.numBlockTypes[0] << LiteralContextBits];
-			int numLiteralTrees = DecodeContextMap(state.numBlockTypes[0] << LiteralContextBits, state.contextMap, br);
+			var numLiteralTrees = DecodeContextMap(state.numBlockTypes[0] << LiteralContextBits, state.contextMap, br);
 			state.trivialLiteralContext = true;
-			for (int j = 0; j < state.numBlockTypes[0] << LiteralContextBits; j++)
+			for (var j = 0; j < state.numBlockTypes[0] << LiteralContextBits; j++)
 			{
 				if (state.contextMap[j] != j >> LiteralContextBits)
 				{
@@ -588,7 +588,7 @@ namespace Org.Brotli.Dec
 			}
 			// TODO: Reuse?
 			state.distContextMap = new byte[state.numBlockTypes[2] << DistanceContextBits];
-			int numDistTrees = DecodeContextMap(state.numBlockTypes[2] << DistanceContextBits, state.distContextMap, br);
+			var numDistTrees = DecodeContextMap(state.numBlockTypes[2] << DistanceContextBits, state.distContextMap, br);
 			Org.Brotli.Dec.HuffmanTreeGroup.Init(state.hGroup0, NumLiteralCodes, numLiteralTrees);
 			Org.Brotli.Dec.HuffmanTreeGroup.Init(state.hGroup1, NumInsertAndCopyCodes, state.numBlockTypes[1]);
 			Org.Brotli.Dec.HuffmanTreeGroup.Init(state.hGroup2, numDistanceCodes, numDistTrees);
@@ -609,8 +609,8 @@ namespace Org.Brotli.Dec
 
 		private static void CopyUncompressedData(Org.Brotli.Dec.State state)
 		{
-			Org.Brotli.Dec.BitReader br = state.br;
-			byte[] ringBuffer = state.ringBuffer;
+			var br = state.br;
+			var ringBuffer = state.ringBuffer;
 			// Could happen if block ends at ring buffer end.
 			if (state.metaBlockLength <= 0)
 			{
@@ -618,7 +618,7 @@ namespace Org.Brotli.Dec
 				state.runningState = Org.Brotli.Dec.RunningState.BlockStart;
 				return;
 			}
-			int chunkLength = System.Math.Min(state.ringBufferSize - state.pos, state.metaBlockLength);
+			var chunkLength = System.Math.Min(state.ringBufferSize - state.pos, state.metaBlockLength);
 			Org.Brotli.Dec.BitReader.CopyBytes(br, ringBuffer, state.pos, chunkLength);
 			state.metaBlockLength -= chunkLength;
 			state.pos += chunkLength;
@@ -642,7 +642,7 @@ namespace Org.Brotli.Dec
 				state.bytesWritten += state.bytesToIgnore;
 				state.bytesToIgnore = 0;
 			}
-			int toWrite = System.Math.Min(state.outputLength - state.outputUsed, state.bytesToWrite - state.bytesWritten);
+			var toWrite = System.Math.Min(state.outputLength - state.outputUsed, state.bytesToWrite - state.bytesWritten);
 			if (toWrite != 0)
 			{
 				System.Array.Copy(state.ringBuffer, state.bytesWritten, state.output, state.outputOffset + state.outputUsed, toWrite);
@@ -668,9 +668,9 @@ namespace Org.Brotli.Dec
 			{
 				throw new System.InvalidOperationException("Can't decompress after close");
 			}
-			Org.Brotli.Dec.BitReader br = state.br;
-			int ringBufferMask = state.ringBufferSize - 1;
-			byte[] ringBuffer = state.ringBuffer;
+			var br = state.br;
+			var ringBufferMask = state.ringBufferSize - 1;
+			var ringBuffer = state.ringBuffer;
 			while (state.runningState != Org.Brotli.Dec.RunningState.Finished)
 			{
 				switch (state.runningState)
@@ -711,16 +711,16 @@ namespace Org.Brotli.Dec
 						}
 						state.blockLength[1]--;
 						Org.Brotli.Dec.BitReader.FillBitWindow(br);
-						int cmdCode = ReadSymbol(state.hGroup1.codes, state.treeCommandOffset, br);
-						int rangeIdx = (int)(((uint)cmdCode) >> 6);
+						var cmdCode = ReadSymbol(state.hGroup1.codes, state.treeCommandOffset, br);
+						var rangeIdx = (int)(((uint)cmdCode) >> 6);
 						state.distanceCode = 0;
 						if (rangeIdx >= 2)
 						{
 							rangeIdx -= 2;
 							state.distanceCode = -1;
 						}
-						int insertCode = Org.Brotli.Dec.Prefix.InsertRangeLut[rangeIdx] + (((int)(((uint)cmdCode) >> 3)) & 7);
-						int copyCode = Org.Brotli.Dec.Prefix.CopyRangeLut[rangeIdx] + (cmdCode & 7);
+						var insertCode = Org.Brotli.Dec.Prefix.InsertRangeLut[rangeIdx] + (((int)(((uint)cmdCode) >> 3)) & 7);
+						var copyCode = Org.Brotli.Dec.Prefix.CopyRangeLut[rangeIdx] + (cmdCode & 7);
 						state.insertLength = Org.Brotli.Dec.Prefix.InsertLengthOffset[insertCode] + Org.Brotli.Dec.BitReader.ReadBits(br, Org.Brotli.Dec.Prefix.InsertLengthNBits[insertCode]);
 						state.copyLength = Org.Brotli.Dec.Prefix.CopyLengthOffset[copyCode] + Org.Brotli.Dec.BitReader.ReadBits(br, Org.Brotli.Dec.Prefix.CopyLengthNBits[copyCode]);
 						state.j = 0;
@@ -756,8 +756,8 @@ namespace Org.Brotli.Dec
 						}
 						else
 						{
-							int prevByte1 = ringBuffer[(state.pos - 1) & ringBufferMask] & unchecked((int)(0xFF));
-							int prevByte2 = ringBuffer[(state.pos - 2) & ringBufferMask] & unchecked((int)(0xFF));
+							var prevByte1 = ringBuffer[(state.pos - 1) & ringBufferMask] & unchecked((int)(0xFF));
+							var prevByte2 = ringBuffer[(state.pos - 2) & ringBufferMask] & unchecked((int)(0xFF));
 							while (state.j < state.insertLength)
 							{
 								Org.Brotli.Dec.BitReader.ReadMoreInput(br);
@@ -765,7 +765,7 @@ namespace Org.Brotli.Dec
 								{
 									DecodeLiteralBlockSwitch(state);
 								}
-								int literalTreeIndex = state.contextMap[state.contextMapSlice + (Org.Brotli.Dec.Context.Lookup[state.contextLookupOffset1 + prevByte1] | Org.Brotli.Dec.Context.Lookup[state.contextLookupOffset2 + prevByte2])] & unchecked((int)(0xFF));
+								var literalTreeIndex = state.contextMap[state.contextMapSlice + (Org.Brotli.Dec.Context.Lookup[state.contextLookupOffset1 + prevByte1] | Org.Brotli.Dec.Context.Lookup[state.contextLookupOffset2 + prevByte2])] & unchecked((int)(0xFF));
 								state.blockLength[0]--;
 								prevByte2 = prevByte1;
 								Org.Brotli.Dec.BitReader.FillBitWindow(br);
@@ -805,10 +805,10 @@ namespace Org.Brotli.Dec
 							if (state.distanceCode >= state.numDirectDistanceCodes)
 							{
 								state.distanceCode -= state.numDirectDistanceCodes;
-								int postfix = state.distanceCode & state.distancePostfixMask;
+								var postfix = state.distanceCode & state.distancePostfixMask;
 								state.distanceCode = (int)(((uint)state.distanceCode) >> state.distancePostfixBits);
-								int n = ((int)(((uint)state.distanceCode) >> 1)) + 1;
-								int offset = ((2 + (state.distanceCode & 1)) << n) - 4;
+								var n = ((int)(((uint)state.distanceCode) >> 1)) + 1;
+								var offset = ((2 + (state.distanceCode & 1)) << n) - 4;
 								state.distanceCode = state.numDirectDistanceCodes + postfix + ((offset + Org.Brotli.Dec.BitReader.ReadBits(br, n)) << state.distancePostfixBits);
 							}
 						}
@@ -852,12 +852,12 @@ namespace Org.Brotli.Dec
 					case Org.Brotli.Dec.RunningState.CopyLoop:
 					{
 						// fall through
-						int src = (state.pos - state.distance) & ringBufferMask;
-						int dst = state.pos;
-						int copyLength = state.copyLength - state.j;
+						var src = (state.pos - state.distance) & ringBufferMask;
+						var dst = state.pos;
+						var copyLength = state.copyLength - state.j;
 						if ((src + copyLength < ringBufferMask) && (dst + copyLength < ringBufferMask))
 						{
-							for (int k = 0; k < copyLength; ++k)
+							for (var k = 0; k < copyLength; ++k)
 							{
 								ringBuffer[dst++] = ringBuffer[src++];
 							}
@@ -893,16 +893,16 @@ namespace Org.Brotli.Dec
 					{
 						if (state.copyLength >= Org.Brotli.Dec.Dictionary.MinWordLength && state.copyLength <= Org.Brotli.Dec.Dictionary.MaxWordLength)
 						{
-							int offset = Org.Brotli.Dec.Dictionary.OffsetsByLength[state.copyLength];
-							int wordId = state.distance - state.maxDistance - 1;
-							int shift = Org.Brotli.Dec.Dictionary.SizeBitsByLength[state.copyLength];
-							int mask = (1 << shift) - 1;
-							int wordIdx = wordId & mask;
-							int transformIdx = (int)(((uint)wordId) >> shift);
+							var offset = Org.Brotli.Dec.Dictionary.OffsetsByLength[state.copyLength];
+							var wordId = state.distance - state.maxDistance - 1;
+							var shift = Org.Brotli.Dec.Dictionary.SizeBitsByLength[state.copyLength];
+							var mask = (1 << shift) - 1;
+							var wordIdx = wordId & mask;
+							var transformIdx = (int)(((uint)wordId) >> shift);
 							offset += wordIdx * state.copyLength;
 							if (transformIdx < Org.Brotli.Dec.Transform.Transforms.Length)
 							{
-								int len = Org.Brotli.Dec.Transform.TransformDictionaryWord(ringBuffer, state.copyDst, Org.Brotli.Dec.Dictionary.GetData(), offset, state.copyLength, Org.Brotli.Dec.Transform.Transforms[transformIdx]);
+								var len = Org.Brotli.Dec.Transform.TransformDictionaryWord(ringBuffer, state.copyDst, Org.Brotli.Dec.Dictionary.GetData(), offset, state.copyLength, Org.Brotli.Dec.Transform.Transforms[transformIdx]);
 								state.copyDst += len;
 								state.pos += len;
 								state.metaBlockLength -= len;

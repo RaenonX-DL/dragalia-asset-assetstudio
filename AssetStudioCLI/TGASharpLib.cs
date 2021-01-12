@@ -958,7 +958,7 @@ namespace TGASharpLib
         /// <param name="ARGB">32bit ARGB integer color value.</param>
         public TgaColorKey(int ARGB)
         {
-            Color ColorARGB = Color.FromArgb(ARGB);
+            var ColorARGB = Color.FromArgb(ARGB);
             a = ColorARGB.A;
             r = ColorARGB.R;
             g = ColorARGB.G;

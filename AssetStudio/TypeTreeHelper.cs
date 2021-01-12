@@ -10,7 +10,7 @@ namespace AssetStudio
         public static void ReadTypeString(StringBuilder sb, List<TypeTreeNode> members, ObjectReader reader)
         {
             reader.Reset();
-            for (int i = 0; i < members.Count; i++)
+            for (var i = 0; i < members.Count; i++)
             {
                 ReadStringValue(sb, members, reader, ref i);
             }
@@ -94,12 +94,12 @@ namespace AssetStudio
                         var first = GetMembers(map, 4);
                         var next = 4 + first.Count;
                         var second = GetMembers(map, next);
-                        for (int j = 0; j < size; j++)
+                        for (var j = 0; j < size; j++)
                         {
                             sb.AppendFormat("{0}[{1}]\r\n", (new string('\t', level + 2)), j);
                             sb.AppendFormat("{0}{1} {2}\r\n", (new string('\t', level + 2)), "pair", "data");
-                            int tmp1 = 0;
-                            int tmp2 = 0;
+                            var tmp1 = 0;
+                            var tmp2 = 0;
                             ReadStringValue(sb, first, reader, ref tmp1);
                             ReadStringValue(sb, second, reader, ref tmp2);
                         }
@@ -128,10 +128,10 @@ namespace AssetStudio
                             sb.AppendFormat("{0}{1} {2} = {3}\r\n", (new string('\t', level + 1)), "int", "size", size);
                             var vector = GetMembers(members, i);
                             i += vector.Count - 1;
-                            for (int j = 0; j < size; j++)
+                            for (var j = 0; j < size; j++)
                             {
                                 sb.AppendFormat("{0}[{1}]\r\n", (new string('\t', level + 2)), j);
-                                int tmp = 3;
+                                var tmp = 3;
                                 ReadStringValue(sb, vector, reader, ref tmp);
                             }
                             break;
@@ -142,7 +142,7 @@ namespace AssetStudio
                             sb.AppendFormat("{0}{1} {2}\r\n", (new string('\t', level)), varTypeStr, varNameStr);
                             var @class = GetMembers(members, i);
                             i += @class.Count - 1;
-                            for (int j = 1; j < @class.Count; j++)
+                            for (var j = 1; j < @class.Count; j++)
                             {
                                 ReadStringValue(sb, @class, reader, ref j);
                             }
@@ -160,7 +160,7 @@ namespace AssetStudio
         {
             reader.Reset();
             var obj = new OrderedDictionary();
-            for (int i = 1; i < members.Count; i++)
+            for (var i = 1; i < members.Count; i++)
             {
                 var member = members[i];
                 var varNameStr = member.m_Name;
@@ -239,10 +239,10 @@ namespace AssetStudio
                         var second = GetMembers(map, next);
                         var size = reader.ReadInt32();
                         var dic = new List<KeyValuePair<object, object>>(size);
-                        for (int j = 0; j < size; j++)
+                        for (var j = 0; j < size; j++)
                         {
-                            int tmp1 = 0;
-                            int tmp2 = 0;
+                            var tmp1 = 0;
+                            var tmp2 = 0;
                             dic.Add(new KeyValuePair<object, object>(ReadValue(first, reader, ref tmp1), ReadValue(second, reader, ref tmp2)));
                         }
                         value = dic;
@@ -265,9 +265,9 @@ namespace AssetStudio
                             i += vector.Count - 1;
                             var size = reader.ReadInt32();
                             var list = new List<object>(size);
-                            for (int j = 0; j < size; j++)
+                            for (var j = 0; j < size; j++)
                             {
-                                int tmp = 3;
+                                var tmp = 3;
                                 list.Add(ReadValue(vector, reader, ref tmp));
                             }
                             value = list;
@@ -278,7 +278,7 @@ namespace AssetStudio
                             var @class = GetMembers(members, i);
                             i += @class.Count - 1;
                             var obj = new OrderedDictionary();
-                            for (int j = 1; j < @class.Count; j++)
+                            for (var j = 1; j < @class.Count; j++)
                             {
                                 var classmember = @class[j];
                                 var name = classmember.m_Name;
@@ -299,7 +299,7 @@ namespace AssetStudio
             var member2 = new List<TypeTreeNode>();
             member2.Add(members[index]);
             var level = members[index].m_Level;
-            for (int i = index + 1; i < members.Count; i++)
+            for (var i = index + 1; i < members.Count; i++)
             {
                 var member = members[i];
                 var level2 = member.m_Level;

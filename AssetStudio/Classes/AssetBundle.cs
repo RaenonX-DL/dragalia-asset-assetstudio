@@ -28,14 +28,14 @@ namespace AssetStudio
         {
             var m_PreloadTableSize = reader.ReadInt32();
             m_PreloadTable = new PPtr<Object>[m_PreloadTableSize];
-            for (int i = 0; i < m_PreloadTableSize; i++)
+            for (var i = 0; i < m_PreloadTableSize; i++)
             {
                 m_PreloadTable[i] = new PPtr<Object>(reader);
             }
 
             var m_ContainerSize = reader.ReadInt32();
             m_Container = new KeyValuePair<string, AssetInfo>[m_ContainerSize];
-            for (int i = 0; i < m_ContainerSize; i++)
+            for (var i = 0; i < m_ContainerSize; i++)
             {
                 m_Container[i] = new KeyValuePair<string, AssetInfo>(reader.ReadAlignedString(), new AssetInfo(reader));
             }

@@ -203,14 +203,14 @@ namespace Lz4
             goto copyLiteral;
 
             copyLiteral:
-            int nReadLit = litLen < nToRead ? litLen : nToRead;
+            var nReadLit = litLen < nToRead ? litLen : nToRead;
             if (nReadLit != 0)
             {
                 if (inBufPos + nReadLit <= inBufEnd)
                 {
-                    int ofs = offset;
+                    var ofs = offset;
 
-                    for (int c = nReadLit; c-- != 0;)
+                    for (var c = nReadLit; c-- != 0;)
                         buffer[ofs++] = decBuf[inBufPos++];
 
                     nRead = nReadLit;
@@ -309,22 +309,22 @@ namespace Lz4
             goto copyMatch;
 
             copyMatch:
-            int nCpyMat = matLen < nToRead ? matLen : nToRead;
+            var nCpyMat = matLen < nToRead ? matLen : nToRead;
             if (nCpyMat != 0)
             {
                 nRead = count - nToRead;
 
-                int bufDst = matDst - nRead;
+                var bufDst = matDst - nRead;
                 if (bufDst > 0)
                 {
                     //offset is fairly far back, we need to pull from the buffer
 
-                    int bufSrc = decodeBufferPos - bufDst;
+                    var bufSrc = decodeBufferPos - bufDst;
                     if (bufSrc < 0)
                         bufSrc += DecBufLen;
-                    int bufCnt = bufDst < nCpyMat ? bufDst : nCpyMat;
+                    var bufCnt = bufDst < nCpyMat ? bufDst : nCpyMat;
 
-                    for (int c = bufCnt; c-- != 0;)
+                    for (var c = bufCnt; c-- != 0;)
                         buffer[offset++] = decBuf[bufSrc++ & DecBufMask];
                 }
                 else
@@ -332,8 +332,8 @@ namespace Lz4
                     bufDst = 0;
                 }
 
-                int sOfs = offset - matDst;
-                for (int i = bufDst; i < nCpyMat; i++)
+                var sOfs = offset - matDst;
+                for (var i = bufDst; i < nCpyMat; i++)
                     buffer[offset++] = buffer[sOfs++];
 
                 nToRead -= nCpyMat;
@@ -349,8 +349,8 @@ namespace Lz4
             finish:
             nRead = count - nToRead;
 
-            int nToBuf = nRead < DecBufLen ? nRead : DecBufLen;
-            int repPos = offset - nToBuf;
+            var nToBuf = nRead < DecBufLen ? nRead : DecBufLen;
+            var repPos = offset - nToBuf;
 
             if (nToBuf == DecBufLen)
             {
@@ -359,7 +359,7 @@ namespace Lz4
             }
             else
             {
-                int decPos = decodeBufferPos;
+                var decPos = decodeBufferPos;
 
                 while (nToBuf-- != 0)
                     decBuf[decPos++ & DecBufMask] = buffer[repPos++];
@@ -380,7 +380,7 @@ namespace Lz4
 
             if (inBufPos == inBufEnd)
             {
-                int nRead = input.Read(buf, DecBufLen,
+                var nRead = input.Read(buf, DecBufLen,
                     InBufLen < inputLength ? InBufLen : (int)inputLength);
 
 #if CHECK_EOF
@@ -403,7 +403,7 @@ namespace Lz4
 
             if (inBufPos == inBufEnd)
             {
-                int nRead = input.Read(buf, DecBufLen,
+                var nRead = input.Read(buf, DecBufLen,
                     InBufLen < inputLength ? InBufLen : (int)inputLength);
 
 #if CHECK_EOF
@@ -421,7 +421,7 @@ namespace Lz4
             {
                 buf[DecBufLen] = buf[inBufPos];
 
-                int nRead = input.Read(buf, DecBufLen + 1,
+                var nRead = input.Read(buf, DecBufLen + 1,
                     InBufLen - 1 < inputLength ? InBufLen - 1 : (int)inputLength);
 
 #if CHECK_EOF
@@ -440,7 +440,7 @@ namespace Lz4
                 inBufEnd = DecBufLen + nRead + 1;
             }
 
-            int ret = (buf[inBufPos + 1] << 8) | buf[inBufPos];
+            var ret = (buf[inBufPos + 1] << 8) | buf[inBufPos];
             inBufPos += 2;
 
             return ret;
@@ -448,17 +448,17 @@ namespace Lz4
 
         private int ReadCore(byte[] buffer, int offset, int count)
         {
-            int nToRead = count;
+            var nToRead = count;
 
             var buf = decodeBuffer;
-            int inBufLen = inBufEnd - inBufPos;
+            var inBufLen = inBufEnd - inBufPos;
 
-            int fromBuf = nToRead < inBufLen ? nToRead : inBufLen;
+            var fromBuf = nToRead < inBufLen ? nToRead : inBufLen;
             if (fromBuf != 0)
             {
                 var bufPos = inBufPos;
 
-                for (int c = fromBuf; c-- != 0;)
+                for (var c = fromBuf; c-- != 0;)
                     buffer[offset++] = buf[bufPos++];
 
                 inBufPos = bufPos;
@@ -487,7 +487,7 @@ namespace Lz4
 
                     var bufPos = inBufPos;
 
-                    for (int c = fromBuf; c-- != 0;)
+                    for (var c = fromBuf; c-- != 0;)
                         buffer[offset++] = buf[bufPos++];
 
                     inBufPos = bufPos;

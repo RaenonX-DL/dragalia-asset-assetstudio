@@ -388,7 +388,7 @@ namespace System
         /// </returns>
         public int CompareTo(Half other)
         {
-            int result = 0;
+            var result = 0;
             if (this < other)
             {
                 result = -1;
@@ -424,7 +424,7 @@ namespace System
         /// <exception cref="System.ArgumentException">value is not a System.Half</exception>
         public int CompareTo(object obj)
         {
-            int result = 0;
+            var result = 0;
             if (obj == null)
             {
                 result = 1;
@@ -460,10 +460,10 @@ namespace System
         /// <returns>true if value is a System.Half and equal to this instance; otherwise, false.</returns>
         public override bool Equals(object obj)
         {
-            bool result = false;
+            var result = false;
             if (obj is Half)
             {
-                Half half = (Half)obj;
+                var half = (Half)obj;
                 if ((half == this) || (IsNaN(half) && IsNaN(this)))
                 {
                     result = true;
@@ -759,7 +759,7 @@ namespace System
         /// </exception>
         public static bool TryParse(string value, NumberStyles style, IFormatProvider provider, out Half result)
         {
-            bool parseResult = false;
+            var parseResult = false;
             float f;
             if (float.TryParse(value, style, provider, out f))
             {

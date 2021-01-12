@@ -472,20 +472,20 @@ namespace AssetStudio
         private byte[] DecodeYUY2()
         {
             var buff = new byte[m_Width * m_Height * 4];
-            int p = 0;
-            int o = 0;
-            int halfWidth = m_Width / 2;
-            for (int j = 0; j < m_Height; j++)
+            var p = 0;
+            var o = 0;
+            var halfWidth = m_Width / 2;
+            for (var j = 0; j < m_Height; j++)
             {
-                for (int i = 0; i < halfWidth; ++i)
+                for (var i = 0; i < halfWidth; ++i)
                 {
                     int y0 = image_data[p++];
                     int u0 = image_data[p++];
                     int y1 = image_data[p++];
                     int v0 = image_data[p++];
-                    int c = y0 - 16;
-                    int d = u0 - 128;
-                    int e = v0 - 128;
+                    var c = y0 - 16;
+                    var d = u0 - 128;
+                    var e = v0 - 128;
                     buff[o++] = ClampByte((298 * c + 516 * d + 128) >> 8);            // b
                     buff[o++] = ClampByte((298 * c - 100 * d - 208 * e + 128) >> 8);  // g
                     buff[o++] = ClampByte((298 * c + 409 * e + 128) >> 8);            // r

@@ -119,7 +119,7 @@ namespace Org.Brotli.Dec
 			{
 				return 16;
 			}
-			int n = Org.Brotli.Dec.BitReader.ReadBits(br, 3);
+			var n = Org.Brotli.Dec.BitReader.ReadBits(br, 3);
 			if (n != 0)
 			{
 				return 17 + n;
@@ -142,7 +142,7 @@ namespace Org.Brotli.Dec
 				throw new System.InvalidOperationException("State MUST be uninitialized");
 			}
 			Org.Brotli.Dec.BitReader.Init(state.br, input);
-			int windowBits = DecodeWindowBits(state.br);
+			var windowBits = DecodeWindowBits(state.br);
 			if (windowBits == 9)
 			{
 				/* Reserved case for future expansion. */

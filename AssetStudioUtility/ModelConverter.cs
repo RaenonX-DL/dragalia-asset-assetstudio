@@ -262,7 +262,7 @@ namespace AssetStudio
             iMesh.SubmeshList = new List<ImportedSubmesh>();
             var subHashSet = new HashSet<int>();
             var combine = false;
-            int firstSubMesh = 0;
+            var firstSubMesh = 0;
             if (meshR.m_StaticBatchInfo?.subMeshCount > 0)
             {
                 firstSubMesh = meshR.m_StaticBatchInfo.firstSubMesh;
@@ -285,17 +285,17 @@ namespace AssetStudio
 
             iMesh.hasNormal = mesh.m_Normals?.Length > 0;
             iMesh.hasUV = new bool[8];
-            for (int uv = 0; uv < 8; uv++)
+            for (var uv = 0; uv < 8; uv++)
             {
                 iMesh.hasUV[uv] = mesh.GetUV(uv)?.Length > 0;
             }
             iMesh.hasTangent = mesh.m_Tangents != null && mesh.m_Tangents.Length == mesh.m_VertexCount * 4;
             iMesh.hasColor = mesh.m_Colors?.Length > 0;
 
-            int firstFace = 0;
-            for (int i = 0; i < mesh.m_SubMeshes.Length; i++)
+            var firstFace = 0;
+            for (var i = 0; i < mesh.m_SubMeshes.Length; i++)
             {
-                int numFaces = (int)mesh.m_SubMeshes[i].indexCount / 3;
+                var numFaces = (int)mesh.m_SubMeshes[i].indexCount / 3;
                 if (subHashSet.Count > 0 && !subHashSet.Contains(i))
                 {
                     firstFace += numFaces;
@@ -311,14 +311,14 @@ namespace AssetStudio
                         mat = m_Material;
                     }
                 }
-                ImportedMaterial iMat = ConvertMaterial(mat);
+                var iMat = ConvertMaterial(mat);
                 iSubmesh.Material = iMat.Name;
                 iSubmesh.VertexList = new List<ImportedVertex>((int)submesh.vertexCount);
                 for (var j = mesh.m_SubMeshes[i].firstVertex; j < mesh.m_SubMeshes[i].firstVertex + mesh.m_SubMeshes[i].vertexCount; j++)
                 {
                     var iVertex = new ImportedVertex();
                     //Vertices
-                    int c = 3;
+                    var c = 3;
                     if (mesh.m_Vertices.Length == mesh.m_VertexCount * 4)
                     {
                         c = 4;
@@ -339,7 +339,7 @@ namespace AssetStudio
                     }
                     //UV
                     iVertex.UV = new float[8][];
-                    for (int uv = 0; uv < 8; uv++)
+                    for (var uv = 0; uv < 8; uv++)
                     {
                         if (iMesh.hasUV[uv])
                         {
@@ -389,7 +389,7 @@ namespace AssetStudio
                 //Face
                 iSubmesh.FaceList = new List<ImportedFace>(numFaces);
                 var end = firstFace + numFaces;
-                for (int f = firstFace; f < end; f++)
+                for (var f = firstFace; f < end; f++)
                 {
                     var face = new ImportedFace();
                     face.VertexIndices = new int[3];
@@ -452,7 +452,7 @@ namespace AssetStudio
                 {
                     var boneCount = sMesh.m_Bones.Length;
                     iMesh.BoneList = new List<ImportedBone>(boneCount);
-                    for (int i = 0; i < boneCount; i++)
+                    for (var i = 0; i < boneCount; i++)
                     {
                         var bone = new ImportedBone();
                         if (sMesh.m_Bones[i].TryGet(out var m_Transform))
@@ -468,7 +468,7 @@ namespace AssetStudio
                 {
                     var boneCount = mesh.m_BindPose.Length;
                     iMesh.BoneList = new List<ImportedBone>(boneCount);
-                    for (int i = 0; i < boneCount; i++)
+                    for (var i = 0; i < boneCount; i++)
                     {
                         var bone = new ImportedBone();
                         var boneHash = mesh.m_BoneNameHashes[i];
@@ -487,7 +487,7 @@ namespace AssetStudio
                     MorphList.Add(morph);
                     morph.Path = iMesh.Path;
                     morph.Channels = new List<ImportedMorphChannel>(mesh.m_Shapes.channels.Length);
-                    for (int i = 0; i < mesh.m_Shapes.channels.Length; i++)
+                    for (var i = 0; i < mesh.m_Shapes.channels.Length; i++)
                     {
                         var channel = new ImportedMorphChannel();
                         morph.Channels.Add(channel);
@@ -502,7 +502,7 @@ namespace AssetStudio
                         channel.Name = shapeChannel.name.Split('.').Last();
                         channel.KeyframeList = new List<ImportedMorphKeyframe>(shapeChannel.frameCount);
                         var frameEnd = shapeChannel.frameIndex + shapeChannel.frameCount;
-                        for (int frameIdx = shapeChannel.frameIndex; frameIdx < frameEnd; frameIdx++)
+                        for (var frameIdx = shapeChannel.frameIndex; frameIdx < frameEnd; frameIdx++)
                         {
                             var keyframe = new ImportedMorphKeyframe();
                             channel.KeyframeList.Add(keyframe);
@@ -512,7 +512,7 @@ namespace AssetStudio
                             keyframe.hasTangents = shape.hasTangents;
                             keyframe.VertexList = new List<ImportedMorphVertex>((int)shape.vertexCount);
                             var vertexEnd = shape.firstVertex + shape.vertexCount;
-                            for (uint j = shape.firstVertex; j < vertexEnd; j++)
+                            for (var j = shape.firstVertex; j < vertexEnd; j++)
                             {
                                 var destVertex = new ImportedMorphVertex();
                                 keyframe.VertexList.Add(destVertex);
@@ -676,7 +676,7 @@ namespace AssetStudio
                     var texture = new ImportedMaterialTexture();
                     iMat.Textures.Add(texture);
 
-                    int dest = -1;
+                    var dest = -1;
                     if (texEnv.Key == "_MainTex")
                         dest = 0;
                     else if (texEnv.Key == "_BumpMap")
@@ -694,7 +694,7 @@ namespace AssetStudio
                     }
                     else if (ImportedHelpers.FindTexture(m_Texture2D.m_Name + ".png", TextureList) != null) //已有相同名字的图片
                     {
-                        for (int i = 1; ; i++)
+                        for (var i = 1; ; i++)
                         {
                             var name = m_Texture2D.m_Name + $" ({i}).png";
                             if (ImportedHelpers.FindTexture(name, TextureList) == null)
@@ -754,7 +754,7 @@ namespace AssetStudio
                 var name = animationClip.m_Name;
                 if (AnimationList.Exists(x => x.Name == name))
                 {
-                    for (int i = 1; ; i++)
+                    for (var i = 1; ; i++)
                     {
                         var fixName = name + $"_{i}";
                         if (!AnimationList.Exists(x => x.Name == fixName))
@@ -777,15 +777,15 @@ namespace AssetStudio
                         var numKeys = m_CompressedRotationCurve.m_Times.m_NumItems;
                         var data = m_CompressedRotationCurve.m_Times.UnpackInts();
                         var times = new float[numKeys];
-                        int t = 0;
-                        for (int i = 0; i < numKeys; i++)
+                        var t = 0;
+                        for (var i = 0; i < numKeys; i++)
                         {
                             t += data[i];
                             times[i] = t * 0.01f;
                         }
                         var quats = m_CompressedRotationCurve.m_Values.UnpackQuats();
 
-                        for (int i = 0; i < numKeys; i++)
+                        for (var i = 0; i < numKeys; i++)
                         {
                             var quat = quats[i];
                             var value = Fbx.QuaternionToEuler(new Quaternion(quat.X, -quat.Y, -quat.Z, quat.W));
@@ -833,7 +833,7 @@ namespace AssetStudio
                         if (m_FloatCurve.classID == ClassIDType.SkinnedMeshRenderer) //BlendShape
                         {
                             var channelName = m_FloatCurve.attribute;
-                            int dotPos = channelName.IndexOf('.');
+                            var dotPos = channelName.IndexOf('.');
                             if (dotPos >= 0)
                             {
                                 channelName = channelName.Substring(dotPos + 1);
@@ -859,22 +859,22 @@ namespace AssetStudio
                     var m_Clip = animationClip.m_MuscleClip.m_Clip;
                     var streamedFrames = m_Clip.m_StreamedClip.ReadData();
                     var m_ClipBindingConstant = animationClip.m_ClipBindingConstant;
-                    for (int frameIndex = 1; frameIndex < streamedFrames.Count - 1; frameIndex++)
+                    for (var frameIndex = 1; frameIndex < streamedFrames.Count - 1; frameIndex++)
                     {
                         var frame = streamedFrames[frameIndex];
                         var streamedValues = frame.keyList.Select(x => x.value).ToArray();
-                        for (int curveIndex = 0; curveIndex < frame.keyList.Length;)
+                        for (var curveIndex = 0; curveIndex < frame.keyList.Length;)
                         {
                             ReadCurveData(iAnim, m_ClipBindingConstant, frame.keyList[curveIndex].index, frame.time, streamedValues, 0, ref curveIndex);
                         }
                     }
                     var m_DenseClip = m_Clip.m_DenseClip;
                     var streamCount = m_Clip.m_StreamedClip.curveCount;
-                    for (int frameIndex = 0; frameIndex < m_DenseClip.m_FrameCount; frameIndex++)
+                    for (var frameIndex = 0; frameIndex < m_DenseClip.m_FrameCount; frameIndex++)
                     {
                         var time = m_DenseClip.m_BeginTime + frameIndex / m_DenseClip.m_SampleRate;
                         var frameOffset = frameIndex * m_DenseClip.m_CurveCount;
-                        for (int curveIndex = 0; curveIndex < m_DenseClip.m_CurveCount;)
+                        for (var curveIndex = 0; curveIndex < m_DenseClip.m_CurveCount;)
                         {
                             var index = streamCount + curveIndex;
                             ReadCurveData(iAnim, m_ClipBindingConstant, (int)index, time, m_DenseClip.m_SampleArray, (int)frameOffset, ref curveIndex);
@@ -885,9 +885,9 @@ namespace AssetStudio
                         var m_ConstantClip = m_Clip.m_ConstantClip;
                         var denseCount = m_Clip.m_DenseClip.m_CurveCount;
                         var time2 = 0.0f;
-                        for (int i = 0; i < 2; i++)
+                        for (var i = 0; i < 2; i++)
                         {
-                            for (int curveIndex = 0; curveIndex < m_ConstantClip.data.Length;)
+                            for (var curveIndex = 0; curveIndex < m_ConstantClip.data.Length;)
                             {
                                 var index = streamCount + denseCount + curveIndex;
                                 ReadCurveData(iAnim, m_ClipBindingConstant, (int)index, time2, m_ConstantClip.data, 0, ref curveIndex);
@@ -910,7 +910,7 @@ namespace AssetStudio
                     curveIndex++;
                     return;
                 }
-                int dotPos = channelName.IndexOf('.');
+                var dotPos = channelName.IndexOf('.');
                 if (dotPos >= 0)
                 {
                     channelName = channelName.Substring(dotPos + 1);

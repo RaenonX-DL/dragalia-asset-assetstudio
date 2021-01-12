@@ -86,7 +86,7 @@ namespace AssetStudio
             var numberOfLevelsToDownloadBeforeStreaming = reader.ReadUInt32();
             var levelCount = reader.ReadInt32();
             m_BlocksInfo = new StorageBlock[1];
-            for (int i = 0; i < levelCount; i++)
+            for (var i = 0; i < levelCount; i++)
             {
                 var storageBlock = new StorageBlock()
                 {
@@ -148,7 +148,7 @@ namespace AssetStudio
             var blocksReader = new EndianBinaryReader(blocksStream);
             var nodesCount = blocksReader.ReadInt32();
             m_DirectoryInfo = new Node[nodesCount];
-            for (int i = 0; i < nodesCount; i++)
+            for (var i = 0; i < nodesCount; i++)
             {
                 m_DirectoryInfo[i] = new Node
                 {
@@ -162,7 +162,7 @@ namespace AssetStudio
         public void ReadFiles(Stream blocksStream, string path)
         {
             fileList = new StreamFile[m_DirectoryInfo.Length];
-            for (int i = 0; i < m_DirectoryInfo.Length; i++)
+            for (var i = 0; i < m_DirectoryInfo.Length; i++)
             {
                 var node = m_DirectoryInfo[i];
                 var file = new StreamFile();
@@ -247,7 +247,7 @@ namespace AssetStudio
                 var uncompressedDataHash = blocksInfoReader.ReadBytes(16);
                 var blocksInfoCount = blocksInfoReader.ReadInt32();
                 m_BlocksInfo = new StorageBlock[blocksInfoCount];
-                for (int i = 0; i < blocksInfoCount; i++)
+                for (var i = 0; i < blocksInfoCount; i++)
                 {
                     m_BlocksInfo[i] = new StorageBlock
                     {
@@ -259,7 +259,7 @@ namespace AssetStudio
 
                 var nodesCount = blocksInfoReader.ReadInt32();
                 m_DirectoryInfo = new Node[nodesCount];
-                for (int i = 0; i < nodesCount; i++)
+                for (var i = 0; i < nodesCount; i++)
                 {
                     m_DirectoryInfo[i] = new Node
                     {

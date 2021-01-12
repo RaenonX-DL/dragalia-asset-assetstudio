@@ -217,18 +217,18 @@ namespace AssetStudio
 
         public static Matrix4x4 Rotate(Quaternion q)
         {
-            float x = q.X * 2.0F;
-            float y = q.Y * 2.0F;
-            float z = q.Z * 2.0F;
-            float xx = q.X * x;
-            float yy = q.Y * y;
-            float zz = q.Z * z;
-            float xy = q.X * y;
-            float xz = q.X * z;
-            float yz = q.Y * z;
-            float wx = q.W * x;
-            float wy = q.W * y;
-            float wz = q.W * z;
+            var x = q.X * 2.0F;
+            var y = q.Y * 2.0F;
+            var z = q.Z * 2.0F;
+            var xx = q.X * x;
+            var yy = q.Y * y;
+            var zz = q.Z * z;
+            var xy = q.X * y;
+            var xz = q.X * z;
+            var yz = q.Y * z;
+            var wx = q.W * x;
+            var wy = q.W * y;
+            var wz = q.W * z;
 
             Matrix4x4 m;
             m.M00 = 1.0f - (yy + zz); m.M10 = xy + wz; m.M20 = xz - wy; m.M30 = 0.0F;

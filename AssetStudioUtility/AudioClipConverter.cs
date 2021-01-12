@@ -33,10 +33,10 @@ namespace AssetStudio
             result = sound.getSubSound(0, out var subsound);
             if (result != FMOD.RESULT.OK)
                 return null;
-            result = subsound.getFormat(out var type, out var format, out int channels, out int bits);
+            result = subsound.getFormat(out var type, out var format, out var channels, out var bits);
             if (result != FMOD.RESULT.OK)
                 return null;
-            result = subsound.getDefaults(out var frequency, out int priority);
+            result = subsound.getDefaults(out var frequency, out var priority);
             if (result != FMOD.RESULT.OK)
                 return null;
             var sampleRate = (int)frequency;
@@ -46,7 +46,7 @@ namespace AssetStudio
             result = subsound.@lock(0, length, out var ptr1, out var ptr2, out var len1, out var len2);
             if (result != FMOD.RESULT.OK)
                 return null;
-            byte[] buffer = new byte[len1 + 44];
+            var buffer = new byte[len1 + 44];
             //添加wav头
             Encoding.UTF8.GetBytes("RIFF").CopyTo(buffer, 0);
             BitConverter.GetBytes(len1 + 36).CopyTo(buffer, 4);

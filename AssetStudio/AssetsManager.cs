@@ -241,7 +241,7 @@ namespace AssetStudio
             Logger.Info("Read assets...");
 
             var progressCount = assetsFileList.Sum(x => x.m_Objects.Count);
-            int i = 0;
+            var i = 0;
             Progress.Reset();
             foreach (var assetsFile in assetsFileList)
             {

@@ -25,10 +25,10 @@ namespace Org.Brotli.Dec
 		/// <param name="length">number of bytes to change</param>
 		internal static void FillWithZeroes(byte[] dest, int offset, int length)
 		{
-			int cursor = 0;
+			var cursor = 0;
 			while (cursor < length)
 			{
-				int step = System.Math.Min(cursor + 1024, length) - cursor;
+				var step = System.Math.Min(cursor + 1024, length) - cursor;
 				System.Array.Copy(ByteZeroes, 0, dest, offset + cursor, step);
 				cursor += step;
 			}
@@ -47,10 +47,10 @@ namespace Org.Brotli.Dec
 		/// <param name="length">number of item to change</param>
 		internal static void FillWithZeroes(int[] dest, int offset, int length)
 		{
-			int cursor = 0;
+			var cursor = 0;
 			while (cursor < length)
 			{
-				int step = System.Math.Min(cursor + 1024, length) - cursor;
+				var step = System.Math.Min(cursor + 1024, length) - cursor;
 				System.Array.Copy(IntZeroes, 0, dest, offset + cursor, step);
 				cursor += step;
 			}

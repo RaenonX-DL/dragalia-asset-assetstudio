@@ -21,19 +21,19 @@ namespace AssetStudio
             //bool AndroidFilterTouchesWhenObscured 2017.2 and up
             //bool AndroidEnableSustainedPerformanceMode 2018 and up
             reader.AlignStream();
-            int defaultScreenOrientation = reader.ReadInt32();
-            int targetDevice = reader.ReadInt32();
+            var defaultScreenOrientation = reader.ReadInt32();
+            var targetDevice = reader.ReadInt32();
             if (version[0] < 5 || (version[0] == 5 && version[1] < 3)) //5.3 down
             {
                 if (version[0] < 5) //5.0 down
                 {
-                    int targetPlatform = reader.ReadInt32(); //4.0 and up targetGlesGraphics
+                    var targetPlatform = reader.ReadInt32(); //4.0 and up targetGlesGraphics
                     if (version[0] > 4 || (version[0] == 4 && version[1] >= 6)) //4.6 and up
                     {
                         var targetIOSGraphics = reader.ReadInt32();
                     }
                 }
-                int targetResolution = reader.ReadInt32();
+                var targetResolution = reader.ReadInt32();
             }
             else
             {

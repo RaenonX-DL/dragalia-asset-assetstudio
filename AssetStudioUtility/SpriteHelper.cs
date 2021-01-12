@@ -134,7 +134,7 @@ namespace AssetStudio
                 var vertices = m_RD.vertices.Select(x => (Vector2)x.pos).ToArray();
                 var triangleCount = m_RD.indices.Length / 3;
                 var triangles = new Vector2[triangleCount][];
-                for (int i = 0; i < triangleCount; i++)
+                for (var i = 0; i < triangleCount; i++)
                 {
                     var first = m_RD.indices[i * 3];
                     var second = m_RD.indices[i * 3 + 1];
@@ -161,7 +161,7 @@ namespace AssetStudio
                     vertexReader.BaseStream.Position = m_Stream.offset + subMesh.firstVertex * m_Stream.stride + m_Channel.offset;
 
                     var vertices = new Vector2[subMesh.vertexCount];
-                    for (int v = 0; v < subMesh.vertexCount; v++)
+                    for (var v = 0; v < subMesh.vertexCount; v++)
                     {
                         vertices[v] = vertexReader.ReadVector3();
                         vertexReader.BaseStream.Position += m_Stream.stride - 12;
@@ -170,7 +170,7 @@ namespace AssetStudio
                     indexReader.BaseStream.Position = subMesh.firstByte;
 
                     var triangleCount = subMesh.indexCount / 3u;
-                    for (int i = 0; i < triangleCount; i++)
+                    for (var i = 0; i < triangleCount; i++)
                     {
                         var first = indexReader.ReadUInt16() - subMesh.firstVertex;
                         var second = indexReader.ReadUInt16() - subMesh.firstVertex;

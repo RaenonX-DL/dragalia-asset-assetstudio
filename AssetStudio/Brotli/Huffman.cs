@@ -23,7 +23,7 @@ namespace Org.Brotli.Dec
 		/// </remarks>
 		private static int GetNextKey(int key, int len)
 		{
-			int step = 1 << (len - 1);
+			var step = 1 << (len - 1);
 			while ((key & step) != 0)
 			{
 				step >>= 1;
@@ -54,7 +54,7 @@ namespace Org.Brotli.Dec
 		/// <returns>table width of the next 2nd level table.</returns>
 		private static int NextTableBitSize(int[] count, int len, int rootBits)
 		{
-			int left = 1 << (len - rootBits);
+			var left = 1 << (len - rootBits);
 			while (len < MaxLength)
 			{
 				left -= count[len];
@@ -73,12 +73,12 @@ namespace Org.Brotli.Dec
 		{
 			int key;
 			// Reversed prefix code.
-			int[] sorted = new int[codeLengthsSize];
+			var sorted = new int[codeLengthsSize];
 			// Symbols sorted by code length.
 			// TODO: fill with zeroes?
-			int[] count = new int[MaxLength + 1];
+			var count = new int[MaxLength + 1];
 			// Number of codes of each length.
-			int[] offset = new int[MaxLength + 1];
+			var offset = new int[MaxLength + 1];
 			// Offsets in sorted table for each length.
 			int symbol;
 			// Build histogram of code lengths.
@@ -88,7 +88,7 @@ namespace Org.Brotli.Dec
 			}
 			// Generate offsets into sorted symbol table by code length.
 			offset[1] = 0;
-			for (int len = 1; len < MaxLength; len++)
+			for (var len = 1; len < MaxLength; len++)
 			{
 				offset[len + 1] = offset[len] + count[len];
 			}
@@ -100,9 +100,9 @@ namespace Org.Brotli.Dec
 					sorted[offset[codeLengths[symbol]]++] = symbol;
 				}
 			}
-			int tableBits = rootBits;
-			int tableSize = 1 << tableBits;
-			int totalSize = tableSize;
+			var tableBits = rootBits;
+			var tableSize = 1 << tableBits;
+			var totalSize = tableSize;
 			// Special case code with only one value.
 			if (offset[MaxLength] == 1)
 			{
@@ -124,9 +124,9 @@ namespace Org.Brotli.Dec
 				}
 			}
 			// Fill in 2nd level tables and add pointers to root table.
-			int mask = totalSize - 1;
-			int low = -1;
-			int currentOffset = tableOffset;
+			var mask = totalSize - 1;
+			var low = -1;
+			var currentOffset = tableOffset;
 			for (int len = rootBits + 1, step = 2; len <= MaxLength; len++, step <<= 1)
 			{
 				for (; count[len] > 0; count[len]--)

@@ -42,9 +42,9 @@ namespace AssetStudio
 
         public SkeletonMask(ObjectReader reader)
         {
-            int numElements = reader.ReadInt32();
+            var numElements = reader.ReadInt32();
             m_Data = new SkeletonMaskElement[numElements];
-            for (int i = 0; i < numElements; i++)
+            for (var i = 0; i < numElements; i++)
             {
                 m_Data[i] = new SkeletonMaskElement(reader);
             }
@@ -123,9 +123,9 @@ namespace AssetStudio
         {
             var version = reader.version;
 
-            int numConditions = reader.ReadInt32();
+            var numConditions = reader.ReadInt32();
             m_ConditionConstantArray = new ConditionConstant[numConditions];
-            for (int i = 0; i < numConditions; i++)
+            for (var i = 0; i < numConditions; i++)
             {
                 m_ConditionConstantArray[i] = new ConditionConstant(reader);
             }
@@ -200,9 +200,9 @@ namespace AssetStudio
             m_ChildPairVectorArray = reader.ReadVector2Array();
             m_ChildPairAvgMagInvArray = reader.ReadSingleArray();
 
-            int numNeighbours = reader.ReadInt32();
+            var numNeighbours = reader.ReadInt32();
             m_ChildNeighborListArray = new MotionNeighborList[numNeighbours];
-            for (int i = 0; i < numNeighbours; i++)
+            for (var i = 0; i < numNeighbours; i++)
             {
                 m_ChildNeighborListArray[i] = new MotionNeighborList(reader);
             }
@@ -306,9 +306,9 @@ namespace AssetStudio
         {
             var version = reader.version;
 
-            int numNodes = reader.ReadInt32();
+            var numNodes = reader.ReadInt32();
             m_NodeArray = new BlendTreeNodeConstant[numNodes];
-            for (int i = 0; i < numNodes; i++)
+            for (var i = 0; i < numNodes; i++)
             {
                 m_NodeArray[i] = new BlendTreeNodeConstant(reader);
             }
@@ -345,9 +345,9 @@ namespace AssetStudio
         {
             var version = reader.version;
 
-            int numTransistions = reader.ReadInt32();
+            var numTransistions = reader.ReadInt32();
             m_TransitionConstantArray = new TransitionConstant[numTransistions];
-            for (int i = 0; i < numTransistions; i++)
+            for (var i = 0; i < numTransistions; i++)
             {
                 m_TransitionConstantArray[i] = new TransitionConstant(reader);
             }
@@ -356,17 +356,17 @@ namespace AssetStudio
 
             if (version[0] < 5 || (version[0] == 5 && version[1] < 2)) //5.2 down
             {
-                int numInfos = reader.ReadInt32();
+                var numInfos = reader.ReadInt32();
                 m_LeafInfoArray = new LeafInfoConstant[numInfos];
-                for (int i = 0; i < numInfos; i++)
+                for (var i = 0; i < numInfos; i++)
                 {
                     m_LeafInfoArray[i] = new LeafInfoConstant(reader);
                 }
             }
 
-            int numBlends = reader.ReadInt32();
+            var numBlends = reader.ReadInt32();
             m_BlendTreeConstantArray = new BlendTreeConstant[numBlends];
-            for (int i = 0; i < numBlends; i++)
+            for (var i = 0; i < numBlends; i++)
             {
                 m_BlendTreeConstantArray[i] = new BlendTreeConstant(reader);
             }
@@ -424,9 +424,9 @@ namespace AssetStudio
         {
             m_Destination = reader.ReadUInt32();
 
-            int numConditions = reader.ReadInt32();
+            var numConditions = reader.ReadInt32();
             m_ConditionConstantArray = new ConditionConstant[numConditions];
-            for (int i = 0; i < numConditions; i++)
+            for (var i = 0; i < numConditions; i++)
             {
                 m_ConditionConstantArray[i] = new ConditionConstant(reader);
             }
@@ -441,9 +441,9 @@ namespace AssetStudio
 
         public SelectorStateConstant(ObjectReader reader)
         {
-            int numTransitions = reader.ReadInt32();
+            var numTransitions = reader.ReadInt32();
             m_TransitionConstantArray = new SelectorTransitionConstant[numTransitions];
-            for (int i = 0; i < numTransitions; i++)
+            for (var i = 0; i < numTransitions; i++)
             {
                 m_TransitionConstantArray[i] = new SelectorTransitionConstant(reader);
             }
@@ -466,25 +466,25 @@ namespace AssetStudio
         {
             var version = reader.version;
 
-            int numStates = reader.ReadInt32();
+            var numStates = reader.ReadInt32();
             m_StateConstantArray = new StateConstant[numStates];
-            for (int i = 0; i < numStates; i++)
+            for (var i = 0; i < numStates; i++)
             {
                 m_StateConstantArray[i] = new StateConstant(reader);
             }
 
-            int numAnyStates = reader.ReadInt32();
+            var numAnyStates = reader.ReadInt32();
             m_AnyStateTransitionConstantArray = new TransitionConstant[numAnyStates];
-            for (int i = 0; i < numAnyStates; i++)
+            for (var i = 0; i < numAnyStates; i++)
             {
                 m_AnyStateTransitionConstantArray[i] = new TransitionConstant(reader);
             }
 
             if (version[0] >= 5) //5.0 and up
             {
-                int numSelectors = reader.ReadInt32();
+                var numSelectors = reader.ReadInt32();
                 m_SelectorStateConstantArray = new SelectorStateConstant[numSelectors];
-                for (int i = 0; i < numSelectors; i++)
+                for (var i = 0; i < numSelectors; i++)
                 {
                     m_SelectorStateConstantArray[i] = new SelectorStateConstant(reader);
                 }
@@ -523,18 +523,18 @@ namespace AssetStudio
             }
             else
             {
-                int numPosValues = reader.ReadInt32();
+                var numPosValues = reader.ReadInt32();
                 m_PositionValues = new Vector3[numPosValues];
-                for (int i = 0; i < numPosValues; i++)
+                for (var i = 0; i < numPosValues; i++)
                 {
                     m_PositionValues[i] = version[0] > 5 || (version[0] == 5 && version[1] >= 4) ? reader.ReadVector3() : (Vector3)reader.ReadVector4(); //5.4 and up
                 }
 
                 m_QuaternionValues = reader.ReadVector4Array();
 
-                int numScaleValues = reader.ReadInt32();
+                var numScaleValues = reader.ReadInt32();
                 m_ScaleValues = new Vector3[numScaleValues];
-                for (int i = 0; i < numScaleValues; i++)
+                for (var i = 0; i < numScaleValues; i++)
                 {
                     m_ScaleValues[i] = version[0] > 5 || (version[0] == 5 && version[1] >= 4) ? reader.ReadVector3() : (Vector3)reader.ReadVector4(); //5.4 and up
                 }
@@ -559,16 +559,16 @@ namespace AssetStudio
 
         public ControllerConstant(ObjectReader reader)
         {
-            int numLayers = reader.ReadInt32();
+            var numLayers = reader.ReadInt32();
             m_LayerArray = new LayerConstant[numLayers];
-            for (int i = 0; i < numLayers; i++)
+            for (var i = 0; i < numLayers; i++)
             {
                 m_LayerArray[i] = new LayerConstant(reader);
             }
 
-            int numStates = reader.ReadInt32();
+            var numStates = reader.ReadInt32();
             m_StateMachineArray = new StateMachineConstant[numStates];
-            for (int i = 0; i < numStates; i++)
+            for (var i = 0; i < numStates; i++)
             {
                 m_StateMachineArray[i] = new StateMachineConstant(reader);
             }
@@ -587,16 +587,16 @@ namespace AssetStudio
             var m_ControllerSize = reader.ReadUInt32();
             var m_Controller = new ControllerConstant(reader);
 
-            int tosSize = reader.ReadInt32();
+            var tosSize = reader.ReadInt32();
             var m_TOS = new KeyValuePair<uint, string>[tosSize];
-            for (int i = 0; i < tosSize; i++)
+            for (var i = 0; i < tosSize; i++)
             {
                 m_TOS[i] = new KeyValuePair<uint, string>(reader.ReadUInt32(), reader.ReadAlignedString());
             }
 
-            int numClips = reader.ReadInt32();
+            var numClips = reader.ReadInt32();
             m_AnimationClips = new PPtr<AnimationClip>[numClips];
-            for (int i = 0; i < numClips; i++)
+            for (var i = 0; i < numClips; i++)
             {
                 m_AnimationClips[i] = new PPtr<AnimationClip>(reader);
             }

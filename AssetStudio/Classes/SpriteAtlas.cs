@@ -40,7 +40,7 @@ namespace AssetStudio
         {
             var m_PackedSpritesSize = reader.ReadInt32();
             m_PackedSprites = new PPtr<Sprite>[m_PackedSpritesSize];
-            for (int i = 0; i < m_PackedSpritesSize; i++)
+            for (var i = 0; i < m_PackedSpritesSize; i++)
             {
                 m_PackedSprites[i] = new PPtr<Sprite>(reader);
             }
@@ -49,7 +49,7 @@ namespace AssetStudio
 
             var m_RenderDataMapSize = reader.ReadInt32();
             m_RenderDataMap = new Dictionary<KeyValuePair<Guid, long>, SpriteAtlasData>(m_RenderDataMapSize);
-            for (int i = 0; i < m_RenderDataMapSize; i++)
+            for (var i = 0; i < m_RenderDataMapSize; i++)
             {
                 var first = new Guid(reader.ReadBytes(16));
                 var second = reader.ReadInt64();

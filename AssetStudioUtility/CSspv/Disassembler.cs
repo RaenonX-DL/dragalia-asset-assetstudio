@@ -46,22 +46,22 @@ namespace SpirV
 			m_sb.Append("; Bound: ").Append(module.Header.Bound).AppendLine();
 			m_sb.Append("; Schema: ").Append(module.Header.Reserved).AppendLine();
 
-			string[] lines = new string[module.Instructions.Count + 1];
+			var lines = new string[module.Instructions.Count + 1];
 			lines[0] = m_sb.ToString();
 			m_sb.Clear();
 
-			for (int i = 0; i < module.Instructions.Count; i++)
+			for (var i = 0; i < module.Instructions.Count; i++)
 			{
-				ParsedInstruction instruction = module.Instructions[i];
+				var instruction = module.Instructions[i];
 				PrintInstruction(m_sb, instruction, options);
 				lines[i + 1] = m_sb.ToString();
 				m_sb.Clear();
 			}
 
-			int longestPrefix = 0;
-			for (int i = 0; i < lines.Length; i++)
+			var longestPrefix = 0;
+			for (var i = 0; i < lines.Length; i++)
 			{
-				string line = lines[i];
+				var line = lines[i];
 				longestPrefix = Math.Max(longestPrefix, line.IndexOf('='));
 				if (longestPrefix > 50)
 				{
@@ -71,10 +71,10 @@ namespace SpirV
 			}
 
 			m_sb.Append(lines[0]);
-			for (int i = 1; i < lines.Length; i++)
+			for (var i = 1; i < lines.Length; i++)
 			{
-				string line = lines[i];
-				int index = line.IndexOf('=');
+				var line = lines[i];
+				var index = line.IndexOf('=');
 				if (index == -1)
 				{
 					m_sb.Append(' ', longestPrefix + 4);
@@ -82,7 +82,7 @@ namespace SpirV
 				}
 				else
 				{
-					int pad = Math.Max(0, longestPrefix - index);
+					var pad = Math.Max(0, longestPrefix - index);
 					m_sb.Append(' ', pad);
 					m_sb.Append(line, 0, index);
 					m_sb.Append('=');
@@ -91,7 +91,7 @@ namespace SpirV
 				m_sb.AppendLine();
 			}
 
-			string result = m_sb.ToString();
+			var result = m_sb.ToString();
 			m_sb.Clear();
 			return result;
 		}
@@ -104,7 +104,7 @@ namespace SpirV
 				return;
 			}
 
-			int currentOperand = 0;
+			var currentOperand = 0;
 			if (instruction.Instruction.Operands[currentOperand].Type is IdResultType)
 			{
 				if (options.HasFlag(DisassemblyOptions.ShowTypes))
@@ -188,14 +188,14 @@ namespace SpirV
 
 		private static void PrintBitEnumValue(StringBuilder sb, IBitEnumOperandValue enumOperandValue, DisassemblyOptions options)
 		{
-			foreach (uint key in enumOperandValue.Values.Keys)
+			foreach (var key in enumOperandValue.Values.Keys)
 			{
 				sb.Append(enumOperandValue.EnumerationType.GetEnumName(key));
-				IReadOnlyList<object> value = enumOperandValue.Values[key];
+				var value = enumOperandValue.Values[key];
 				if (value.Count != 0)
 				{
 					sb.Append(' ');
-					foreach (object v in value)
+					foreach (var v in value)
 					{
 						PrintOperandValue(sb, v, options);
 					}
@@ -209,7 +209,7 @@ namespace SpirV
 			if (valueOperandValue.Value is IList<object> valueList && valueList.Count > 0)
 			{
 				sb.Append(' ');
-				foreach (object v in valueList)
+				foreach (var v in valueList)
 				{
 					PrintOperandValue(sb, v, options);
 				}

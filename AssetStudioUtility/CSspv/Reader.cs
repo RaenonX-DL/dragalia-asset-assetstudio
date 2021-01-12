@@ -9,7 +9,7 @@ namespace SpirV
 		public Reader(BinaryReader reader)
 		{
 			reader_ = reader;
-			uint magicNumber = reader_.ReadUInt32();
+			var magicNumber = reader_.ReadUInt32();
 			if (magicNumber == Meta.MagicNumber)
 			{
 				littleEndian_ = true;

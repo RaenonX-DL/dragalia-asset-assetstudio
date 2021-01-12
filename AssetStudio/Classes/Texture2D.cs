@@ -42,8 +42,8 @@ namespace AssetStudio
             if (version[0] >= 2017)//2017.x and up
             {
                 m_WrapMode = reader.ReadInt32(); //m_WrapU
-                int m_WrapV = reader.ReadInt32();
-                int m_WrapW = reader.ReadInt32();
+                var m_WrapV = reader.ReadInt32();
+                var m_WrapW = reader.ReadInt32();
             }
             else
             {

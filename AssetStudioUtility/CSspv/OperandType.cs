@@ -42,12 +42,12 @@ namespace SpirV
 		{
 			// This is just a fail-safe -- the loop below must terminate
 			wordsUsed = 1;
-			int bytesUsed = 0;
-			byte[] bytes = new byte[(words.Count - index) * 4];
-			for (int i = index; i < words.Count; ++i)
+			var bytesUsed = 0;
+			var bytes = new byte[(words.Count - index) * 4];
+			for (var i = index; i < words.Count; ++i)
 			{
-				uint word = words[i];
-				byte b0 = (byte)(word & 0xFF);
+				var word = words[i];
+				var b0 = (byte)(word & 0xFF);
 				if (b0 == 0)
 				{
 					break;
@@ -57,7 +57,7 @@ namespace SpirV
 					bytes[bytesUsed++] = b0;
 				}
 
-				byte b1 = (byte)((word >> 8) & 0xFF);
+				var b1 = (byte)((word >> 8) & 0xFF);
 				if (b1 == 0)
 				{
 					break;
@@ -67,7 +67,7 @@ namespace SpirV
 					bytes[bytesUsed++] = b1;
 				}
 
-				byte b2 = (byte)((word >> 16) & 0xFF);
+				var b2 = (byte)((word >> 16) & 0xFF);
 				if (b2 == 0)
 				{
 					break;
@@ -77,7 +77,7 @@ namespace SpirV
 					bytes[bytesUsed++] = b2;
 				}
 
-				byte b3 = (byte)(word >> 24);
+				var b3 = (byte)(word >> 24);
 				if (b3 == 0)
 				{
 					break;
@@ -113,10 +113,10 @@ namespace SpirV
 	{
 		public override bool ReadValue(IReadOnlyList<uint> words, int index, out object value, out int wordsUsed)
 		{
-			List<ObjectReference> result = new List<ObjectReference>();
-			for (int i = index; i < words.Count; i++)
+			var result = new List<ObjectReference>();
+			for (var i = index; i < words.Count; i++)
 			{
-				ObjectReference objRef = new ObjectReference(words[i]);
+				var objRef = new ObjectReference(words[i]);
 				result.Add(objRef);
 			}
 
@@ -150,27 +150,27 @@ namespace SpirV
 	{
 		public override bool ReadValue(IReadOnlyList<uint> words, int index, out object value, out int wordsUsed)
 		{
-			int wordsUsedForParameters = 0;
+			var wordsUsedForParameters = 0;
 			if (typeof(T).GetTypeInfo().GetCustomAttributes<FlagsAttribute>().Any())
 			{
-				Dictionary<uint, IReadOnlyList<object>> result = new Dictionary<uint, IReadOnlyList<object>>();
-				foreach (object enumValue in EnumerationType.GetEnumValues())
+				var result = new Dictionary<uint, IReadOnlyList<object>>();
+				foreach (var enumValue in EnumerationType.GetEnumValues())
 				{
-					uint bit = (uint)enumValue;
+					var bit = (uint)enumValue;
 					// bit == 0 and words[0] == 0 handles the 0x0 = None cases
 					if ((words[index] & bit) != 0 || (bit == 0 && words[index] == 0))
 					{
-						Parameter p = parameterFactory_.CreateParameter(bit);
+						var p = parameterFactory_.CreateParameter(bit);
 						if (p == null)
 						{
 							result.Add(bit, Array.Empty<object>());
 						}
 						else
 						{
-							object[] resultItems = new object[p.OperandTypes.Count];
-							for (int j = 0; j < p.OperandTypes.Count; ++j)
+							var resultItems = new object[p.OperandTypes.Count];
+							for (var j = 0; j < p.OperandTypes.Count; ++j)
 							{
-								p.OperandTypes[j].ReadValue(words, 1 + wordsUsedForParameters, out object pValue, out int pWordsUsed);
+								p.OperandTypes[j].ReadValue(words, 1 + wordsUsedForParameters, out var pValue, out var pWordsUsed);
 								wordsUsedForParameters += pWordsUsed;
 								resultItems[j] = pValue;
 							}
@@ -183,7 +183,7 @@ namespace SpirV
 			else
 			{
 				object[] resultItems;
-				Parameter p = parameterFactory_.CreateParameter(words[index]);
+				var p = parameterFactory_.CreateParameter(words[index]);
 				if (p == null)
 				{
 					resultItems = Array.Empty<object>();
@@ -191,9 +191,9 @@ namespace SpirV
 				else
 				{
 					resultItems = new object[p.OperandTypes.Count];
-					for (int j = 0; j < p.OperandTypes.Count; ++j)
+					for (var j = 0; j < p.OperandTypes.Count; ++j)
 					{
-						p.OperandTypes[j].ReadValue(words, 1 + wordsUsedForParameters, out object pValue, out int pWordsUsed);
+						p.OperandTypes[j].ReadValue(words, 1 + wordsUsedForParameters, out var pValue, out var pWordsUsed);
 						wordsUsedForParameters += pWordsUsed;
 						resultItems[j] = pValue;
 					}
@@ -268,8 +268,8 @@ namespace SpirV
 	{
 		public override bool ReadValue(IReadOnlyList<uint> words, int index, out object value, out int wordsUsed)
 		{
-			ObjectReference variable = new ObjectReference(words[index]);
-			ObjectReference parent = new ObjectReference(words[index + 1]);
+			var variable = new ObjectReference(words[index]);
+			var parent = new ObjectReference(words[index + 1]);
 			value = new { Variable = variable, Parent = parent };
 			wordsUsed = 2;
 			return true;
@@ -280,8 +280,8 @@ namespace SpirV
 	{
 		public override bool ReadValue(IReadOnlyList<uint> words, int index, out object value, out int wordsUsed)
 		{
-			ObjectReference type = new ObjectReference(words[index]);
-			uint word = words[index + 1];
+			var type = new ObjectReference(words[index]);
+			var word = words[index + 1];
 			value = new { Type = type, Member = word };
 			wordsUsed = 2;
 			return true;
@@ -292,8 +292,8 @@ namespace SpirV
 	{
 		public override bool ReadValue(IReadOnlyList<uint> words, int index, out object value, out int wordsUsed)
 		{
-			uint selector = words[index];
-			ObjectReference label = new ObjectReference(words[index + 1]);
+			var selector = words[index];
+			var label = new ObjectReference(words[index + 1]);
 			value = new { Selector = selector, Label = label };
 			wordsUsed = 2;
 			return true;

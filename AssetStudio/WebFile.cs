@@ -79,7 +79,7 @@ namespace AssetStudio
                 dataList.Add(data);
             }
             fileList = new StreamFile[dataList.Count];
-            for (int i = 0; i < dataList.Count; i++)
+            for (var i = 0; i < dataList.Count; i++)
             {
                 var data = dataList[i];
                 var file = new StreamFile();

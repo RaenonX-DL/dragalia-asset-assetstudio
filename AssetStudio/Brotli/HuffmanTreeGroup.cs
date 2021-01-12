@@ -37,9 +37,9 @@ namespace Org.Brotli.Dec
 		/// <param name="br">data source</param>
 		internal static void Decode(Org.Brotli.Dec.HuffmanTreeGroup group, Org.Brotli.Dec.BitReader br)
 		{
-			int next = 0;
-			int n = group.trees.Length;
-			for (int i = 0; i < n; i++)
+			var next = 0;
+			var n = group.trees.Length;
+			for (var i = 0; i < n; i++)
 			{
 				group.trees[i] = next;
 				Org.Brotli.Dec.Decode.ReadHuffmanCode(group.alphabetSize, group.codes, next, br);

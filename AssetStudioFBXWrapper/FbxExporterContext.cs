@@ -412,7 +412,7 @@ namespace AssetStudio.FbxInterop
 
                 if (hasBones)
                 {
-                    IntPtr pSkinContext = IntPtr.Zero;
+                    var pSkinContext = IntPtr.Zero;
 
                     try
                     {
@@ -483,7 +483,7 @@ namespace AssetStudio.FbxInterop
             {
                 pAnimContext = AsFbxAnimCreateContext(eulerFilter);
 
-                for (int i = 0; i < animationList.Count; i++)
+                for (var i = 0; i < animationList.Count; i++)
                 {
                     var importedAnimation = animationList[i];
                     string takeName;

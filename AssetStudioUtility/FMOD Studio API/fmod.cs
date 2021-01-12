@@ -1031,14 +1031,14 @@ namespace FMOD
                 return "";
             }
 
-            int strlen = 0;
+            var strlen = 0;
             while (Marshal.ReadByte(fstring.nativeUtf8Ptr, strlen) != 0)
             {
                 strlen++;
             }
             if (strlen > 0)
             {
-                byte[] bytes = new byte[strlen];
+                var bytes = new byte[strlen];
                 Marshal.Copy(fstring.nativeUtf8Ptr, bytes, 0, strlen);
                 return Encoding.UTF8.GetString(bytes, 0, strlen);
             }
@@ -1598,8 +1598,8 @@ namespace FMOD
         {
             system = null;
 
-            RESULT result   = RESULT.OK;
-            IntPtr rawPtr   = new IntPtr();
+            var result   = RESULT.OK;
+            var rawPtr   = new IntPtr();
 
             result = FMOD_System_Create(out rawPtr);
             if (result != RESULT.OK)
@@ -1729,7 +1729,7 @@ namespace FMOD
     {
         public RESULT release                ()
         {
-            RESULT result = FMOD_System_Release(rawPtr);
+            var result = FMOD_System_Release(rawPtr);
             if (result == RESULT.OK)
             {
                 rawPtr = IntPtr.Zero;
@@ -1753,9 +1753,9 @@ namespace FMOD
         }
         public RESULT getDriverInfo          (int id, StringBuilder name, int namelen, out Guid guid, out int systemrate, out SPEAKERMODE speakermode, out int speakermodechannels)
         {
-            IntPtr stringMem = Marshal.AllocHGlobal(name.Capacity);
+            var stringMem = Marshal.AllocHGlobal(name.Capacity);
 
-            RESULT result = FMOD_System_GetDriverInfo(rawPtr, id, stringMem, namelen, out guid, out systemrate, out speakermode, out speakermodechannels);
+            var result = FMOD_System_GetDriverInfo(rawPtr, id, stringMem, namelen, out guid, out systemrate, out speakermode, out speakermodechannels);
 
             StringMarshalHelper.NativeToBuilder(name, stringMem);
             Marshal.FreeHGlobal(stringMem);
@@ -1844,9 +1844,9 @@ namespace FMOD
         }
         public RESULT getPluginInfo          (uint handle, out PLUGINTYPE plugintype, StringBuilder name, int namelen, out uint version)
         {
-            IntPtr stringMem = Marshal.AllocHGlobal(name.Capacity);
+            var stringMem = Marshal.AllocHGlobal(name.Capacity);
 
-            RESULT result = FMOD_System_GetPluginInfo(rawPtr, handle, out plugintype, stringMem, namelen, out version);
+            var result = FMOD_System_GetPluginInfo(rawPtr, handle, out plugintype, stringMem, namelen, out version);
 
             StringMarshalHelper.NativeToBuilder(name, stringMem);
             Marshal.FreeHGlobal(stringMem);
@@ -1866,7 +1866,7 @@ namespace FMOD
             dsp = null;
 
             IntPtr dspraw;
-            RESULT result = FMOD_System_CreateDSPByPlugin(rawPtr, handle, out dspraw);
+            var result = FMOD_System_CreateDSPByPlugin(rawPtr, handle, out dspraw);
             dsp = new DSP(dspraw);
 
             return result;
@@ -2007,7 +2007,7 @@ namespace FMOD
             exinfo.cbsize = Marshal.SizeOf(exinfo);
 
             IntPtr soundraw;
-            RESULT result = FMOD_System_CreateSound(rawPtr, stringData, mode, ref exinfo, out soundraw);
+            var result = FMOD_System_CreateSound(rawPtr, stringData, mode, ref exinfo, out soundraw);
             sound = new Sound(soundraw);
 
             return result;
@@ -2019,14 +2019,14 @@ namespace FMOD
             exinfo.cbsize = Marshal.SizeOf(exinfo);
 
             IntPtr soundraw;
-            RESULT result = FMOD_System_CreateSound(rawPtr, data, mode, ref exinfo, out soundraw);
+            var result = FMOD_System_CreateSound(rawPtr, data, mode, ref exinfo, out soundraw);
             sound = new Sound(soundraw);
 
             return result;
         }
         public RESULT createSound            (string name, MODE mode, out Sound sound)
         {
-            CREATESOUNDEXINFO exinfo = new CREATESOUNDEXINFO();
+            var exinfo = new CREATESOUNDEXINFO();
             exinfo.cbsize = Marshal.SizeOf(exinfo);
 
             return createSound(name, mode, ref exinfo, out sound);
@@ -2041,7 +2041,7 @@ namespace FMOD
             exinfo.cbsize = Marshal.SizeOf(exinfo);
 
             IntPtr soundraw;
-            RESULT result = FMOD_System_CreateStream(rawPtr, stringData, mode, ref exinfo, out soundraw);
+            var result = FMOD_System_CreateStream(rawPtr, stringData, mode, ref exinfo, out soundraw);
             sound = new Sound(soundraw);
 
             return result;
@@ -2053,14 +2053,14 @@ namespace FMOD
             exinfo.cbsize = Marshal.SizeOf(exinfo);
 
             IntPtr soundraw;
-            RESULT result = FMOD_System_CreateStream(rawPtr, data, mode, ref exinfo, out soundraw);
+            var result = FMOD_System_CreateStream(rawPtr, data, mode, ref exinfo, out soundraw);
             sound = new Sound(soundraw);
 
             return result;
         }
         public RESULT createStream            (string name, MODE mode, out Sound sound)
         {
-            CREATESOUNDEXINFO exinfo = new CREATESOUNDEXINFO();
+            var exinfo = new CREATESOUNDEXINFO();
             exinfo.cbsize = Marshal.SizeOf(exinfo);
 
             return createStream(name, mode, ref exinfo, out sound);
@@ -2070,7 +2070,7 @@ namespace FMOD
             dsp = null;
 
             IntPtr dspraw;
-            RESULT result = FMOD_System_CreateDSP(rawPtr, ref description, out dspraw);
+            var result = FMOD_System_CreateDSP(rawPtr, ref description, out dspraw);
             dsp = new DSP(dspraw);
 
             return result;
@@ -2080,7 +2080,7 @@ namespace FMOD
             dsp = null;
 
             IntPtr dspraw;
-            RESULT result = FMOD_System_CreateDSPByType(rawPtr, type, out dspraw);
+            var result = FMOD_System_CreateDSPByType(rawPtr, type, out dspraw);
             dsp = new DSP(dspraw);
 
             return result;
@@ -2089,10 +2089,10 @@ namespace FMOD
         {
             channelgroup = null;
 
-            byte[] stringData = Encoding.UTF8.GetBytes(name + Char.MinValue);
+            var stringData = Encoding.UTF8.GetBytes(name + Char.MinValue);
 
             IntPtr channelgroupraw;
-            RESULT result = FMOD_System_CreateChannelGroup(rawPtr, stringData, out channelgroupraw);
+            var result = FMOD_System_CreateChannelGroup(rawPtr, stringData, out channelgroupraw);
             channelgroup = new ChannelGroup(channelgroupraw);
 
             return result;
@@ -2101,10 +2101,10 @@ namespace FMOD
         {
             soundgroup = null;
 
-            byte[] stringData = Encoding.UTF8.GetBytes(name + Char.MinValue);
+            var stringData = Encoding.UTF8.GetBytes(name + Char.MinValue);
 
             IntPtr soundgroupraw;
-            RESULT result = FMOD_System_CreateSoundGroup(rawPtr, stringData, out soundgroupraw);
+            var result = FMOD_System_CreateSoundGroup(rawPtr, stringData, out soundgroupraw);
             soundgroup = new SoundGroup(soundgroupraw);
 
             return result;
@@ -2112,7 +2112,7 @@ namespace FMOD
         public RESULT createReverb3D         (out Reverb3D reverb)
         {
             IntPtr reverbraw;
-            RESULT result = FMOD_System_CreateReverb3D(rawPtr, out reverbraw);
+            var result = FMOD_System_CreateReverb3D(rawPtr, out reverbraw);
             reverb = new Reverb3D(reverbraw);
 
             return result;
@@ -2121,10 +2121,10 @@ namespace FMOD
         {
             channel = null;
 
-            IntPtr channelGroupRaw = (channelGroup != null) ? channelGroup.getRaw() : IntPtr.Zero;
+            var channelGroupRaw = (channelGroup != null) ? channelGroup.getRaw() : IntPtr.Zero;
 
             IntPtr channelraw;
-            RESULT result = FMOD_System_PlaySound(rawPtr, sound.getRaw(), channelGroupRaw, paused, out channelraw);
+            var result = FMOD_System_PlaySound(rawPtr, sound.getRaw(), channelGroupRaw, paused, out channelraw);
             channel = new Channel(channelraw);
 
             return result;
@@ -2133,10 +2133,10 @@ namespace FMOD
         {
             channel = null;
 
-            IntPtr channelGroupRaw = (channelGroup != null) ? channelGroup.getRaw() : IntPtr.Zero;
+            var channelGroupRaw = (channelGroup != null) ? channelGroup.getRaw() : IntPtr.Zero;
 
             IntPtr channelraw;
-            RESULT result = FMOD_System_PlayDSP(rawPtr, dsp.getRaw(), channelGroupRaw, paused, out channelraw);
+            var result = FMOD_System_PlayDSP(rawPtr, dsp.getRaw(), channelGroupRaw, paused, out channelraw);
             channel = new Channel(channelraw);
 
             return result;
@@ -2146,7 +2146,7 @@ namespace FMOD
             channel = null;
 
             IntPtr channelraw;
-            RESULT result = FMOD_System_GetChannel(rawPtr, channelid, out channelraw);
+            var result = FMOD_System_GetChannel(rawPtr, channelid, out channelraw);
             channel = new Channel(channelraw);
 
             return result;
@@ -2156,7 +2156,7 @@ namespace FMOD
             channelgroup = null;
 
             IntPtr channelgroupraw;
-            RESULT result = FMOD_System_GetMasterChannelGroup(rawPtr, out channelgroupraw);
+            var result = FMOD_System_GetMasterChannelGroup(rawPtr, out channelgroupraw);
             channelgroup = new ChannelGroup(channelgroupraw);
 
             return result;
@@ -2166,7 +2166,7 @@ namespace FMOD
             soundgroup = null;
 
             IntPtr soundgroupraw;
-            RESULT result = FMOD_System_GetMasterSoundGroup(rawPtr, out soundgroupraw);
+            var result = FMOD_System_GetMasterSoundGroup(rawPtr, out soundgroupraw);
             soundgroup = new SoundGroup(soundgroupraw);
 
             return result;
@@ -2209,9 +2209,9 @@ namespace FMOD
         }
         public RESULT getRecordDriverInfo(int id, StringBuilder name, int namelen, out Guid guid, out int systemrate, out SPEAKERMODE speakermode, out int speakermodechannels, out DRIVER_STATE state)
         {
-            IntPtr stringMem = Marshal.AllocHGlobal(name.Capacity);
+            var stringMem = Marshal.AllocHGlobal(name.Capacity);
 
-            RESULT result = FMOD_System_GetRecordDriverInfo(rawPtr, id, stringMem, namelen, out guid, out systemrate, out speakermode, out speakermodechannels, out state);
+            var result = FMOD_System_GetRecordDriverInfo(rawPtr, id, stringMem, namelen, out guid, out systemrate, out speakermode, out speakermodechannels, out state);
 
             StringMarshalHelper.NativeToBuilder(name, stringMem);
             Marshal.FreeHGlobal(stringMem);
@@ -2241,7 +2241,7 @@ namespace FMOD
             geometry = null;
 
             IntPtr geometryraw;
-            RESULT result = FMOD_System_CreateGeometry(rawPtr, maxpolygons, maxvertices, out geometryraw);
+            var result = FMOD_System_CreateGeometry(rawPtr, maxpolygons, maxvertices, out geometryraw);
             geometry = new Geometry(geometryraw);
 
             return result;
@@ -2259,7 +2259,7 @@ namespace FMOD
             geometry = null;
 
             IntPtr geometryraw;
-            RESULT result = FMOD_System_LoadGeometry(rawPtr, data, datasize, out geometryraw);
+            var result = FMOD_System_LoadGeometry(rawPtr, data, datasize, out geometryraw);
             geometry = new Geometry(geometryraw);
 
             return result;
@@ -2276,9 +2276,9 @@ namespace FMOD
         }
         public RESULT getNetworkProxy               (StringBuilder proxy, int proxylen)
         {
-            IntPtr stringMem = Marshal.AllocHGlobal(proxy.Capacity);
+            var stringMem = Marshal.AllocHGlobal(proxy.Capacity);
 
-            RESULT result = FMOD_System_GetNetworkProxy(rawPtr, stringMem, proxylen);
+            var result = FMOD_System_GetNetworkProxy(rawPtr, stringMem, proxylen);
 
             StringMarshalHelper.NativeToBuilder(proxy, stringMem);
             Marshal.FreeHGlobal(stringMem);
@@ -2506,7 +2506,7 @@ namespace FMOD
     {
         public RESULT release                 ()
         {
-            RESULT result = FMOD_Sound_Release(rawPtr);
+            var result = FMOD_Sound_Release(rawPtr);
             if (result == RESULT.OK)
             {
                 rawPtr = IntPtr.Zero;
@@ -2518,7 +2518,7 @@ namespace FMOD
             system = null;
 
             IntPtr systemraw;
-            RESULT result = FMOD_Sound_GetSystemObject(rawPtr, out systemraw);
+            var result = FMOD_Sound_GetSystemObject(rawPtr, out systemraw);
             system = new System(systemraw);
 
             return result;
@@ -2570,7 +2570,7 @@ namespace FMOD
             subsound = null;
 
             IntPtr subsoundraw;
-            RESULT result = FMOD_Sound_GetSubSound(rawPtr, index, out subsoundraw);
+            var result = FMOD_Sound_GetSubSound(rawPtr, index, out subsoundraw);
             subsound = new Sound(subsoundraw);
 
             return result;
@@ -2580,16 +2580,16 @@ namespace FMOD
             parentsound = null;
 
             IntPtr subsoundraw;
-            RESULT result = FMOD_Sound_GetSubSoundParent(rawPtr, out subsoundraw);
+            var result = FMOD_Sound_GetSubSoundParent(rawPtr, out subsoundraw);
             parentsound = new Sound(subsoundraw);
 
             return result;
         }
         public RESULT getName                 (StringBuilder name, int namelen)
         {
-            IntPtr stringMem = Marshal.AllocHGlobal(name.Capacity);
+            var stringMem = Marshal.AllocHGlobal(name.Capacity);
 
-            RESULT result = FMOD_Sound_GetName(rawPtr, stringMem, namelen);
+            var result = FMOD_Sound_GetName(rawPtr, stringMem, namelen);
 
             StringMarshalHelper.NativeToBuilder(name, stringMem);
             Marshal.FreeHGlobal(stringMem);
@@ -2637,7 +2637,7 @@ namespace FMOD
             soundgroup = null;
 
             IntPtr soundgroupraw;
-            RESULT result = FMOD_Sound_GetSoundGroup(rawPtr, out soundgroupraw);
+            var result = FMOD_Sound_GetSoundGroup(rawPtr, out soundgroupraw);
             soundgroup = new SoundGroup(soundgroupraw);
 
             return result;
@@ -2654,9 +2654,9 @@ namespace FMOD
         }
         public RESULT getSyncPointInfo        (IntPtr point, StringBuilder name, int namelen, out uint offset, TIMEUNIT offsettype)
         {
-            IntPtr stringMem = Marshal.AllocHGlobal(name.Capacity);
+            var stringMem = Marshal.AllocHGlobal(name.Capacity);
 
-            RESULT result = FMOD_Sound_GetSyncPointInfo(rawPtr, point, stringMem, namelen, out offset, offsettype);
+            var result = FMOD_Sound_GetSyncPointInfo(rawPtr, point, stringMem, namelen, out offset, offsettype);
 
             StringMarshalHelper.NativeToBuilder(name, stringMem);
             Marshal.FreeHGlobal(stringMem);
@@ -2841,7 +2841,7 @@ namespace FMOD
             system = null;
 
             IntPtr systemraw;
-            RESULT result = FMOD_ChannelGroup_GetSystemObject(rawPtr, out systemraw);
+            var result = FMOD_ChannelGroup_GetSystemObject(rawPtr, out systemraw);
             system = new System(systemraw);
 
             return result;
@@ -2988,7 +2988,7 @@ namespace FMOD
             dsp = null;
 
             IntPtr dspraw;
-            RESULT result = FMOD_ChannelGroup_GetDSP(rawPtr, index, out dspraw);
+            var result = FMOD_ChannelGroup_GetDSP(rawPtr, index, out dspraw);
             dsp = new DSP(dspraw);
 
             return result;
@@ -3289,7 +3289,7 @@ namespace FMOD
             channelgroup = null;
 
             IntPtr channelgroupraw;
-            RESULT result = FMOD_Channel_GetChannelGroup(getRaw(), out channelgroupraw);
+            var result = FMOD_Channel_GetChannelGroup(getRaw(), out channelgroupraw);
             channelgroup = new ChannelGroup(channelgroupraw);
 
             return result;
@@ -3321,7 +3321,7 @@ namespace FMOD
             sound = null;
 
             IntPtr soundraw;
-            RESULT result = FMOD_Channel_GetCurrentSound(getRaw(), out soundraw);
+            var result = FMOD_Channel_GetCurrentSound(getRaw(), out soundraw);
             sound = new Sound(soundraw);
 
             return result;
@@ -3391,7 +3391,7 @@ namespace FMOD
     {
         public RESULT release                ()
         {
-            RESULT result = FMOD_ChannelGroup_Release(getRaw());
+            var result = FMOD_ChannelGroup_Release(getRaw());
             if (result == RESULT.OK)
             {
                 rawPtr = IntPtr.Zero;
@@ -3405,7 +3405,7 @@ namespace FMOD
 			connection = null;
 			
 			IntPtr connectionRaw;
-            RESULT result = FMOD_ChannelGroup_AddGroup(getRaw(), group.getRaw(), propagatedspclock, out connectionRaw);
+            var result = FMOD_ChannelGroup_AddGroup(getRaw(), group.getRaw(), propagatedspclock, out connectionRaw);
 			connection = new DSPConnection(connectionRaw);
 			
 			return result;
@@ -3419,7 +3419,7 @@ namespace FMOD
             group = null;
 
             IntPtr groupraw;
-            RESULT result = FMOD_ChannelGroup_GetGroup(getRaw(), index, out groupraw);
+            var result = FMOD_ChannelGroup_GetGroup(getRaw(), index, out groupraw);
             group = new ChannelGroup(groupraw);
 
             return result;
@@ -3429,7 +3429,7 @@ namespace FMOD
             group = null;
 
             IntPtr groupraw;
-            RESULT result = FMOD_ChannelGroup_GetParentGroup(getRaw(), out groupraw);
+            var result = FMOD_ChannelGroup_GetParentGroup(getRaw(), out groupraw);
             group = new ChannelGroup(groupraw);
 
             return result;
@@ -3438,9 +3438,9 @@ namespace FMOD
         // Information only functions.
         public RESULT getName                (StringBuilder name, int namelen)
         {
-            IntPtr stringMem = Marshal.AllocHGlobal(name.Capacity);
+            var stringMem = Marshal.AllocHGlobal(name.Capacity);
 
-            RESULT result = FMOD_ChannelGroup_GetName(getRaw(), stringMem, namelen);
+            var result = FMOD_ChannelGroup_GetName(getRaw(), stringMem, namelen);
 
             StringMarshalHelper.NativeToBuilder(name, stringMem);
             Marshal.FreeHGlobal(stringMem);
@@ -3456,7 +3456,7 @@ namespace FMOD
             channel = null;
 
             IntPtr channelraw;
-            RESULT result = FMOD_ChannelGroup_GetChannel(getRaw(), index, out channelraw);
+            var result = FMOD_ChannelGroup_GetChannel(getRaw(), index, out channelraw);
             channel = new Channel(channelraw);
 
             return result;
@@ -3499,7 +3499,7 @@ namespace FMOD
     {
         public RESULT release                ()
         {
-            RESULT result = FMOD_SoundGroup_Release(getRaw());
+            var result = FMOD_SoundGroup_Release(getRaw());
             if (result == RESULT.OK)
             {
                 rawPtr = IntPtr.Zero;
@@ -3512,7 +3512,7 @@ namespace FMOD
             system = null;
 
             IntPtr systemraw;
-            RESULT result = FMOD_SoundGroup_GetSystemObject(rawPtr, out systemraw);
+            var result = FMOD_SoundGroup_GetSystemObject(rawPtr, out systemraw);
             system = new System(systemraw);
 
             return result;
@@ -3559,9 +3559,9 @@ namespace FMOD
         // Information only functions.
         public RESULT getName                (StringBuilder name, int namelen)
         {
-            IntPtr stringMem = Marshal.AllocHGlobal(name.Capacity);
+            var stringMem = Marshal.AllocHGlobal(name.Capacity);
 
-            RESULT result = FMOD_SoundGroup_GetName(rawPtr, stringMem, namelen);
+            var result = FMOD_SoundGroup_GetName(rawPtr, stringMem, namelen);
 
             StringMarshalHelper.NativeToBuilder(name, stringMem);
             Marshal.FreeHGlobal(stringMem);
@@ -3577,7 +3577,7 @@ namespace FMOD
             sound = null;
 
             IntPtr soundraw;
-            RESULT result = FMOD_SoundGroup_GetSound(rawPtr, index, out soundraw);
+            var result = FMOD_SoundGroup_GetSound(rawPtr, index, out soundraw);
             sound = new Sound(soundraw);
 
             return result;
@@ -3652,7 +3652,7 @@ namespace FMOD
     {
         public RESULT release                   ()
         {
-            RESULT result = FMOD_DSP_Release(getRaw());
+            var result = FMOD_DSP_Release(getRaw());
             if (result == RESULT.OK)
             {
                 rawPtr = IntPtr.Zero;
@@ -3664,7 +3664,7 @@ namespace FMOD
             system = null;
 
             IntPtr systemraw;
-            RESULT result = FMOD_DSP_GetSystemObject(rawPtr, out systemraw);
+            var result = FMOD_DSP_GetSystemObject(rawPtr, out systemraw);
             system = new System(systemraw);
 
             return result;
@@ -3676,7 +3676,7 @@ namespace FMOD
             connection = null;
 
             IntPtr dspconnectionraw;
-            RESULT result = FMOD_DSP_AddInput(rawPtr, target.getRaw(), out dspconnectionraw, type);
+            var result = FMOD_DSP_AddInput(rawPtr, target.getRaw(), out dspconnectionraw, type);
             connection = new DSPConnection(dspconnectionraw);
 
             return result;
@@ -3704,7 +3704,7 @@ namespace FMOD
 
             IntPtr dspinputraw;
             IntPtr dspconnectionraw;
-            RESULT result = FMOD_DSP_GetInput(rawPtr, index, out dspinputraw, out dspconnectionraw);
+            var result = FMOD_DSP_GetInput(rawPtr, index, out dspinputraw, out dspconnectionraw);
             input = new DSP(dspinputraw);
             inputconnection = new DSPConnection(dspconnectionraw);
 
@@ -3717,7 +3717,7 @@ namespace FMOD
 
             IntPtr dspoutputraw;
             IntPtr dspconnectionraw;
-            RESULT result = FMOD_DSP_GetOutput(rawPtr, index, out dspoutputraw, out dspconnectionraw);
+            var result = FMOD_DSP_GetOutput(rawPtr, index, out dspoutputraw, out dspconnectionraw);
             output = new DSP(dspoutputraw);
             outputconnection = new DSPConnection(dspconnectionraw);
 
@@ -3785,12 +3785,12 @@ namespace FMOD
         }
         public RESULT getParameterFloat(int index, out float value)
         {
-            IntPtr valuestr = IntPtr.Zero;
+            var valuestr = IntPtr.Zero;
             return FMOD_DSP_GetParameterFloat(rawPtr, index, out value, valuestr, 0);
         }
         public RESULT getParameterInt(int index, out int value)
         {
-            IntPtr valuestr = IntPtr.Zero;
+            var valuestr = IntPtr.Zero;
             return FMOD_DSP_GetParameterInt(rawPtr, index, out value, valuestr, 0);
         }
         public RESULT getParameterBool(int index, out bool value)
@@ -3808,7 +3808,7 @@ namespace FMOD
         public RESULT getParameterInfo          (int index, out DSP_PARAMETER_DESC desc)
         {
             IntPtr descPtr;
-            RESULT result = FMOD_DSP_GetParameterInfo(rawPtr, index, out descPtr);
+            var result = FMOD_DSP_GetParameterInfo(rawPtr, index, out descPtr);
             if (result == RESULT.OK)
             {
                 desc = (DSP_PARAMETER_DESC)Marshal.PtrToStructure(descPtr, typeof(DSP_PARAMETER_DESC));
@@ -3831,8 +3831,8 @@ namespace FMOD
         //  DSP attributes.
         public RESULT getInfo                   (StringBuilder name, out uint version, out int channels, out int configwidth, out int configheight)
         {
-            IntPtr nameMem = Marshal.AllocHGlobal(32);
-            RESULT result = FMOD_DSP_GetInfo(rawPtr, nameMem, out version, out channels, out configwidth, out configheight);
+            var nameMem = Marshal.AllocHGlobal(32);
+            var result = FMOD_DSP_GetInfo(rawPtr, nameMem, out version, out channels, out configwidth, out configheight);
             StringMarshalHelper.NativeToBuilder(name, nameMem);
             Marshal.FreeHGlobal(nameMem);
             return result;
@@ -3974,7 +3974,7 @@ namespace FMOD
             input = null;
 
             IntPtr dspraw;
-            RESULT result = FMOD_DSPConnection_GetInput(rawPtr, out dspraw);
+            var result = FMOD_DSPConnection_GetInput(rawPtr, out dspraw);
             input = new DSP(dspraw);
 
             return result;
@@ -3984,7 +3984,7 @@ namespace FMOD
             output = null;
 
             IntPtr dspraw;
-            RESULT result = FMOD_DSPConnection_GetOutput(rawPtr, out dspraw);
+            var result = FMOD_DSPConnection_GetOutput(rawPtr, out dspraw);
             output = new DSP(dspraw);
 
             return result;
@@ -4058,7 +4058,7 @@ namespace FMOD
     {
         public RESULT release               ()
         {
-            RESULT result = FMOD_Geometry_Release(getRaw());
+            var result = FMOD_Geometry_Release(getRaw());
             if (result == RESULT.OK)
             {
                 rawPtr = IntPtr.Zero;
@@ -4209,7 +4209,7 @@ namespace FMOD
     {
         public RESULT release()
         {
-            RESULT result = FMOD_Reverb3D_Release(getRaw());
+            var result = FMOD_Reverb3D_Release(getRaw());
             if (result == RESULT.OK)
             {
                 rawPtr = IntPtr.Zero;
@@ -4288,12 +4288,12 @@ namespace FMOD
     {
         static internal void NativeToBuilder(StringBuilder builder, IntPtr nativeMem)
         {
-            byte[] bytes = new byte[builder.Capacity];
+            var bytes = new byte[builder.Capacity];
             Marshal.Copy(nativeMem, bytes, 0, builder.Capacity);
-			int strlen = Array.IndexOf(bytes, (byte)0);
+			var strlen = Array.IndexOf(bytes, (byte)0);
 			if (strlen > 0)
 			{
-				String str = Encoding.UTF8.GetString(bytes, 0, strlen);
+				var str = Encoding.UTF8.GetString(bytes, 0, strlen);
 				builder.Append(str);
 			}
         }

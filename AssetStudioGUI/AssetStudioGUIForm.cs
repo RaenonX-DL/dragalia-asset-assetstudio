@@ -343,7 +343,7 @@ namespace AssetStudioGUI
                 {
                     var savePath = saveFolderDialog.Folder;
                     var count = classesListView.Items.Count;
-                    int i = 0;
+                    var i = 0;
                     Progress.Reset();
                     foreach (TypeTreeItem item in classesListView.Items)
                     {
@@ -604,8 +604,8 @@ namespace AssetStudioGUI
             {
                 visibleAssets.Sort((x, y) =>
                 {
-                    long pathID_X = x.m_PathID;
-                    long pathID_Y = y.m_PathID;
+                    var pathID_X = x.m_PathID;
+                    var pathID_Y = y.m_PathID;
                     return reverseSort ? pathID_Y.CompareTo(pathID_X) : pathID_X.CompareTo(pathID_Y);
                 });
             }
@@ -755,8 +755,8 @@ namespace AssetStudioGUI
                     case 1: assetItem.InfoText += "\nWrap mode: Clamp"; break;
                 }
                 assetItem.InfoText += "\nChannels: ";
-                int validChannel = 0;
-                for (int i = 0; i < 4; i++)
+                var validChannel = 0;
+                for (var i = 0; i < 4; i++)
                 {
                     if (textureChannels[i])
                     {
@@ -771,10 +771,10 @@ namespace AssetStudioGUI
                     var bmpData = bitmap.LockBits(new Rectangle(0, 0, bitmap.Width, bitmap.Height), ImageLockMode.ReadWrite, PixelFormat.Format32bppArgb);
                     var bytes = new byte[bitmap.Width * bitmap.Height * 4];
                     Marshal.Copy(bmpData.Scan0, bytes, 0, bytes.Length);
-                    for (int i = 0; i < bmpData.Height; i++)
+                    for (var i = 0; i < bmpData.Height; i++)
                     {
-                        int offset = Math.Abs(bmpData.Stride) * i;
-                        for (int j = 0; j < bmpData.Width; j++)
+                        var offset = Math.Abs(bmpData.Stride) * i;
+                        for (var j = 0; j < bmpData.Width; j++)
                         {
                             bytes[offset] = textureChannels[0] ? bytes[offset] : validChannel == 1 && textureChannels[3] ? byte.MaxValue : byte.MinValue;
                             bytes[offset + 1] = textureChannels[1] ? bytes[offset + 1] : validChannel == 1 && textureChannels[3] ? byte.MaxValue : byte.MinValue;
@@ -1002,23 +1002,23 @@ namespace AssetStudioGUI
                     StatusStripUpdate("Mesh can't be previewed.");
                     return;
                 }
-                int count = 3;
+                var count = 3;
                 if (m_Mesh.m_Vertices.Length == m_Mesh.m_VertexCount * 4)
                 {
                     count = 4;
                 }
                 vertexData = new Vector3[m_Mesh.m_VertexCount];
                 // Calculate Bounding
-                float[] min = new float[3];
-                float[] max = new float[3];
-                for (int i = 0; i < 3; i++)
+                var min = new float[3];
+                var max = new float[3];
+                for (var i = 0; i < 3; i++)
                 {
                     min[i] = m_Mesh.m_Vertices[i];
                     max[i] = m_Mesh.m_Vertices[i];
                 }
-                for (int v = 0; v < m_Mesh.m_VertexCount; v++)
+                for (var v = 0; v < m_Mesh.m_VertexCount; v++)
                 {
-                    for (int i = 0; i < 3; i++)
+                    for (var i = 0; i < 3; i++)
                     {
                         min[i] = Math.Min(min[i], m_Mesh.m_Vertices[v * count + i]);
                         max[i] = Math.Max(max[i], m_Mesh.m_Vertices[v * count + i]);
@@ -1031,17 +1031,17 @@ namespace AssetStudioGUI
 
                 // Calculate modelMatrix
                 Vector3 dist = Vector3.One, offset = Vector3.Zero;
-                for (int i = 0; i < 3; i++)
+                for (var i = 0; i < 3; i++)
                 {
                     dist[i] = max[i] - min[i];
                     offset[i] = (max[i] + min[i]) / 2;
                 }
-                float d = Math.Max(1e-5f, dist.Length);
+                var d = Math.Max(1e-5f, dist.Length);
                 modelMatrixData = Matrix4.CreateTranslation(-offset) * Matrix4.CreateScale(2f / d);
                 #endregion
                 #region Indicies
                 indiceData = new int[m_Mesh.m_Indices.Count];
-                for (int i = 0; i < m_Mesh.m_Indices.Count; i = i + 3)
+                for (var i = 0; i < m_Mesh.m_Indices.Count; i = i + 3)
                 {
                     indiceData[i] = (int)m_Mesh.m_Indices[i];
                     indiceData[i + 1] = (int)m_Mesh.m_Indices[i + 1];
@@ -1056,7 +1056,7 @@ namespace AssetStudioGUI
                     else if (m_Mesh.m_Normals.Length == m_Mesh.m_VertexCount * 4)
                         count = 4;
                     normalData = new Vector3[m_Mesh.m_VertexCount];
-                    for (int n = 0; n < m_Mesh.m_VertexCount; n++)
+                    for (var n = 0; n < m_Mesh.m_VertexCount; n++)
                     {
                         normalData[n] = new Vector3(
                             m_Mesh.m_Normals[n * count],
@@ -1068,25 +1068,25 @@ namespace AssetStudioGUI
                     normalData = null;
                 // calculate normal by ourself
                 normal2Data = new Vector3[m_Mesh.m_VertexCount];
-                int[] normalCalculatedCount = new int[m_Mesh.m_VertexCount];
-                for (int i = 0; i < m_Mesh.m_VertexCount; i++)
+                var normalCalculatedCount = new int[m_Mesh.m_VertexCount];
+                for (var i = 0; i < m_Mesh.m_VertexCount; i++)
                 {
                     normal2Data[i] = Vector3.Zero;
                     normalCalculatedCount[i] = 0;
                 }
-                for (int i = 0; i < m_Mesh.m_Indices.Count; i = i + 3)
+                for (var i = 0; i < m_Mesh.m_Indices.Count; i = i + 3)
                 {
-                    Vector3 dir1 = vertexData[indiceData[i + 1]] - vertexData[indiceData[i]];
-                    Vector3 dir2 = vertexData[indiceData[i + 2]] - vertexData[indiceData[i]];
-                    Vector3 normal = Vector3.Cross(dir1, dir2);
+                    var dir1 = vertexData[indiceData[i + 1]] - vertexData[indiceData[i]];
+                    var dir2 = vertexData[indiceData[i + 2]] - vertexData[indiceData[i]];
+                    var normal = Vector3.Cross(dir1, dir2);
                     normal.Normalize();
-                    for (int j = 0; j < 3; j++)
+                    for (var j = 0; j < 3; j++)
                     {
                         normal2Data[indiceData[i + j]] += normal;
                         normalCalculatedCount[indiceData[i + j]]++;
                     }
                 }
-                for (int i = 0; i < m_Mesh.m_VertexCount; i++)
+                for (var i = 0; i < m_Mesh.m_VertexCount; i++)
                 {
                     if (normalCalculatedCount[i] == 0)
                         normal2Data[i] = new Vector3(0, 1, 0);
@@ -1098,7 +1098,7 @@ namespace AssetStudioGUI
                 if (m_Mesh.m_Colors != null && m_Mesh.m_Colors.Length == m_Mesh.m_VertexCount * 3)
                 {
                     colorData = new Vector4[m_Mesh.m_VertexCount];
-                    for (int c = 0; c < m_Mesh.m_VertexCount; c++)
+                    for (var c = 0; c < m_Mesh.m_VertexCount; c++)
                     {
                         colorData[c] = new Vector4(
                             m_Mesh.m_Colors[c * 3],
@@ -1110,7 +1110,7 @@ namespace AssetStudioGUI
                 else if (m_Mesh.m_Colors != null && m_Mesh.m_Colors.Length == m_Mesh.m_VertexCount * 4)
                 {
                     colorData = new Vector4[m_Mesh.m_VertexCount];
-                    for (int c = 0; c < m_Mesh.m_VertexCount; c++)
+                    for (var c = 0; c < m_Mesh.m_VertexCount; c++)
                     {
                         colorData[c] = new Vector4(
                         m_Mesh.m_Colors[c * 4],
@@ -1122,7 +1122,7 @@ namespace AssetStudioGUI
                 else
                 {
                     colorData = new Vector4[m_Mesh.m_VertexCount];
-                    for (int c = 0; c < m_Mesh.m_VertexCount; c++)
+                    for (var c = 0; c < m_Mesh.m_VertexCount; c++)
                     {
                         colorData[c] = new Vector4(0.5f, 0.5f, 0.5f, 1.0f);
                     }
@@ -1279,7 +1279,7 @@ namespace AssetStudioGUI
         private void exportAnimatorwithAnimationClipMenuItem_Click(object sender, EventArgs e)
         {
             AssetItem animator = null;
-            List<AssetItem> animationList = new List<AssetItem>();
+            var animationList = new List<AssetItem>();
             var selectedAssets = GetSelectedAssets();
             foreach (var assetPreloadData in selectedAssets)
             {
@@ -1594,7 +1594,7 @@ namespace AssetStudioGUI
 
                     if (FMODprogressBar.Value > 0)
                     {
-                        uint newms = FMODlenms / 1000 * (uint)FMODprogressBar.Value;
+                        var newms = FMODlenms / 1000 * (uint)FMODprogressBar.Value;
 
                         result = channel.setPosition(newms, FMOD.TIMEUNIT.MS);
                         if ((result != FMOD.RESULT.OK) && (result != FMOD.RESULT.ERR_INVALID_HANDLE))
@@ -1711,7 +1711,7 @@ namespace AssetStudioGUI
         {
             if (channel != null)
             {
-                uint newms = FMODlenms / 1000 * (uint)FMODprogressBar.Value;
+                var newms = FMODlenms / 1000 * (uint)FMODprogressBar.Value;
                 FMODtimerLabel.Text = $"{newms / 1000 / 60}:{newms / 1000 % 60}.{newms / 10 % 100}/{FMODlenms / 1000 / 60}:{FMODlenms / 1000 % 60}.{FMODlenms / 10 % 100}";
             }
         }
@@ -1725,7 +1725,7 @@ namespace AssetStudioGUI
         {
             if (channel != null)
             {
-                uint newms = FMODlenms / 1000 * (uint)FMODprogressBar.Value;
+                var newms = FMODlenms / 1000 * (uint)FMODprogressBar.Value;
 
                 var result = channel.setPosition(newms, FMOD.TIMEUNIT.MS);
                 if ((result != FMOD.RESULT.OK) && (result != FMOD.RESULT.ERR_INVALID_HANDLE))
@@ -1747,8 +1747,8 @@ namespace AssetStudioGUI
         private void timer_Tick(object sender, EventArgs e)
         {
             uint ms = 0;
-            bool playing = false;
-            bool paused = false;
+            var playing = false;
+            var paused = false;
 
             if (channel != null)
             {
@@ -1799,8 +1799,8 @@ namespace AssetStudioGUI
             ChangeGLSize(glControl1.Size);
             GL.ClearColor(System.Drawing.Color.CadetBlue);
             pgmID = GL.CreateProgram();
-            LoadShader("vs", ShaderType.VertexShader, pgmID, out int vsID);
-            LoadShader("fs", ShaderType.FragmentShader, pgmID, out int fsID);
+            LoadShader("vs", ShaderType.VertexShader, pgmID, out var vsID);
+            LoadShader("fs", ShaderType.FragmentShader, pgmID, out var fsID);
             GL.LinkProgram(pgmID);
 
             pgmColorID = GL.CreateProgram();
@@ -1901,12 +1901,12 @@ namespace AssetStudioGUI
 
             if (size.Width <= size.Height)
             {
-                float k = 1.0f * size.Width / size.Height;
+                var k = 1.0f * size.Width / size.Height;
                 projMatrixData = Matrix4.CreateScale(1, k, 1);
             }
             else
             {
-                float k = 1.0f * size.Height / size.Width;
+                var k = 1.0f * size.Height / size.Width;
                 projMatrixData = Matrix4.CreateScale(k, 1, 1);
             }
         }

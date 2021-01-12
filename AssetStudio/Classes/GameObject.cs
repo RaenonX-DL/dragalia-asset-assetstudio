@@ -19,13 +19,13 @@ namespace AssetStudio
 
         public GameObject(ObjectReader reader) : base(reader)
         {
-            int m_Component_size = reader.ReadInt32();
+            var m_Component_size = reader.ReadInt32();
             m_Components = new PPtr<Component>[m_Component_size];
-            for (int i = 0; i < m_Component_size; i++)
+            for (var i = 0; i < m_Component_size; i++)
             {
                 if ((version[0] == 5 && version[1] < 5) || version[0] < 5) //5.5 down
                 {
-                    int first = reader.ReadInt32();
+                    var first = reader.ReadInt32();
                 }
                 m_Components[i] = new PPtr<Component>(reader);
             }

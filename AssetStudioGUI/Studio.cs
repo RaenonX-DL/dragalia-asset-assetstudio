@@ -30,10 +30,10 @@ namespace AssetStudioGUI
 
         public static int ExtractFolder(string path, string savePath)
         {
-            int extractedCount = 0;
+            var extractedCount = 0;
             Progress.Reset();
             var files = Directory.GetFiles(path, "*.*", SearchOption.AllDirectories);
-            for (int i = 0; i < files.Length; i++)
+            for (var i = 0; i < files.Length; i++)
             {
                 var file = files[i];
                 var fileOriPath = Path.GetDirectoryName(file);
@@ -46,7 +46,7 @@ namespace AssetStudioGUI
 
         public static int ExtractFile(string[] fileNames, string savePath)
         {
-            int extractedCount = 0;
+            var extractedCount = 0;
             Progress.Reset();
             for (var i = 0; i < fileNames.Length; i++)
             {
@@ -59,7 +59,7 @@ namespace AssetStudioGUI
 
         public static int ExtractFile(string fileName, string savePath)
         {
-            int extractedCount = 0;
+            var extractedCount = 0;
             var type = ImportHelper.CheckFileType(fileName, out var reader);
             if (type == FileType.BundleFile)
                 extractedCount += ExtractBundleFile(fileName, reader, savePath);
@@ -98,7 +98,7 @@ namespace AssetStudioGUI
 
         private static int ExtractStreamFile(string extractPath, StreamFile[] fileList)
         {
-            int extractedCount = 0;
+            var extractedCount = 0;
             foreach (var file in fileList)
             {
                 var filePath = Path.Combine(extractPath, file.fileName);
@@ -127,7 +127,7 @@ namespace AssetStudioGUI
             var objectCount = assetsManager.assetsFileList.Sum(x => x.Objects.Count);
             var objectAssetItemDic = new Dictionary<Object, AssetItem>(objectCount);
             var containers = new List<(PPtr<Object>, string)>();
-            int i = 0;
+            var i = 0;
             Progress.Reset();
             foreach (var assetsFile in assetsManager.assetsFileList)
             {
@@ -200,7 +200,7 @@ namespace AssetStudioGUI
                                 var preloadIndex = m_Container.Value.preloadIndex;
                                 var preloadSize = m_Container.Value.preloadSize;
                                 var preloadEnd = preloadIndex + preloadSize;
-                                for (int k = preloadIndex; k < preloadEnd; k++)
+                                for (var k = preloadIndex; k < preloadEnd; k++)
                                 {
                                     containers.Add((m_AssetBundle.m_PreloadTable[k], m_Container.Key));
                                 }
@@ -248,7 +248,7 @@ namespace AssetStudioGUI
             var treeNodeCollection = new List<TreeNode>();
             var treeNodeDictionary = new Dictionary<GameObject, GameObjectTreeNode>();
             var assetsFileCount = assetsManager.assetsFileList.Count;
-            int j = 0;
+            var j = 0;
             Progress.Reset();
             foreach (var assetsFile in assetsManager.assetsFileList)
             {
@@ -363,9 +363,9 @@ namespace AssetStudioGUI
             {
                 Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 
-                int toExportCount = toExportAssets.Count;
-                int exportedCount = 0;
-                int i = 0;
+                var toExportCount = toExportAssets.Count;
+                var exportedCount = 0;
+                var i = 0;
                 Progress.Reset();
                 foreach (var asset in toExportAssets)
                 {
@@ -447,7 +447,7 @@ namespace AssetStudioGUI
             ThreadPool.QueueUserWorkItem(state =>
             {
                 var count = nodes.Cast<TreeNode>().Sum(x => x.Nodes.Count);
-                int k = 0;
+                var k = 0;
                 Progress.Reset();
                 foreach (GameObjectTreeNode node in nodes)
                 {
@@ -468,7 +468,7 @@ namespace AssetStudioGUI
                         //每个文件存放在单独的文件夹
                         var targetPath = $"{savePath}{filename}\\";
                         //重名文件处理
-                        for (int i = 1; ; i++)
+                        for (var i = 1; ; i++)
                         {
                             if (Directory.Exists(targetPath))
                             {
@@ -545,7 +545,7 @@ namespace AssetStudioGUI
                 if (gameObjects.Count > 0)
                 {
                     var count = gameObjects.Count;
-                    int i = 0;
+                    var i = 0;
                     Progress.Reset();
                     foreach (var gameObject in gameObjects)
                     {

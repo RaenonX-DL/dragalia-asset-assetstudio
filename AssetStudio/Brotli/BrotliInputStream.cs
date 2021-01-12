@@ -156,7 +156,7 @@ namespace Org.Brotli.Dec
 			{
 				return 0;
 			}
-			int copyLen = System.Math.Max(remainingBufferBytes - bufferOffset, 0);
+			var copyLen = System.Math.Max(remainingBufferBytes - bufferOffset, 0);
 			if (copyLen != 0)
 			{
 				copyLen = System.Math.Min(copyLen, destLen);

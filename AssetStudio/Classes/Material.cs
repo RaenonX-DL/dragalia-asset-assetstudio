@@ -24,23 +24,23 @@ namespace AssetStudio
 
         public UnityPropertySheet(ObjectReader reader)
         {
-            int m_TexEnvsSize = reader.ReadInt32();
+            var m_TexEnvsSize = reader.ReadInt32();
             m_TexEnvs = new KeyValuePair<string, UnityTexEnv>[m_TexEnvsSize];
-            for (int i = 0; i < m_TexEnvsSize; i++)
+            for (var i = 0; i < m_TexEnvsSize; i++)
             {
                 m_TexEnvs[i] = new KeyValuePair<string, UnityTexEnv>(reader.ReadAlignedString(), new UnityTexEnv(reader));
             }
 
-            int m_FloatsSize = reader.ReadInt32();
+            var m_FloatsSize = reader.ReadInt32();
             m_Floats = new KeyValuePair<string, float>[m_FloatsSize];
-            for (int i = 0; i < m_FloatsSize; i++)
+            for (var i = 0; i < m_FloatsSize; i++)
             {
                 m_Floats[i] = new KeyValuePair<string, float>(reader.ReadAlignedString(), reader.ReadSingle());
             }
 
-            int m_ColorsSize = reader.ReadInt32();
+            var m_ColorsSize = reader.ReadInt32();
             m_Colors = new KeyValuePair<string, Color>[m_ColorsSize];
-            for (int i = 0; i < m_ColorsSize; i++)
+            for (var i = 0; i < m_ColorsSize; i++)
             {
                 m_Colors[i] = new KeyValuePair<string, Color>(reader.ReadAlignedString(), reader.ReadColor4());
             }
@@ -82,7 +82,7 @@ namespace AssetStudio
             if (version[0] > 5 || (version[0] == 5 && version[1] >= 1)) //5.1 and up
             {
                 var stringTagMapSize = reader.ReadInt32();
-                for (int i = 0; i < stringTagMapSize; i++)
+                for (var i = 0; i < stringTagMapSize; i++)
                 {
                     var first = reader.ReadAlignedString();
                     var second = reader.ReadAlignedString();

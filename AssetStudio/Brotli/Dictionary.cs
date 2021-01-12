@@ -58,9 +58,9 @@ namespace Org.Brotli.Dec
 			static DataHolder()
 			{
 				Data = new byte[122784];
-				string[] chunks = new string[] { Org.Brotli.Dec.Dictionary.DataHolder0.GetData(), Org.Brotli.Dec.Dictionary.DataHolder1.GetData(), Org.Brotli.Dec.Dictionary.DataHolder2.GetData() };
-				int sum = 0;
-				foreach (string chunk in chunks)
+				var chunks = new string[] { Org.Brotli.Dec.Dictionary.DataHolder0.GetData(), Org.Brotli.Dec.Dictionary.DataHolder1.GetData(), Org.Brotli.Dec.Dictionary.DataHolder2.GetData() };
+				var sum = 0;
+				foreach (var chunk in chunks)
 				{
 					sum += chunk.Length;
 				}
@@ -69,9 +69,9 @@ namespace Org.Brotli.Dec
 					throw new System.Exception("Corrupted brotli dictionary");
 				}
 				sum = 0;
-				foreach (string chunk in chunks)
+				foreach (var chunk in chunks)
 				{
-					for (int j = 0; j < chunk.Length; ++j)
+					for (var j = 0; j < chunk.Length; ++j)
 					{
 						Data[sum++] = unchecked((byte)chunk[j]);
 					}

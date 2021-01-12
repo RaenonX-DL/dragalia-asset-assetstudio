@@ -73,18 +73,18 @@ namespace AssetStudio
 
         public Skeleton(ObjectReader reader)
         {
-            int numNodes = reader.ReadInt32();
+            var numNodes = reader.ReadInt32();
             m_Node = new Node[numNodes];
-            for (int i = 0; i < numNodes; i++)
+            for (var i = 0; i < numNodes; i++)
             {
                 m_Node[i] = new Node(reader);
             }
 
             m_ID = reader.ReadUInt32Array();
 
-            int numAxes = reader.ReadInt32();
+            var numAxes = reader.ReadInt32();
             m_AxesArray = new Axes[numAxes];
-            for (int i = 0; i < numAxes; i++)
+            for (var i = 0; i < numAxes; i++)
             {
                 m_AxesArray[i] = new Axes(reader);
             }
@@ -97,9 +97,9 @@ namespace AssetStudio
 
         public SkeletonPose(ObjectReader reader)
         {
-            int numXforms = reader.ReadInt32();
+            var numXforms = reader.ReadInt32();
             m_X = new xform[numXforms];
-            for (int i = 0; i < numXforms; i++)
+            for (var i = 0; i < numXforms; i++)
             {
                 m_X[i] = new xform(reader);
             }
@@ -191,16 +191,16 @@ namespace AssetStudio
 
             if (version[0] < 2018 || (version[0] == 2018 && version[1] < 2)) //2018.2 down
             {
-                int numHandles = reader.ReadInt32();
+                var numHandles = reader.ReadInt32();
                 m_Handles = new Handle[numHandles];
-                for (int i = 0; i < numHandles; i++)
+                for (var i = 0; i < numHandles; i++)
                 {
                     m_Handles[i] = new Handle(reader);
                 }
 
-                int numColliders = reader.ReadInt32();
+                var numColliders = reader.ReadInt32();
                 m_ColliderArray = new Collider[numColliders];
-                for (int i = 0; i < numColliders; i++)
+                for (var i = 0; i < numColliders; i++)
                 {
                     m_ColliderArray[i] = new Collider(reader);
                 }
@@ -294,9 +294,9 @@ namespace AssetStudio
             m_AvatarSize = reader.ReadUInt32();
             m_Avatar = new AvatarConstant(reader);
 
-            int numTOS = reader.ReadInt32();
+            var numTOS = reader.ReadInt32();
             m_TOS = new KeyValuePair<uint, string>[numTOS];
-            for (int i = 0; i < numTOS; i++)
+            for (var i = 0; i < numTOS; i++)
             {
                 m_TOS[i] = new KeyValuePair<uint, string>(reader.ReadUInt32(), reader.ReadAlignedString());
             }

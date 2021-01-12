@@ -160,7 +160,7 @@ namespace SpirV
 
 		public override string ToString ()
 		{
-			StringBuilder sb = new StringBuilder ();
+			var sb = new StringBuilder ();
 			ToString(sb);
 			return sb.ToString();
 		}
@@ -290,7 +290,7 @@ namespace SpirV
 			MemberTypes = memberTypes;
 			memberNames_ = new List<string>();
 
-			for (int i = 0; i < memberTypes.Count; ++i)
+			for (var i = 0; i < memberTypes.Count; ++i)
 			{
 				memberNames_.Add(string.Empty);
 			}
@@ -303,7 +303,7 @@ namespace SpirV
 
 		public override string ToString()
 		{
-			StringBuilder sb = new StringBuilder();
+			var sb = new StringBuilder();
 			ToString(sb);
 			return sb.ToString();
 		}
@@ -311,9 +311,9 @@ namespace SpirV
 		public override StringBuilder ToString(StringBuilder sb)
 		{
 			sb.Append("struct {");
-			for (int i = 0; i < MemberTypes.Count; ++i)
+			for (var i = 0; i < MemberTypes.Count; ++i)
 			{
-				Type memberType = MemberTypes[i];
+				var memberType = MemberTypes[i];
 				memberType.ToString(sb);
 				if (!string.IsNullOrEmpty(memberNames_[i]))
 				{
