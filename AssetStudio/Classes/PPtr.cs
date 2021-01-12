@@ -55,20 +55,7 @@ namespace AssetStudio
 
         public bool TryGet(out T result)
         {
-            if (TryGetAssetsFile(out var sourceFile))
-            {
-                if (sourceFile.ObjectsDic.TryGetValue(m_PathID, out var obj))
-                {
-                    if (obj is T variable)
-                    {
-                        result = variable;
-                        return true;
-                    }
-                }
-            }
-
-            result = null;
-            return false;
+            return TryGet<T>(out result);
         }
 
         public bool TryGet<T2>(out T2 result) where T2 : Object
@@ -79,6 +66,7 @@ namespace AssetStudio
                 {
                     if (obj is T2 variable)
                     {
+                        obj.reader = obj.reader.Duplicate();  // For async exporting
                         result = variable;
                         return true;
                     }

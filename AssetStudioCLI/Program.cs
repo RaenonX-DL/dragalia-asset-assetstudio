@@ -81,7 +81,7 @@ namespace AssetStudioCLI
 
         static int ConvertPath(ConvertOptions opt)
         {
-            bool isDir = Directory.Exists(opt.SourcePath);
+            var isDir = Directory.Exists(opt.SourcePath);
             if (!isDir)
             {
                 if (!File.Exists(opt.SourcePath))

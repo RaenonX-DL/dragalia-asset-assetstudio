@@ -32,7 +32,7 @@ namespace AssetStudio
 
             if (platform == BuildTarget.NoTarget)
             {
-                var m_ObjectHideFlags = reader.ReadUInt32();
+                reader.ReadUInt32();  // m_ObjectHideFlags
             }
         }
 
@@ -43,42 +43,30 @@ namespace AssetStudio
 
         public string Dump()
         {
-            if (serializedType?.m_Nodes != null)
-            {
-                var sb = new StringBuilder();
-                TypeTreeHelper.ReadTypeString(sb, serializedType.m_Nodes, reader);
-                return sb.ToString();
-            }
-            return null;
+            if (serializedType?.m_Nodes == null) return null;
+            
+            var sb = new StringBuilder();
+            TypeTreeHelper.ReadTypeString(sb, serializedType.m_Nodes, reader);
+            return sb.ToString();
         }
 
         public string Dump(List<TypeTreeNode> m_Nodes)
         {
-            if (m_Nodes != null)
-            {
-                var sb = new StringBuilder();
-                TypeTreeHelper.ReadTypeString(sb, m_Nodes, reader);
-                return sb.ToString();
-            }
-            return null;
+            if (m_Nodes == null) return null;
+            
+            var sb = new StringBuilder();
+            TypeTreeHelper.ReadTypeString(sb, m_Nodes, reader);
+            return sb.ToString();
         }
 
         public OrderedDictionary ToType()
         {
-            if (serializedType?.m_Nodes != null)
-            {
-                return TypeTreeHelper.ReadType(serializedType.m_Nodes, reader);
-            }
-            return null;
+            return serializedType?.m_Nodes != null ? TypeTreeHelper.ReadType(serializedType.m_Nodes, reader) : null;
         }
 
         public OrderedDictionary ToType(List<TypeTreeNode> m_Nodes)
         {
-            if (m_Nodes != null)
-            {
-                return TypeTreeHelper.ReadType(m_Nodes, reader);
-            }
-            return null;
+            return m_Nodes != null ? TypeTreeHelper.ReadType(m_Nodes, reader) : null;
         }
 
         public byte[] GetRawData()

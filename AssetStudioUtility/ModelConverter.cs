@@ -175,36 +175,35 @@ namespace AssetStudio
 
         private void CollectAnimationClip(Animator m_Animator)
         {
-            if (m_Animator.m_Controller.TryGet(out var m_Controller))
+            if (!m_Animator.m_Controller.TryGet(out var m_Controller)) return;
+            
+            switch (m_Controller)
             {
-                switch (m_Controller)
+                case AnimatorOverrideController m_AnimatorOverrideController:
                 {
-                    case AnimatorOverrideController m_AnimatorOverrideController:
+                    if (m_AnimatorOverrideController.m_Controller.TryGet(out AnimatorController m_AnimatorController))
+                    {
+                        foreach (var pptr in m_AnimatorController.m_AnimationClips)
                         {
-                            if (m_AnimatorOverrideController.m_Controller.TryGet<AnimatorController>(out var m_AnimatorController))
+                            if (pptr.TryGet(out var m_AnimationClip))
                             {
-                                foreach (var pptr in m_AnimatorController.m_AnimationClips)
-                                {
-                                    if (pptr.TryGet(out var m_AnimationClip))
-                                    {
-                                        animationClipHashSet.Add(m_AnimationClip);
-                                    }
-                                }
+                                animationClipHashSet.Add(m_AnimationClip);
                             }
-                            break;
                         }
+                    }
+                    break;
+                }
 
-                    case AnimatorController m_AnimatorController:
+                case AnimatorController m_AnimatorController:
+                {
+                    foreach (var pptr in m_AnimatorController.m_AnimationClips)
+                    {
+                        if (pptr.TryGet(out var m_AnimationClip))
                         {
-                            foreach (var pptr in m_AnimatorController.m_AnimationClips)
-                            {
-                                if (pptr.TryGet(out var m_AnimationClip))
-                                {
-                                    animationClipHashSet.Add(m_AnimationClip);
-                                }
-                            }
-                            break;
+                            animationClipHashSet.Add(m_AnimationClip);
                         }
+                    }
+                    break;
                 }
             }
         }

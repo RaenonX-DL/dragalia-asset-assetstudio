@@ -945,7 +945,7 @@ namespace TGASharpLib
             if (Bytes.Length != Size)
                 throw new ArgumentOutOfRangeException(nameof(Bytes.Length) + " must be equal " + Size + "!");
 
-            Color color = Color.FromArgb(BitConverter.ToInt32(Bytes, 0));
+            var color = Color.FromArgb(BitConverter.ToInt32(Bytes, 0));
             a = color.A;
             r = color.R;
             g = color.G;
@@ -4817,7 +4817,7 @@ namespace TGASharpLib
             #region Header
             if (ImageOrColorMapArea.ImageID != null)
             {
-                int StrMaxLen = 255;
+                var StrMaxLen = 255;
                 if (ImageOrColorMapArea.ImageID.UseEndingChar)
                     StrMaxLen--;
 
@@ -4850,8 +4850,8 @@ namespace TGASharpLib
                     return false;
                 }
 
-                int CmBytesPerPixel = (int)Math.Ceiling((double)Header.ColorMapSpec.ColorMapEntrySize / 8.0);
-                int LenBytes = Header.ColorMapSpec.ColorMapLength * CmBytesPerPixel;
+                var CmBytesPerPixel = (int)Math.Ceiling((double)Header.ColorMapSpec.ColorMapEntrySize / 8.0);
+                var LenBytes = Header.ColorMapSpec.ColorMapLength * CmBytesPerPixel;
 
                 if (LenBytes != ImageOrColorMapArea.ColorMapData.Length)
                 {
@@ -4864,7 +4864,7 @@ namespace TGASharpLib
             #endregion
 
             #region Image Data
-            int BytesPerPixel = 0;
+            var BytesPerPixel = 0;
             if (Header.ImageType != TgaImageType.NoImageData)
             {
                 if (Header.ImageSpec == null)
@@ -4895,7 +4895,7 @@ namespace TGASharpLib
                 if (Header.ImageType >= TgaImageType.RLE_ColorMapped &&
                     Header.ImageType <= TgaImageType.RLE_BlackWhite)
                 {
-                    byte[] RLE = RLE_Encode(ImageOrColorMapArea.ImageData, Width, Height);
+                    var RLE = RLE_Encode(ImageOrColorMapArea.ImageData, Width, Height);
                     if (RLE == null)
                     {
                         ErrorStr = "RLE Compressing error! Check Image Data size.";
@@ -4916,8 +4916,8 @@ namespace TGASharpLib
                 #region DevArea
                 if (DevArea != null)
                 {
-                    int DevAreaCount = DevArea.Count;
-                    for (int i = 0; i < DevAreaCount; i++)
+                    var DevAreaCount = DevArea.Count;
+                    for (var i = 0; i < DevAreaCount; i++)
                         if (DevArea[i] == null || DevArea[i].FieldSize <= 0) //Del Empty Entries
                         {
                             DevArea.Entries.RemoveAt(i);
@@ -4931,7 +4931,7 @@ namespace TGASharpLib
                     if (DevArea.Count > 2)
                     {
                         DevArea.Entries.Sort((a, b) => { return a.Tag.CompareTo(b.Tag); });
-                        for (int i = 0; i < DevArea.Count - 1; i++)
+                        for (var i = 0; i < DevArea.Count - 1; i++)
                             if (DevArea[i].Tag == DevArea[i + 1].Tag)
                             {
                                 ErrorStr = "DevArea Enties has same Tags!";
@@ -4939,7 +4939,7 @@ namespace TGASharpLib
                             }
                     }
 
-                    for (int i = 0; i < DevArea.Count; i++)
+                    for (var i = 0; i < DevArea.Count; i++)
                     {
                         DevArea[i].Offset = Offset;
                         Offset += (uint)DevArea[i].FieldSize;
@@ -4997,7 +4997,7 @@ namespace TGASharpLib
                             return false;
                         }
 
-                        int PImgSB = ExtArea.PostageStampImage.Width * ExtArea.PostageStampImage.Height * BytesPerPixel;
+                        var PImgSB = ExtArea.PostageStampImage.Width * ExtArea.PostageStampImage.Height * BytesPerPixel;
                         if (Header.ImageType != TgaImageType.NoImageData &&
                             ExtArea.PostageStampImage.Data.Length != PImgSB)
                         {
@@ -5145,7 +5145,7 @@ namespace TGASharpLib
             try
             {
                 stream.Seek(0, SeekOrigin.Begin);
-                BinaryReader Br = new BinaryReader(stream);
+                var Br = new BinaryReader(stream);
 
                 Header = new TgaHeader(Br.ReadBytes(TgaHeader.Size));
 
@@ -5154,23 +5154,23 @@ namespace TGASharpLib
 
                 if (Header.ColorMapSpec.ColorMapLength > 0)
                 {
-                    int CmBytesPerPixel = (int)Math.Ceiling((double)Header.ColorMapSpec.ColorMapEntrySize / 8.0);
-                    int LenBytes = Header.ColorMapSpec.ColorMapLength * CmBytesPerPixel;
+                    var CmBytesPerPixel = (int)Math.Ceiling((double)Header.ColorMapSpec.ColorMapEntrySize / 8.0);
+                    var LenBytes = Header.ColorMapSpec.ColorMapLength * CmBytesPerPixel;
                     ImageOrColorMapArea.ColorMapData = Br.ReadBytes(LenBytes);
                 }
 
                 #region Read Image Data
-                int BytesPerPixel = (int)Math.Ceiling((double)Header.ImageSpec.PixelDepth / 8.0);
+                var BytesPerPixel = (int)Math.Ceiling((double)Header.ImageSpec.PixelDepth / 8.0);
                 if (Header.ImageType != TgaImageType.NoImageData)
                 {
-                    int ImageDataSize = Width * Height * BytesPerPixel;
+                    var ImageDataSize = Width * Height * BytesPerPixel;
                     switch (Header.ImageType)
                     {
                         case TgaImageType.RLE_ColorMapped:
                         case TgaImageType.RLE_TrueColor:
                         case TgaImageType.RLE_BlackWhite:
 
-                            int DataOffset = 0;
+                            var DataOffset = 0;
                             byte PacketInfo;
                             int PacketCount;
                             byte[] RLE_Bytes, RLE_Part;
@@ -5185,7 +5185,7 @@ namespace TGASharpLib
                                 {
                                     RLE_Bytes = new byte[PacketCount * BytesPerPixel];
                                     RLE_Part = Br.ReadBytes(BytesPerPixel);
-                                    for (int i = 0; i < RLE_Bytes.Length; i++)
+                                    for (var i = 0; i < RLE_Bytes.Length; i++)
                                         RLE_Bytes[i] = RLE_Part[i % BytesPerPixel];
                                 }
                                 else // RAW format
@@ -5209,13 +5209,13 @@ namespace TGASharpLib
 
                 #region Try parse Footer
                 stream.Seek(-TgaFooter.Size, SeekOrigin.End);
-                uint FooterOffset = (uint)stream.Position;
-                TgaFooter MbFooter = new TgaFooter(Br.ReadBytes(TgaFooter.Size));
+                var FooterOffset = (uint)stream.Position;
+                var MbFooter = new TgaFooter(Br.ReadBytes(TgaFooter.Size));
                 if (MbFooter.IsFooterCorrect)
                 {
                     Footer = MbFooter;
-                    uint DevDirOffset = Footer.DeveloperDirectoryOffset;
-                    uint ExtAreaOffset = Footer.ExtensionAreaOffset;
+                    var DevDirOffset = Footer.DeveloperDirectoryOffset;
+                    var ExtAreaOffset = Footer.ExtensionAreaOffset;
 
                     #region If Dev Area exist, read it.
                     if (DevDirOffset != 0)
@@ -5224,18 +5224,18 @@ namespace TGASharpLib
                         DevArea = new TgaDevArea();
                         uint NumberOfTags = Br.ReadUInt16();
 
-                        ushort[] Tags = new ushort[NumberOfTags];
-                        uint[] TagOffsets = new uint[NumberOfTags];
-                        uint[] TagSizes = new uint[NumberOfTags];
+                        var Tags = new ushort[NumberOfTags];
+                        var TagOffsets = new uint[NumberOfTags];
+                        var TagSizes = new uint[NumberOfTags];
 
-                        for (int i = 0; i < NumberOfTags; i++)
+                        for (var i = 0; i < NumberOfTags; i++)
                         {
                             Tags[i] = Br.ReadUInt16();
                             TagOffsets[i] = Br.ReadUInt32();
                             TagSizes[i] = Br.ReadUInt32();
                         }
 
-                        for (int i = 0; i < NumberOfTags; i++)
+                        for (var i = 0; i < NumberOfTags; i++)
                         {
                             stream.Seek(TagOffsets[i], SeekOrigin.Begin);
                             var Ent = new TgaDevEntry(Tags[i], TagOffsets[i], Br.ReadBytes((int)TagSizes[i]));
@@ -5252,7 +5252,7 @@ namespace TGASharpLib
                     if (ExtAreaOffset != 0)
                     {
                         stream.Seek(ExtAreaOffset, SeekOrigin.Begin);
-                        ushort ExtAreaSize = Math.Max((ushort)TgaExtArea.MinSize, Br.ReadUInt16());
+                        var ExtAreaSize = Math.Max((ushort)TgaExtArea.MinSize, Br.ReadUInt16());
                         stream.Seek(ExtAreaOffset, SeekOrigin.Begin);
                         ExtArea = new TgaExtArea(Br.ReadBytes(ExtAreaSize));
 
@@ -5260,16 +5260,16 @@ namespace TGASharpLib
                         {
                             stream.Seek(ExtArea.ScanLineOffset, SeekOrigin.Begin);
                             ExtArea.ScanLineTable = new uint[Height];
-                            for (int i = 0; i < ExtArea.ScanLineTable.Length; i++)
+                            for (var i = 0; i < ExtArea.ScanLineTable.Length; i++)
                                 ExtArea.ScanLineTable[i] = Br.ReadUInt32();
                         }
 
                         if (ExtArea.PostageStampOffset > 0)
                         {
                             stream.Seek(ExtArea.PostageStampOffset, SeekOrigin.Begin);
-                            byte W = Br.ReadByte();
-                            byte H = Br.ReadByte();
-                            int ImgDataSize = W * H * BytesPerPixel;
+                            var W = Br.ReadByte();
+                            var H = Br.ReadByte();
+                            var ImgDataSize = W * H * BytesPerPixel;
                             if (ImgDataSize > 0)
                                 ExtArea.PostageStampImage = new TgaPostageStampImage(W, H, Br.ReadBytes(ImgDataSize));
                         }
@@ -5278,7 +5278,7 @@ namespace TGASharpLib
                         {
                             stream.Seek(ExtArea.ColorCorrectionTableOffset, SeekOrigin.Begin);
                             ExtArea.ColorCorrectionTable = new ushort[256 * 4];
-                            for (int i = 0; i < ExtArea.ColorCorrectionTable.Length; i++)
+                            for (var i = 0; i < ExtArea.ColorCorrectionTable.Length; i++)
                                 ExtArea.ColorCorrectionTable[i] = Br.ReadUInt16();
                         }
                     }
@@ -5334,15 +5334,15 @@ namespace TGASharpLib
                     case PixelFormat.Format64bppArgb:
                     case PixelFormat.Format64bppPArgb:
 
-                        int bpp = Math.Max(8, Image.GetPixelFormatSize(bmp.PixelFormat));
-                        int BytesPP = bpp / 8;
+                        var bpp = Math.Max(8, Image.GetPixelFormatSize(bmp.PixelFormat));
+                        var BytesPP = bpp / 8;
 
                         if (bmp.PixelFormat == PixelFormat.Format16bppRgb555)
                             bpp = 15;
 
-                        bool IsAlpha = Image.IsAlphaPixelFormat(bmp.PixelFormat);
-                        bool IsPreAlpha = IsAlpha && bmp.PixelFormat.ToString().EndsWith("PArgb");
-                        bool IsColorMapped = bmp.PixelFormat.ToString().EndsWith("Indexed");
+                        var IsAlpha = Image.IsAlphaPixelFormat(bmp.PixelFormat);
+                        var IsPreAlpha = IsAlpha && bmp.PixelFormat.ToString().EndsWith("PArgb");
+                        var IsColorMapped = bmp.PixelFormat.ToString().EndsWith("Indexed");
 
                         Header.ImageSpec.PixelDepth = (TgaPixelDepth)(BytesPP * 8);
 
@@ -5355,17 +5355,17 @@ namespace TGASharpLib
                         }
 
                         #region ColorMap
-                        bool IsGrayImage = (bmp.PixelFormat == PixelFormat.Format16bppGrayScale | IsColorMapped);
+                        var IsGrayImage = (bmp.PixelFormat == PixelFormat.Format16bppGrayScale | IsColorMapped);
 
                         if (IsColorMapped && bmp.Palette != null)
                         {
-                            Color[] Colors = bmp.Palette.Entries;
+                            var Colors = bmp.Palette.Entries;
 
                             #region Analyze ColorMapType
-                            int AlphaSum = 0;
-                            bool ColorMapUseAlpha = false;
+                            var AlphaSum = 0;
+                            var ColorMapUseAlpha = false;
 
-                            for (int i = 0; i < Colors.Length; i++)
+                            for (var i = 0; i < Colors.Length; i++)
                             {
                                 IsGrayImage &= (Colors[i].R == Colors[i].G && Colors[i].G == Colors[i].B);
                                 ColorMapUseAlpha |= (Colors[i].A < 248);
@@ -5373,27 +5373,27 @@ namespace TGASharpLib
                             }
                             ColorMapUseAlpha &= (AlphaSum > 0);
 
-                            int CMapBpp = (ColorMap2BytesEntry ? 15 : 24) + (ColorMapUseAlpha ? (ColorMap2BytesEntry ? 1 : 8) : 0);
-                            int CMBytesPP = (int)Math.Ceiling(CMapBpp / 8.0);
+                            var CMapBpp = (ColorMap2BytesEntry ? 15 : 24) + (ColorMapUseAlpha ? (ColorMap2BytesEntry ? 1 : 8) : 0);
+                            var CMBytesPP = (int)Math.Ceiling(CMapBpp / 8.0);
                             #endregion
 
                             Header.ColorMapSpec.ColorMapLength = Math.Min((ushort)Colors.Length, ushort.MaxValue);
                             Header.ColorMapSpec.ColorMapEntrySize = (TgaColorMapEntrySize)CMapBpp;
                             ImageOrColorMapArea.ColorMapData = new byte[Header.ColorMapSpec.ColorMapLength * CMBytesPP];
 
-                            byte[] CMapEntry = new byte[CMBytesPP];
+                            var CMapEntry = new byte[CMBytesPP];
 
                             const float To5Bit = 32f / 256f; // Scale value from 8 to 5 bits.
-                            for (int i = 0; i < Colors.Length; i++)
+                            for (var i = 0; i < Colors.Length; i++)
                             {
                                 switch (Header.ColorMapSpec.ColorMapEntrySize)
                                 {
                                     case TgaColorMapEntrySize.A1R5G5B5:
                                     case TgaColorMapEntrySize.X1R5G5B5:
-                                        int R = (int)(Colors[i].R * To5Bit);
-                                        int G = (int)(Colors[i].G * To5Bit) << 5;
-                                        int B = (int)(Colors[i].B * To5Bit) << 10;
-                                        int A = 0;
+                                        var R = (int)(Colors[i].R * To5Bit);
+                                        var G = (int)(Colors[i].G * To5Bit) << 5;
+                                        var B = (int)(Colors[i].B * To5Bit) << 10;
+                                        var A = 0;
 
                                         if (Header.ColorMapSpec.ColorMapEntrySize == TgaColorMapEntrySize.A1R5G5B5)
                                             A = ((Colors[i].A & 0x80) << 15);
@@ -5472,13 +5472,13 @@ namespace TGASharpLib
                         #endregion
 
                         #region Bitmap width is aligned by 32 bits = 4 bytes! Delete it.
-                        int StrideBytes = bmp.Width * BytesPP;
-                        int PaddingBytes = (int)Math.Ceiling(StrideBytes / 4.0) * 4 - StrideBytes;
+                        var StrideBytes = bmp.Width * BytesPP;
+                        var PaddingBytes = (int)Math.Ceiling(StrideBytes / 4.0) * 4 - StrideBytes;
 
-                        byte[] ImageData = new byte[(StrideBytes + PaddingBytes) * bmp.Height];
+                        var ImageData = new byte[(StrideBytes + PaddingBytes) * bmp.Height];
 
-                        Rectangle Re = new Rectangle(0, 0, bmp.Width, bmp.Height);
-                        BitmapData BmpData = bmp.LockBits(Re, ImageLockMode.ReadOnly, bmp.PixelFormat);
+                        var Re = new Rectangle(0, 0, bmp.Width, bmp.Height);
+                        var BmpData = bmp.LockBits(Re, ImageLockMode.ReadOnly, bmp.PixelFormat);
                         Marshal.Copy(BmpData.Scan0, ImageData, 0, ImageData.Length);
                         bmp.UnlockBits(BmpData);
                         BmpData = null;
@@ -5486,7 +5486,7 @@ namespace TGASharpLib
                         if (PaddingBytes > 0) //Need delete bytes align
                         {
                             ImageOrColorMapArea.ImageData = new byte[StrideBytes * bmp.Height];
-                            for (int i = 0; i < bmp.Height; i++)
+                            for (var i = 0; i < bmp.Height; i++)
                                 Buffer.BlockCopy(ImageData, i * (StrideBytes + PaddingBytes),
                                     ImageOrColorMapArea.ImageData, i * StrideBytes, StrideBytes);
                         }
@@ -5527,7 +5527,7 @@ namespace TGASharpLib
                 if (!CheckAndUpdateOffsets(out CheckResult))
                     return false;
 
-                BinaryWriter Bw = new BinaryWriter(stream);
+                var Bw = new BinaryWriter(stream);
                 Bw.Write(Header.ToBytes());
 
                 if (ImageOrColorMapArea.ImageID != null)
@@ -5553,12 +5553,12 @@ namespace TGASharpLib
                     #region DevArea
                     if (DevArea != null)
                     {
-                        for (int i = 0; i < DevArea.Count; i++)
+                        for (var i = 0; i < DevArea.Count; i++)
                             Bw.Write(DevArea[i].Data);
 
                         Bw.Write((ushort)DevArea.Count);
 
-                        for (int i = 0; i < DevArea.Count; i++)
+                        for (var i = 0; i < DevArea.Count; i++)
                         {
                             Bw.Write(DevArea[i].Tag);
                             Bw.Write(DevArea[i].Offset);
@@ -5573,14 +5573,14 @@ namespace TGASharpLib
                         Bw.Write(ExtArea.ToBytes());
 
                         if (ExtArea.ScanLineTable != null)
-                            for (int i = 0; i < ExtArea.ScanLineTable.Length; i++)
+                            for (var i = 0; i < ExtArea.ScanLineTable.Length; i++)
                                 Bw.Write(ExtArea.ScanLineTable[i]);
 
                         if (ExtArea.PostageStampImage != null)
                             Bw.Write(ExtArea.PostageStampImage.ToBytes());
 
                         if (ExtArea.ColorCorrectionTable != null)
-                            for (int i = 0; i < ExtArea.ColorCorrectionTable.Length; i++)
+                            for (var i = 0; i < ExtArea.ColorCorrectionTable.Length; i++)
                                 Bw.Write(ExtArea.ColorCorrectionTable[i]);
                     }
                     #endregion
@@ -5683,7 +5683,7 @@ namespace TGASharpLib
             try
             {
                 #region UseAlpha?
-                bool UseAlpha = true;
+                var UseAlpha = true;
                 if (ExtArea != null)
                 {
                     switch (ExtArea.AttributesType)
@@ -5703,12 +5703,12 @@ namespace TGASharpLib
                 #endregion
 
                 #region IsGrayImage
-                bool IsGrayImage = Header.ImageType == TgaImageType.RLE_BlackWhite ||
-                    Header.ImageType == TgaImageType.Uncompressed_BlackWhite;
+                var IsGrayImage = Header.ImageType == TgaImageType.RLE_BlackWhite ||
+                                  Header.ImageType == TgaImageType.Uncompressed_BlackWhite;
                 #endregion
 
                 #region Get PixelFormat
-                PixelFormat PixFormat = PixelFormat.Format24bppRgb;
+                var PixFormat = PixelFormat.Format24bppRgb;
 
                 switch (Header.ImageSpec.PixelDepth)
                 {
@@ -5746,9 +5746,9 @@ namespace TGASharpLib
                 }
                 #endregion
 
-                ushort BMP_Width = (PostageStampImage ? ExtArea.PostageStampImage.Width : Width);
-                ushort BMP_Height = (PostageStampImage ? ExtArea.PostageStampImage.Height : Height);
-                Bitmap BMP = new Bitmap(BMP_Width, BMP_Height, PixFormat);
+                var BMP_Width = (PostageStampImage ? ExtArea.PostageStampImage.Width : Width);
+                var BMP_Height = (PostageStampImage ? ExtArea.PostageStampImage.Height : Height);
+                var BMP = new Bitmap(BMP_Width, BMP_Height, PixFormat);
 
                 #region ColorMap and GrayPalette
                 if (Header.ColorMapType == TgaColorMapType.ColorMap &&
@@ -5756,29 +5756,29 @@ namespace TGASharpLib
                     Header.ImageType == TgaImageType.Uncompressed_ColorMapped))
                 {
 
-                    ColorPalette ColorMap = BMP.Palette;
-                    Color[] CMapColors = ColorMap.Entries;
+                    var ColorMap = BMP.Palette;
+                    var CMapColors = ColorMap.Entries;
 
                     switch (Header.ColorMapSpec.ColorMapEntrySize)
                     {
                         case TgaColorMapEntrySize.X1R5G5B5:
                         case TgaColorMapEntrySize.A1R5G5B5:
                             const float To8Bit = 255f / 31f; // Scale value from 5 to 8 bits.
-                            for (int i = 0; i < Math.Min(CMapColors.Length, Header.ColorMapSpec.ColorMapLength); i++)
+                            for (var i = 0; i < Math.Min(CMapColors.Length, Header.ColorMapSpec.ColorMapLength); i++)
                             {
-                                ushort A1R5G5B5 = BitConverter.ToUInt16(ImageOrColorMapArea.ColorMapData, i * 2);
-                                int A = (UseAlpha ? (A1R5G5B5 & 0x8000) >> 15 : 1) * 255; // (0 or 1) * 255
-                                int R = (int)(((A1R5G5B5 & 0x7C00) >> 10) * To8Bit);
-                                int G = (int)(((A1R5G5B5 & 0x3E0) >> 5) * To8Bit);
-                                int B = (int)((A1R5G5B5 & 0x1F) * To8Bit);
+                                var A1R5G5B5 = BitConverter.ToUInt16(ImageOrColorMapArea.ColorMapData, i * 2);
+                                var A = (UseAlpha ? (A1R5G5B5 & 0x8000) >> 15 : 1) * 255; // (0 or 1) * 255
+                                var R = (int)(((A1R5G5B5 & 0x7C00) >> 10) * To8Bit);
+                                var G = (int)(((A1R5G5B5 & 0x3E0) >> 5) * To8Bit);
+                                var B = (int)((A1R5G5B5 & 0x1F) * To8Bit);
                                 CMapColors[i] = Color.FromArgb(A, R, G, B);
                             }
                             break;
 
                         case TgaColorMapEntrySize.R8G8B8:
-                            for (int i = 0; i < Math.Min(CMapColors.Length, Header.ColorMapSpec.ColorMapLength); i++)
+                            for (var i = 0; i < Math.Min(CMapColors.Length, Header.ColorMapSpec.ColorMapLength); i++)
                             {
-                                int Index = i * 3; //RGB = 3 bytes
+                                var Index = i * 3; //RGB = 3 bytes
                                 int R = ImageOrColorMapArea.ColorMapData[Index + 2];
                                 int G = ImageOrColorMapArea.ColorMapData[Index + 1];
                                 int B = ImageOrColorMapArea.ColorMapData[Index];
@@ -5787,9 +5787,9 @@ namespace TGASharpLib
                             break;
 
                         case TgaColorMapEntrySize.A8R8G8B8:
-                            for (int i = 0; i < Math.Min(CMapColors.Length, Header.ColorMapSpec.ColorMapLength); i++)
+                            for (var i = 0; i < Math.Min(CMapColors.Length, Header.ColorMapSpec.ColorMapLength); i++)
                             {
-                                int ARGB = BitConverter.ToInt32(ImageOrColorMapArea.ColorMapData, i * 4);
+                                var ARGB = BitConverter.ToInt32(ImageOrColorMapArea.ColorMapData, i * 4);
                                 CMapColors[i] = Color.FromArgb(UseAlpha ? ARGB | (0xFF << 24) : ARGB);
                             }
                             break;
@@ -5805,9 +5805,9 @@ namespace TGASharpLib
 
                 if (PixFormat == PixelFormat.Format8bppIndexed && IsGrayImage)
                 {
-                    ColorPalette GrayPalette = BMP.Palette;
-                    Color[] GrayColors = GrayPalette.Entries;
-                    for (int i = 0; i < GrayColors.Length; i++)
+                    var GrayPalette = BMP.Palette;
+                    var GrayColors = GrayPalette.Entries;
+                    for (var i = 0; i < GrayColors.Length; i++)
                         GrayColors[i] = Color.FromArgb(i, i, i);
                     BMP.Palette = GrayPalette;
                 }
@@ -5815,14 +5815,14 @@ namespace TGASharpLib
 
                 #region Bitmap width must by aligned (align value = 32 bits = 4 bytes)!
                 byte[] ImageData;
-                int BytesPerPixel = (int)Math.Ceiling((double)Header.ImageSpec.PixelDepth / 8.0);
-                int StrideBytes = BMP.Width * BytesPerPixel;
-                int PaddingBytes = (int)Math.Ceiling(StrideBytes / 4.0) * 4 - StrideBytes;
+                var BytesPerPixel = (int)Math.Ceiling((double)Header.ImageSpec.PixelDepth / 8.0);
+                var StrideBytes = BMP.Width * BytesPerPixel;
+                var PaddingBytes = (int)Math.Ceiling(StrideBytes / 4.0) * 4 - StrideBytes;
 
                 if (PaddingBytes > 0) //Need bytes align
                 {
                     ImageData = new byte[(StrideBytes + PaddingBytes) * BMP.Height];
-                    for (int i = 0; i < BMP.Height; i++)
+                    for (var i = 0; i < BMP.Height; i++)
                         Buffer.BlockCopy(PostageStampImage ? ExtArea.PostageStampImage.Data :
                             ImageOrColorMapArea.ImageData, i * StrideBytes, ImageData,
                             i * (StrideBytes + PaddingBytes), StrideBytes);
@@ -5839,8 +5839,8 @@ namespace TGASharpLib
                 }
                 #endregion
 
-                Rectangle Re = new Rectangle(0, 0, BMP.Width, BMP.Height);
-                BitmapData BmpData = BMP.LockBits(Re, ImageLockMode.WriteOnly, BMP.PixelFormat);
+                var Re = new Rectangle(0, 0, BMP.Width, BMP.Height);
+                var BmpData = BMP.LockBits(Re, ImageLockMode.WriteOnly, BMP.PixelFormat);
                 Marshal.Copy(ImageData, 0, BmpData.Scan0, ImageData.Length);
                 BMP.UnlockBits(BmpData);
                 ImageData = null;
