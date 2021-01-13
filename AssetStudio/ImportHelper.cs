@@ -57,20 +57,22 @@ namespace AssetStudio
             return selectFile.Distinct().ToArray();
         }
 
-        public static FileType CheckFileType(Stream stream, out EndianBinaryReader reader)
+        public static FileType CheckFileType(Stream stream, out EndianBinaryStream endianStream)
         {
-            reader = new EndianBinaryReader(stream);
-            return CheckFileType(reader);
+            endianStream = new EndianBinaryStream(stream);
+            return CheckFileType(endianStream);
         }
 
-        public static FileType CheckFileType(string fileName, out EndianBinaryReader reader)
+        public static FileType CheckFileType(string fileName, out EndianBinaryStream stream)
         {
-            reader = new EndianBinaryReader(File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
-            return CheckFileType(reader);
+            stream = new EndianBinaryStream(File.Open(fileName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite));
+            return CheckFileType(stream);
         }
 
-        private static FileType CheckFileType(EndianBinaryReader reader)
+        private static FileType CheckFileType(EndianBinaryStream stream)
         {
+            var reader = stream.InitReader();
+            
             var signature = reader.ReadStringToNull(20);
             reader.Position = 0;
             switch (signature)
@@ -97,7 +99,7 @@ namespace AssetStudio
                         {
                             return FileType.WebFile;
                         }
-                        if (SerializedFile.IsSerializedFile(reader))
+                        if (SerializedFile.IsSerializedFile(stream))
                         {
                             return FileType.AssetsFile;
                         }

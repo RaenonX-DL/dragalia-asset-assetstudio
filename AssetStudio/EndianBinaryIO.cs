@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.IO;
 
 namespace AssetStudio
@@ -9,6 +7,34 @@ namespace AssetStudio
     {
         LittleEndian,
         BigEndian
+    }
+
+    public class EndianBinaryStream : IDisposable
+    {
+        private Stream stream;
+        private EndianType endian;
+
+        public EndianBinaryStream(Stream stream, EndianType endian = EndianType.BigEndian)
+        {
+            this.stream = stream;
+            this.endian = endian;
+        }
+
+        public EndianBinaryReader InitReader()
+        {
+            var newStream = new MemoryStream();
+            stream.Position = 0;  // Make sure the base stream is at position 0
+            stream.CopyTo(newStream);
+            newStream.Position = 0;
+            return new EndianBinaryReader(newStream, endian);
+        }
+
+        public long Length => stream.Length;
+
+        public void Dispose()
+        {
+            stream?.Dispose();
+        }
     }
 
     public class EndianBinaryReader : BinaryReader

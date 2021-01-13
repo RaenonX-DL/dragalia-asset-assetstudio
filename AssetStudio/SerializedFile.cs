@@ -10,6 +10,7 @@ namespace AssetStudio
     {
         public AssetsManager assetsManager;
         public EndianBinaryReader reader;
+        public EndianBinaryStream stream;
         public string fullName;
         public string originalPath;
         public string fileName;
@@ -29,19 +30,24 @@ namespace AssetStudio
         private List<LocalSerializedObjectIdentifier> m_ScriptTypes;
         public List<FileIdentifier> m_Externals;
 
-        public SerializedFile(AssetsManager assetsManager, string fullName, EndianBinaryReader reader)
+        public SerializedFile(AssetsManager assetsManager, string fullName, EndianBinaryStream stream)
         {
             this.assetsManager = assetsManager;
-            this.reader = reader;
+            this.stream = stream;
+
+            reader = stream.InitReader();
+            
             this.fullName = fullName;
             fileName = Path.GetFileName(fullName);
 
             //ReadHeader
-            header = new SerializedFileHeader();
-            header.m_MetadataSize = reader.ReadUInt32();
-            header.m_FileSize = reader.ReadUInt32();
-            header.m_Version = reader.ReadUInt32();
-            header.m_DataOffset = reader.ReadUInt32();
+            header = new SerializedFileHeader
+            {
+                m_MetadataSize = reader.ReadUInt32(),
+                m_FileSize = reader.ReadUInt32(),
+                m_Version = reader.ReadUInt32(),
+                m_DataOffset = reader.ReadUInt32()
+            };
 
             if (header.m_Version >= 9)
             {
@@ -359,41 +365,32 @@ namespace AssetStudio
             ObjectsDic.Add(obj.m_PathID, obj);
         }
 
-        public static bool IsSerializedFile(EndianBinaryReader reader)
+        public static bool IsSerializedFile(EndianBinaryStream stream)
         {
-            var fileSize = reader.BaseStream.Length;
+            var fileSize = stream.Length;
             if (fileSize < 20)
             {
                 return false;
             }
+
+            var reader = stream.InitReader();
+            
             var m_MetadataSize = reader.ReadUInt32();
             long m_FileSize = reader.ReadUInt32();
             var m_Version = reader.ReadUInt32();
             long m_DataOffset = reader.ReadUInt32();
             var m_Endianess = reader.ReadByte();
             var m_Reserved = reader.ReadBytes(3);
-            if (m_Version >= 22)
+            if (m_Version < 22) return m_FileSize == fileSize && m_DataOffset <= fileSize;
+            
+            if (fileSize < 48)
             {
-                if (fileSize < 48)
-                {
-                    return false;
-                }
-                m_MetadataSize = reader.ReadUInt32();
-                m_FileSize = reader.ReadInt64();
-                m_DataOffset = reader.ReadInt64();
-            }
-            if (m_FileSize != fileSize)
-            {
-                reader.Position = 0;
                 return false;
             }
-            if (m_DataOffset > fileSize)
-            {
-                reader.Position = 0;
-                return false;
-            }
-            reader.Position = 0;
-            return true;
+            m_MetadataSize = reader.ReadUInt32();
+            m_FileSize = reader.ReadInt64();
+            m_DataOffset = reader.ReadInt64();
+            return m_FileSize == fileSize && m_DataOffset <= fileSize;
         }
     }
 }

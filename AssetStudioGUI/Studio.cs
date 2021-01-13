@@ -60,21 +60,21 @@ namespace AssetStudioGUI
         public static int ExtractFile(string fileName, string savePath)
         {
             var extractedCount = 0;
-            var type = ImportHelper.CheckFileType(fileName, out var reader);
+            var type = ImportHelper.CheckFileType(fileName, out var stream);
             if (type == FileType.BundleFile)
-                extractedCount += ExtractBundleFile(fileName, reader, savePath);
+                extractedCount += ExtractBundleFile(fileName, stream, savePath);
             else if (type == FileType.WebFile)
-                extractedCount += ExtractWebDataFile(fileName, reader, savePath);
+                extractedCount += ExtractWebDataFile(fileName, stream, savePath);
             else
-                reader.Dispose();
+                stream.Dispose();
             return extractedCount;
         }
 
-        private static int ExtractBundleFile(string bundleFilePath, EndianBinaryReader reader, string savePath)
+        private static int ExtractBundleFile(string bundleFilePath, EndianBinaryStream stream, string savePath)
         {
             StatusStripUpdate($"Decompressing {Path.GetFileName(bundleFilePath)} ...");
-            var bundleFile = new BundleFile(reader, bundleFilePath);
-            reader.Dispose();
+            var bundleFile = new BundleFile(stream, bundleFilePath);
+            stream.Dispose();
             if (bundleFile.fileList.Length > 0)
             {
                 var extractPath = Path.Combine(savePath, Path.GetFileName(bundleFilePath) + "_unpacked");
@@ -83,11 +83,11 @@ namespace AssetStudioGUI
             return 0;
         }
 
-        private static int ExtractWebDataFile(string webFilePath, EndianBinaryReader reader, string savePath)
+        private static int ExtractWebDataFile(string webFilePath, EndianBinaryStream stream, string savePath)
         {
             StatusStripUpdate($"Decompressing {Path.GetFileName(webFilePath)} ...");
-            var webFile = new WebFile(reader);
-            reader.Dispose();
+            var webFile = new WebFile(stream.InitReader());
+            stream.Dispose();
             if (webFile.fileList.Length > 0)
             {
                 var extractPath = Path.Combine(savePath, Path.GetFileName(webFilePath) + "_unpacked");

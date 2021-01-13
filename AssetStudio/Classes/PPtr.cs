@@ -66,7 +66,6 @@ namespace AssetStudio
                 {
                     if (obj is T2 variable)
                     {
-                        obj.reader = obj.reader.Duplicate();  // For async exporting
                         result = variable;
                         return true;
                     }

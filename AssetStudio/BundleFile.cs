@@ -41,14 +41,15 @@ namespace AssetStudio
 
         public StreamFile[] fileList;
 
-        public BundleFile(EndianBinaryReader reader, string path)
+        public BundleFile(EndianBinaryStream stream, string path)
         {
-            m_Header = new Header();
-            m_Header.signature = reader.ReadStringToNull();
+            var reader = stream.InitReader();
+
+            m_Header = new Header {signature = reader.ReadStringToNull()};
             switch (m_Header.signature)
             {
                 case "UnityArchive":
-                    break; //TODO
+                    break; // TODO
                 case "UnityWeb":
                 case "UnityRaw":
                     ReadHeaderAndBlocksInfo(reader);
@@ -68,6 +69,8 @@ namespace AssetStudio
                     }
                     break;
             }
+            
+            reader.Dispose();
         }
 
         private void ReadHeaderAndBlocksInfo(EndianBinaryReader reader)

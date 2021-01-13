@@ -11,7 +11,7 @@ namespace AssetStudio
     {
         public List<SerializedFile> assetsFileList = new List<SerializedFile>();
         internal Dictionary<string, int> assetsFileIndexCache = new Dictionary<string, int>(StringComparer.OrdinalIgnoreCase);
-        internal Dictionary<string, BinaryReader> resourceFileReaders = new Dictionary<string, BinaryReader>(StringComparer.OrdinalIgnoreCase);
+        internal Dictionary<string, EndianBinaryStream> resourceFileStreams = new Dictionary<string, EndianBinaryStream>(StringComparer.OrdinalIgnoreCase);
 
         private List<string> importFiles = new List<string>();
         private HashSet<string> importFilesHash = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
@@ -59,21 +59,21 @@ namespace AssetStudio
 
         private void LoadFile(string fullName)
         {
-            switch (CheckFileType(fullName, out var reader))
+            switch (CheckFileType(fullName, out var stream))
             {
                 case FileType.AssetsFile:
-                    LoadAssetsFile(fullName, reader);
+                    LoadAssetsFile(fullName, stream);
                     break;
                 case FileType.BundleFile:
-                    LoadBundleFile(fullName, reader);
+                    LoadBundleFile(fullName, stream);
                     break;
                 case FileType.WebFile:
-                    LoadWebFile(fullName, reader);
+                    LoadWebFile(fullName, stream);
                     break;
             }
         }
 
-        private void LoadAssetsFile(string fullName, EndianBinaryReader reader)
+        private void LoadAssetsFile(string fullName, EndianBinaryStream stream)
         {
             var fileName = Path.GetFileName(fullName);
             if (!assetsFileListHash.Contains(fileName))
@@ -81,7 +81,7 @@ namespace AssetStudio
                 Logger.Info($"Loading {fileName}");
                 try
                 {
-                    var assetsFile = new SerializedFile(this, fullName, reader);
+                    var assetsFile = new SerializedFile(this, fullName, stream);
                     assetsFileList.Add(assetsFile);
                     assetsFileListHash.Add(assetsFile.fileName);
 
@@ -111,25 +111,24 @@ namespace AssetStudio
                 }
                 catch
                 {
-                    reader.Dispose();
+                    stream.Dispose();
                     //Logger.Warning($"Unable to load assets file {fileName}");
                 }
             }
             else
             {
-                reader.Dispose();
+                stream.Dispose();
             }
         }
 
-        private void LoadAssetsFromMemory(string fullName, EndianBinaryReader reader, string originalPath, string unityVersion = null)
+        private void LoadAssetsFromMemory(string fullName, EndianBinaryStream stream, string originalPath, string unityVersion = null)
         {
             var fileName = Path.GetFileName(fullName);
             if (!assetsFileListHash.Contains(fileName))
             {
                 try
                 {
-                    var assetsFile = new SerializedFile(this, fullName, reader);
-                    assetsFile.originalPath = originalPath;
+                    var assetsFile = new SerializedFile(this, fullName, stream) {originalPath = originalPath};
                     if (assetsFile.header.m_Version < 7)
                     {
                         assetsFile.SetVersion(unityVersion);
@@ -140,29 +139,29 @@ namespace AssetStudio
                 catch
                 {
                     //Logger.Error($"Unable to load assets file {fileName} from {Path.GetFileName(originalPath)}");
-                    resourceFileReaders.Add(fileName, reader);
+                    resourceFileStreams.Add(fileName, stream);
                 }
             }
         }
 
-        private void LoadBundleFile(string fullName, EndianBinaryReader reader, string parentPath = null)
+        private void LoadBundleFile(string fullName, EndianBinaryStream stream, string parentPath = null)
         {
             var fileName = Path.GetFileName(fullName);
             Logger.Info("Loading " + fileName);
             try
             {
-                var bundleFile = new BundleFile(reader, fullName);
+                var bundleFile = new BundleFile(stream, fullName);
                 foreach (var file in bundleFile.fileList)
                 {
-                    var subReader = new EndianBinaryReader(file.stream);
-                    if (SerializedFile.IsSerializedFile(subReader))
+                    var subStream = new EndianBinaryStream(file.stream);
+                    if (SerializedFile.IsSerializedFile(subStream))
                     {
                         var dummyPath = Path.GetDirectoryName(fullName) + Path.DirectorySeparatorChar + file.fileName;
-                        LoadAssetsFromMemory(dummyPath, subReader, parentPath ?? fullName, bundleFile.m_Header.unityRevision);
+                        LoadAssetsFromMemory(dummyPath, subStream, parentPath ?? fullName, bundleFile.m_Header.unityRevision);
                     }
                     else
                     {
-                        resourceFileReaders.Add(file.fileName, subReader);
+                        resourceFileStreams.Add(file.fileName, subStream);
                     }
                 }
             }
@@ -177,44 +176,44 @@ namespace AssetStudio
             }
             finally
             {
-                reader.Dispose();
+                stream.Dispose();
             }
         }
 
-        private void LoadWebFile(string fullName, EndianBinaryReader reader)
+        private void LoadWebFile(string fullName, EndianBinaryStream stream)
         {
             var fileName = Path.GetFileName(fullName);
             Logger.Info("Loading " + fileName);
             try
             {
-                var webFile = new WebFile(reader);
+                var webFile = new WebFile(stream.InitReader());
                 foreach (var file in webFile.fileList)
                 {
                     var dummyPath = Path.Combine(Path.GetDirectoryName(fullName), file.fileName);
-                    switch (CheckFileType(file.stream, out var fileReader))
+                    switch (CheckFileType(file.stream, out var fileStream))
                     {
                         case FileType.AssetsFile:
-                            LoadAssetsFromMemory(dummyPath, fileReader, fullName);
+                            LoadAssetsFromMemory(dummyPath, fileStream, fullName);
                             break;
                         case FileType.BundleFile:
-                            LoadBundleFile(dummyPath, fileReader, fullName);
+                            LoadBundleFile(dummyPath, fileStream, fullName);
                             break;
                         case FileType.WebFile:
-                            LoadWebFile(dummyPath, fileReader);
+                            LoadWebFile(dummyPath, fileStream);
                             break;
                         case FileType.ResourceFile:
-                            resourceFileReaders.Add(file.fileName, fileReader);
+                            resourceFileStreams.Add(file.fileName, fileStream);
                             break;
                     }
                 }
             }
             catch
             {
-                //Logger.Error($"Unable to load web file {fileName}");
+                // Logger.Error($"Unable to load web file {fileName}");
             }
             finally
             {
-                reader.Dispose();
+                stream.Dispose();
             }
         }
 
@@ -227,11 +226,11 @@ namespace AssetStudio
             }
             assetsFileList.Clear();
 
-            foreach (var resourceFileReader in resourceFileReaders)
+            foreach (var resourceFileReader in resourceFileStreams)
             {
-                resourceFileReader.Value.Close();
+                resourceFileReader.Value.Dispose();
             }
-            resourceFileReaders.Clear();
+            resourceFileStreams.Clear();
 
             assetsFileIndexCache.Clear();
         }

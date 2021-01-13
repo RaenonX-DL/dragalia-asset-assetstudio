@@ -10,8 +10,7 @@ namespace AssetStudio
         private long offset;
         private int size;
         private BinaryReader reader;
-
-
+        
         public ResourceReader(string path, SerializedFile assetsFile, ulong offset, int size)
         {
             needSearch = true;
@@ -34,8 +33,10 @@ namespace AssetStudio
             {
                 var resourceFileName = Path.GetFileName(path);
 
-                if (assetsFile.assetsManager.resourceFileReaders.TryGetValue(resourceFileName, out reader))
+                if (assetsFile.assetsManager.resourceFileStreams.TryGetValue(resourceFileName, out var stream))
                 {
+                    reader = stream.InitReader();
+                
                     needSearch = false;
                     reader.BaseStream.Position = offset;
                     return reader.ReadBytes(size);
@@ -53,9 +54,9 @@ namespace AssetStudio
                 }
                 if (File.Exists(resourceFilePath))
                 {
-                    reader = new BinaryReader(File.OpenRead(resourceFilePath));
+                    stream = new EndianBinaryStream(File.OpenRead(resourceFilePath));
                     needSearch = false;
-                    assetsFile.assetsManager.resourceFileReaders.Add(resourceFileName, reader);
+                    assetsFile.assetsManager.resourceFileStreams.Add(resourceFileName, stream);
                     reader.BaseStream.Position = offset;
                     return reader.ReadBytes(size);
                 }

@@ -14,8 +14,6 @@ namespace AssetStudio
         public BuildTarget platform;
         public uint m_Version;
 
-        public ObjectInfo objectInfo;
-
         public int[] version => assetsFile.version;
         public BuildType buildType => assetsFile.buildType;
 
@@ -36,30 +34,11 @@ namespace AssetStudio
             serializedType = objectInfo.serializedType;
             platform = assetsFile.m_TargetPlatform;
             m_Version = assetsFile.header.m_Version;
-
-            this.objectInfo = objectInfo;
         }
 
         public void Reset()
         {
             Position = byteStart;
-        }
-        
-        public ObjectReader Duplicate()
-        {
-            var newStream = new MemoryStream();
-            var position = Position;
-                        
-            // Copy stream
-            Position = 0;
-            BaseStream.CopyTo(newStream);
-            // Reset position
-            Position = position;
-            newStream.Position = position;
-
-            var newEndianReader = new EndianBinaryReader(newStream, endian);
-
-            return new ObjectReader(newEndianReader, assetsFile, objectInfo);
         }
     }
 }
