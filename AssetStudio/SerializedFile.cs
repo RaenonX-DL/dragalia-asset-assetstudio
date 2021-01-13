@@ -16,8 +16,9 @@ namespace AssetStudio
         public string fileName;
         public int[] version = { 0, 0, 0, 0 };
         public BuildType buildType;
-        public List<Object> Objects;
-        public Dictionary<long, Object> ObjectsDic;
+        public List<Object> objects;
+        public Dictionary<long, Object> objectsDict;
+        public Dictionary<long, EndianBinaryStream> objectsStream;
 
         public SerializedFileHeader header;
         private EndianType m_FileEndianess;
@@ -40,7 +41,7 @@ namespace AssetStudio
             this.fullName = fullName;
             fileName = Path.GetFileName(fullName);
 
-            //ReadHeader
+            // Read Header
             header = new SerializedFileHeader
             {
                 m_MetadataSize = reader.ReadUInt32(),
@@ -69,7 +70,7 @@ namespace AssetStudio
                 reader.ReadInt64(); // unknown
             }
 
-            //ReadMetadata
+            // Read Metadata
             if (m_FileEndianess == EndianType.LittleEndian)
             {
                 reader.endian = EndianType.LittleEndian;
@@ -92,7 +93,7 @@ namespace AssetStudio
                 m_EnableTypeTree = reader.ReadBoolean();
             }
 
-            //ReadTypes
+            // Read Types
             var typeCount = reader.ReadInt32();
             m_Types = new List<SerializedType>(typeCount);
             for (var i = 0; i < typeCount; i++)
@@ -106,11 +107,12 @@ namespace AssetStudio
                 bigIDEnabled = reader.ReadInt32();
             }
 
-            //ReadObjects
+            // Read Objects
             var objectCount = reader.ReadInt32();
             m_Objects = new List<ObjectInfo>(objectCount);
-            Objects = new List<Object>(objectCount);
-            ObjectsDic = new Dictionary<long, Object>(objectCount);
+            objects = new List<Object>(objectCount);
+            objectsDict = new Dictionary<long, Object>(objectCount);
+            objectsStream = new Dictionary<long, EndianBinaryStream>(objectCount);
             for (var i = 0; i < objectCount; i++)
             {
                 var objectInfo = new ObjectInfo();
@@ -219,7 +221,7 @@ namespace AssetStudio
                 var userInformation = reader.ReadStringToNull();
             }
 
-            //reader.AlignStream(16);
+            // reader.AlignStream(16);
         }
 
         public void SetVersion(string stringVersion)
@@ -361,8 +363,9 @@ namespace AssetStudio
 
         public void AddObject(Object obj)
         {
-            Objects.Add(obj);
-            ObjectsDic.Add(obj.m_PathID, obj);
+            objects.Add(obj);
+            objectsDict.Add(obj.m_PathID, obj);
+            objectsStream.Add(obj.m_PathID, new EndianBinaryStream(obj.reader.BaseStream, obj.reader.endian));
         }
 
         public static bool IsSerializedFile(EndianBinaryStream stream)

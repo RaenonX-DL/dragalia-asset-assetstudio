@@ -81,10 +81,9 @@ namespace AssetStudioCLI
             var bundleFile = new BundleFile(stream, bundleFilePath);
             stream.Dispose();
             if (bundleFile.fileList.Length <= 0) return 0;
-            
+
             var extractPath = Path.Combine(savePath, Path.GetFileName(bundleFilePath) + "_unpacked");
             return ExtractStreamFile(extractPath, bundleFile.fileList);
-
         }
 
         private static int ExtractWebDataFile(string webFilePath, EndianBinaryStream stream, string savePath)
@@ -93,10 +92,9 @@ namespace AssetStudioCLI
             var webFile = new WebFile(stream.InitReader());
             stream.Dispose();
             if (webFile.fileList.Length <= 0) return 0;
-            
+
             var extractPath = Path.Combine(savePath, Path.GetFileName(webFilePath) + "_unpacked");
             return ExtractStreamFile(extractPath, webFile.fileList);
-
         }
 
         private static int ExtractStreamFile(string extractPath, IEnumerable<StreamFile> fileList)
@@ -131,14 +129,14 @@ namespace AssetStudioCLI
             StatusStripUpdate("Building asset list...");
 
             string productName = null;
-            var objectCount = assetsManager.assetsFileList.Sum(x => x.Objects.Count);
+            var objectCount = assetsManager.assetsFileList.Sum(x => x.objects.Count);
             var objectAssetItemDic = new Dictionary<Object, AssetItem>(objectCount);
             var containers = new List<(PPtr<Object>, string)>();
             var i = 0;
             Progress.Reset();
             foreach (var assetsFile in assetsManager.assetsFileList)
             {
-                foreach (var asset in assetsFile.Objects)
+                foreach (var asset in assetsFile.objects)
                 {
                     var assetItem = new AssetItem(asset);
                     objectAssetItemDic.Add(asset, assetItem);
@@ -266,7 +264,7 @@ namespace AssetStudioCLI
             {
                 var fileNode = new GameObjectTreeNode(assetsFile.fileName); //RootNode
 
-                foreach (var obj in assetsFile.Objects)
+                foreach (var obj in assetsFile.objects)
                 {
                     if (!(obj is GameObject m_GameObject)) continue;
 
@@ -434,13 +432,9 @@ namespace AssetStudioCLI
                     break;
             }
         }
-
-        public static void ExportAssets(string savePath, List<AssetItem> toExportAssets, ExportType exportType)
+        
+        private static void ExportAssetsAsync(string savePath, IEnumerable<AssetItem> toExportAssets, ExportType exportType, List<string> exportFailedNames)
         {
-            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
-
-            var exportFailedNames = new List<string>();
-
             var tasks = toExportAssets
                 .GroupBy(asset => asset.SourceFile.originalPath)
                 .Select(group =>
@@ -456,6 +450,26 @@ namespace AssetStudioCLI
                 .ToArray();
             
             Task.WaitAll(tasks);
+        }
+        
+        private static void ExportAssetsSync(string savePath, IEnumerable<AssetItem> toExportAssets, ExportType exportType, List<string> exportFailedNames)
+        {
+            foreach (var asset in toExportAssets)
+            {
+                ExportAsset(GetExportPath(savePath, asset), asset, exportType, ref exportFailedNames);
+            }
+        }
+
+        public static void ExportAssets(string savePath, List<AssetItem> toExportAssets, ExportType exportType)
+        {
+            Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
+
+            var exportFailedNames = new List<string>();
+
+            // TODO: Async export bugged for assets that uses common objects (AnimatorOverrideController)
+            // ExportAssetsAsync(savePath, toExportAssets, exportType, exportFailedNames);
+            
+            ExportAssetsSync(savePath, toExportAssets, exportType, exportFailedNames);
 
             StatusStripUpdate(toExportAssets.Count == 0 ? "Nothing exported." : "Finished exporting assets.");
 

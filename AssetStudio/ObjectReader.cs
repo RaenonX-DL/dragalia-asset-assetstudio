@@ -14,6 +14,8 @@ namespace AssetStudio
         public BuildTarget platform;
         public uint m_Version;
 
+        public ObjectInfo objectInfo;
+
         public int[] version => assetsFile.version;
         public BuildType buildType => assetsFile.buildType;
 
@@ -34,6 +36,8 @@ namespace AssetStudio
             serializedType = objectInfo.serializedType;
             platform = assetsFile.m_TargetPlatform;
             m_Version = assetsFile.header.m_Version;
+
+            this.objectInfo = objectInfo;
         }
 
         public void Reset()

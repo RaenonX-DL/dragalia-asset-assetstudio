@@ -124,14 +124,14 @@ namespace AssetStudioGUI
             StatusStripUpdate("Building asset list...");
 
             string productName = null;
-            var objectCount = assetsManager.assetsFileList.Sum(x => x.Objects.Count);
+            var objectCount = assetsManager.assetsFileList.Sum(x => x.objects.Count);
             var objectAssetItemDic = new Dictionary<Object, AssetItem>(objectCount);
             var containers = new List<(PPtr<Object>, string)>();
             var i = 0;
             Progress.Reset();
             foreach (var assetsFile in assetsManager.assetsFileList)
             {
-                foreach (var asset in assetsFile.Objects)
+                foreach (var asset in assetsFile.objects)
                 {
                     var assetItem = new AssetItem(asset);
                     objectAssetItemDic.Add(asset, assetItem);
@@ -254,7 +254,7 @@ namespace AssetStudioGUI
             {
                 var fileNode = new GameObjectTreeNode(assetsFile.fileName); //RootNode
 
-                foreach (var obj in assetsFile.Objects)
+                foreach (var obj in assetsFile.objects)
                 {
                     if (obj is GameObject m_GameObject)
                     {

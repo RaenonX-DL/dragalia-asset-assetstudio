@@ -17,7 +17,7 @@ namespace AssetStudio
             assetsFile = reader.assetsFile;
         }
 
-        private bool TryGetAssetsFile(out SerializedFile result)
+        public bool TryGetAssetsFile(out SerializedFile result)
         {
             result = null;
             if (m_FileID == 0)
@@ -26,31 +26,27 @@ namespace AssetStudio
                 return true;
             }
 
-            if (m_FileID > 0 && m_FileID - 1 < assetsFile.m_Externals.Count)
+            if (m_FileID <= 0 || m_FileID - 1 >= assetsFile.m_Externals.Count) return false;
+            
+            var assetsManager = assetsFile.assetsManager;
+            var assetsFileList = assetsManager.assetsFileList;
+            var assetsFileIndexCache = assetsManager.assetsFileIndexCache;
+
+            if (index == -2)
             {
-                var assetsManager = assetsFile.assetsManager;
-                var assetsFileList = assetsManager.assetsFileList;
-                var assetsFileIndexCache = assetsManager.assetsFileIndexCache;
-
-                if (index == -2)
+                var m_External = assetsFile.m_Externals[m_FileID - 1];
+                var name = m_External.fileName;
+                if (!assetsFileIndexCache.TryGetValue(name, out index))
                 {
-                    var m_External = assetsFile.m_Externals[m_FileID - 1];
-                    var name = m_External.fileName;
-                    if (!assetsFileIndexCache.TryGetValue(name, out index))
-                    {
-                        index = assetsFileList.FindIndex(x => x.fileName.Equals(name, StringComparison.OrdinalIgnoreCase));
-                        assetsFileIndexCache.Add(name, index);
-                    }
-                }
-
-                if (index >= 0)
-                {
-                    result = assetsFileList[index];
-                    return true;
+                    index = assetsFileList.FindIndex(x => x.fileName.Equals(name, StringComparison.OrdinalIgnoreCase));
+                    assetsFileIndexCache.Add(name, index);
                 }
             }
 
-            return false;
+            if (index < 0) return false;
+                
+            result = assetsFileList[index];
+            return true;
         }
 
         public bool TryGet(out T result)
@@ -62,7 +58,7 @@ namespace AssetStudio
         {
             if (TryGetAssetsFile(out var sourceFile))
             {
-                if (sourceFile.ObjectsDic.TryGetValue(m_PathID, out var obj))
+                if (sourceFile.objectsDict.TryGetValue(m_PathID, out var obj))
                 {
                     if (obj is T2 variable)
                     {

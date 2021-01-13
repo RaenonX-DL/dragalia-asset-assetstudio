@@ -221,7 +221,7 @@ namespace AssetStudio
         {
             foreach (var assetsFile in assetsFileList)
             {
-                assetsFile.Objects.Clear();
+                assetsFile.objects.Clear();
                 assetsFile.reader.Close();
             }
             assetsFileList.Clear();
@@ -364,7 +364,7 @@ namespace AssetStudio
 
             foreach (var assetsFile in assetsFileList)
             {
-                foreach (var obj in assetsFile.Objects)
+                foreach (var obj in assetsFile.objects)
                 {
                     if (obj is GameObject m_GameObject)
                     {

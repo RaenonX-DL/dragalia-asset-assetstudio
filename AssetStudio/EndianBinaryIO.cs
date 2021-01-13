@@ -14,10 +14,13 @@ namespace AssetStudio
         private Stream stream;
         private EndianType endian;
 
+        private long initPosition;
+
         public EndianBinaryStream(Stream stream, EndianType endian = EndianType.BigEndian)
         {
             this.stream = stream;
             this.endian = endian;
+            initPosition = stream.Position;
         }
 
         public EndianBinaryReader InitReader()
@@ -25,8 +28,17 @@ namespace AssetStudio
             var newStream = new MemoryStream();
             stream.Position = 0;  // Make sure the base stream is at position 0
             stream.CopyTo(newStream);
-            newStream.Position = 0;
+            newStream.Position = initPosition;
             return new EndianBinaryReader(newStream, endian);
+        }
+
+        public EndianBinaryReader InitReader(EndianType endianType)
+        {
+            var newStream = new MemoryStream();
+            stream.Position = 0;  // Make sure the base stream is at position 0
+            stream.CopyTo(newStream);
+            newStream.Position = initPosition;
+            return new EndianBinaryReader(newStream, endianType);
         }
 
         public long Length => stream.Length;

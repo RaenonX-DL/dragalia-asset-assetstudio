@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
@@ -436,6 +437,18 @@ namespace AssetStudioCLI
                     continue;
                 }
 
+                // TODO: Async export
+                //   - Currently has bugs
+                //   - Known possible bugs: name not loaded correctly (ReadAlignedString())
+                // clip.m_OverrideClip.TryGetAssetsFile(out var serializedFile);
+                // c.reader = new ObjectReader(serializedFile.objectsStream[clip.m_OverrideClip.m_PathID].InitReader(c.reader.endian), item.SourceFile, c.reader.objectInfo);
+                // c.reader.Reset();
+                //
+                // if (c.reader.byteStart > c.reader.BaseStream.Length)
+                // {
+                //     throw new ArgumentException($"ByteStart {c.reader.byteStart} > Stream Length {c.reader.BaseStream.Length}");
+                // }
+                
                 var type = c.ToType();
                 if (type == null)
                 {
