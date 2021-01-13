@@ -1,55 +1,16 @@
-﻿
-using CommandLine;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using AssetStudio;
 using System.Text.RegularExpressions;
+using AssetStudio;
+using CommandLine;
 
 namespace AssetStudioCLI
 {
-    static class Program
+    internal static class Program
     {
-        [Verb("extract", HelpText = "Extract assets")]
-        public class ExtractOptions
-        {
-            [Value(0, HelpText = "Source Folder")]
-            public string SourceFolder { get; set; }
-
-            [Value(1, HelpText = "Target Folder")]
-            public string TargetFolder { get; set; }
-        }
-
-        [Verb("convert", HelpText = "Covert assets")]
-        public class ConvertOptions
-        {
-            [Value(0, HelpText = "Source Path")]
-            public string SourcePath { get; set; }
-
-            [Value(1, HelpText = "Target Folder")]
-            public string TargetFolder { get; set; }
-
-            [Option('m', "make", Required = false, HelpText = "Convert with makefile (json)", Default = null)]
-            public string Makefile { get; set; }
-
-            [Option('t', "type", Required = false, HelpText = "Types filter")]
-            public IEnumerable<string> Types { get; set; }
-
-            [Option('c', "Container", Required = false, HelpText = "Container path filter (Regex)")]
-            public IEnumerable<string> ContainerPaths { get; set; }
-
-            [Option('a', "Assembly", Required = false, HelpText = "Assembly reference path", Default = "")]
-            public string AssemblyPath { get; set; }
-
-            [Option("with-suffix", Required = false, HelpText = "append suffix to target name", Default = "")]
-            public string TargetSuffix { get; set; }
-
-            [Option("skip-exists", HelpText = "do not overwrite exists target")]
-            public bool SkipExists { get; set; }
-        }
-
-        static int Main(string[] args)
+        private static int Main(string[] args)
         {
             Console.WriteLine("AssetStudio CLI activated.");
             var exitCode = Parser.Default.ParseArguments<ExtractOptions, ConvertOptions>(args)
@@ -61,7 +22,7 @@ namespace AssetStudioCLI
             return exitCode;
         }
 
-        static int ExtractFolder(ExtractOptions opt)
+        private static int ExtractFolder(ExtractOptions opt)
         {
             if (!Directory.Exists(opt.SourceFolder))
             {
@@ -79,7 +40,7 @@ namespace AssetStudioCLI
             return 0;
         }
 
-        static int ConvertPath(ConvertOptions opt)
+        private static int ConvertPath(ConvertOptions opt)
         {
             var isDir = Directory.Exists(opt.SourcePath);
             if (!isDir)
@@ -96,7 +57,7 @@ namespace AssetStudioCLI
             Studio.exportSuffix = opt.TargetSuffix;
             Studio.skipExists = opt.SkipExists;
 
-            using (var pro = new CLIProgress())
+            using (new CLIProgress())
             {
                 if (isDir)
                 {
@@ -114,6 +75,7 @@ namespace AssetStudioCLI
                         Studio.assetsManager.LoadFiles(opt.SourcePath);
                     }
                 }
+
                 Studio.BuildAssetData();
 
                 if (!string.IsNullOrEmpty(opt.Makefile))
@@ -133,6 +95,7 @@ namespace AssetStudioCLI
                     Studio.ExportAssets(opt.TargetFolder, Studio.visibleAssets, ExportType.Convert, ProcessType.Async);
                 }
             }
+
             return 0;
         }
 
@@ -173,7 +136,41 @@ namespace AssetStudioCLI
                 list = list.FindAll(x => filterContainerPaths.Any(r => r.IsMatch(x.Container)));
             }
 
-            Studio.visibleAssets = list;     
+            Studio.visibleAssets = list;
+        }
+
+        [Verb("extract", HelpText = "Extract assets")]
+        public class ExtractOptions
+        {
+            [Value(0, HelpText = "Source Folder")] public string SourceFolder { get; set; }
+
+            [Value(1, HelpText = "Target Folder")] public string TargetFolder { get; set; }
+        }
+
+        [Verb("convert", HelpText = "Covert assets")]
+        public class ConvertOptions
+        {
+            [Value(0, HelpText = "Source Path")] public string SourcePath { get; set; }
+
+            [Value(1, HelpText = "Target Folder")] public string TargetFolder { get; set; }
+
+            [Option('m', "make", Required = false, HelpText = "Convert with makefile (json)", Default = null)]
+            public string Makefile { get; set; }
+
+            [Option('t', "type", Required = false, HelpText = "Types filter")]
+            public IEnumerable<string> Types { get; set; }
+
+            [Option('c', "Container", Required = false, HelpText = "Container path filter (Regex)")]
+            public IEnumerable<string> ContainerPaths { get; set; }
+
+            [Option('a', "Assembly", Required = false, HelpText = "Assembly reference path", Default = "")]
+            public string AssemblyPath { get; set; }
+
+            [Option("with-suffix", Required = false, HelpText = "append suffix to target name", Default = "")]
+            public string TargetSuffix { get; set; }
+
+            [Option("skip-exists", HelpText = "do not overwrite exists target")]
+            public bool SkipExists { get; set; }
         }
     }
 }

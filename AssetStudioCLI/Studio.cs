@@ -1,5 +1,4 @@
-﻿using AssetStudio;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -8,6 +7,7 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using AssetStudio;
 using static AssetStudioCLI.Exporter;
 using Object = AssetStudio.Object;
 
@@ -249,10 +249,9 @@ namespace AssetStudioCLI
 
             foreach (var (pptr, container) in containers)
             {
-                if (pptr.TryGet(out var obj))
-                {
-                    objectAssetItemDic[obj].Container = container;
-                }
+                if (!pptr.TryGet(out var obj)) continue;
+                if (objectAssetItemDic[obj].Container != string.Empty) continue;
+                objectAssetItemDic[obj].Container = container;
             }
 
             containers.Clear();
@@ -483,7 +482,7 @@ namespace AssetStudioCLI
                     {
                         ExportAssetsAsync(savePath, toExportAssets, exportType, exportFailedNames);
                     }
-                    catch (Exception e)
+                    catch (AggregateException e)
                     {
                         StatusStripUpdate(
                             $"Error occurred during async processing, fall back to sync processing. ({e})");
@@ -521,25 +520,25 @@ namespace AssetStudioCLI
                 Progress.Reset();
                 foreach (GameObjectTreeNode node in nodes)
                 {
-                    //遍历一级子节点
+                    // Traverse first-level nodes
                     foreach (var treeNode in node.Nodes)
                     {
                         var j = (GameObjectTreeNode) treeNode;
-                        //收集所有子节点
+                        // Collect all nodes
                         var gameObjects = new List<GameObject>();
                         CollectNode(j, gameObjects);
-                        //跳过一些不需要导出的object
+                        // Skip some unnecessary objects
                         if (gameObjects.All(x => x.m_SkinnedMeshRenderer == null && x.m_MeshFilter == null))
                         {
                             Progress.Report(++k, count);
                             continue;
                         }
 
-                        //处理非法文件名
+                        // Fix illegal file names
                         var filename = FixFileName(j.Text);
-                        //每个文件存放在单独的文件夹
+                        // Store each files in its directory
                         var targetPath = $"{savePath}{filename}\\";
-                        //重名文件处理
+                        // Handle duplicated file names
                         for (var i = 1;; i++)
                         {
                             if (Directory.Exists(targetPath))
@@ -553,7 +552,7 @@ namespace AssetStudioCLI
                         }
 
                         Directory.CreateDirectory(targetPath);
-                        //导出FBX
+                        // Export FBX
                         StatusStripUpdate($"Exporting {filename}.fbx");
                         try
                         {
