@@ -123,13 +123,14 @@ namespace AssetStudioCLI
                     {
                         FilterWithArg(arg);
                         Enum.TryParse(arg.ExportType, out ExportType exportType);
-                        Studio.ExportAssets(opt.TargetFolder, Studio.visibleAssets, exportType);
+                        Enum.TryParse(arg.ProcessType, out ProcessType processType);
+                        Studio.ExportAssets(opt.TargetFolder, Studio.visibleAssets, exportType, processType);
                     }
                 }
                 else
                 {
                     FilterWithOptions(opt);
-                    Studio.ExportAssets(opt.TargetFolder, Studio.visibleAssets, ExportType.Convert);
+                    Studio.ExportAssets(opt.TargetFolder, Studio.visibleAssets, ExportType.Convert, ProcessType.Async);
                 }
             }
             return 0;
@@ -140,15 +141,13 @@ namespace AssetStudioCLI
             var list = Studio.exportableAssets;
 
             var filterTypes = arg.Types_.Select(s => Enum.Parse(typeof(ClassIDType), s)).ToList();
-            if (filterTypes != null &&
-                filterTypes.Count > 0)
+            if (filterTypes.Count > 0)
             {
                 list = list.FindAll(x => filterTypes.Contains(x.Type));
             }
 
             var filterContainerPaths = arg.Containers.Select(s => new Regex(s, RegexOptions.IgnoreCase)).ToList();
-            if (filterContainerPaths != null &&
-                filterContainerPaths.Count > 0)
+            if (filterContainerPaths.Count > 0)
             {
                 list = list.FindAll(x => filterContainerPaths.Any(r => r.IsMatch(x.Container)));
             }

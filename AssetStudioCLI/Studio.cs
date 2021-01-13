@@ -20,6 +20,12 @@ namespace AssetStudioCLI
         Dump
     }
 
+    internal enum ProcessType
+    {
+        Async,
+        Sync
+    }
+
     internal static class Studio
     {
         public static readonly AssetsManager assetsManager = new AssetsManager();
@@ -432,8 +438,9 @@ namespace AssetStudioCLI
                     break;
             }
         }
-        
-        private static void ExportAssetsAsync(string savePath, IEnumerable<AssetItem> toExportAssets, ExportType exportType, List<string> exportFailedNames)
+
+        private static void ExportAssetsAsync(string savePath, IEnumerable<AssetItem> toExportAssets,
+            ExportType exportType, List<string> exportFailedNames)
         {
             var tasks = toExportAssets
                 .GroupBy(asset => asset.SourceFile.originalPath)
@@ -448,11 +455,12 @@ namespace AssetStudioCLI
                     });
                 })
                 .ToArray();
-            
+
             Task.WaitAll(tasks);
         }
-        
-        private static void ExportAssetsSync(string savePath, IEnumerable<AssetItem> toExportAssets, ExportType exportType, List<string> exportFailedNames)
+
+        private static void ExportAssetsSync(string savePath, IEnumerable<AssetItem> toExportAssets,
+            ExportType exportType, List<string> exportFailedNames)
         {
             foreach (var asset in toExportAssets)
             {
@@ -460,16 +468,35 @@ namespace AssetStudioCLI
             }
         }
 
-        public static void ExportAssets(string savePath, List<AssetItem> toExportAssets, ExportType exportType)
+        public static void ExportAssets(string savePath, List<AssetItem> toExportAssets, ExportType exportType,
+            ProcessType processType)
         {
             Thread.CurrentThread.CurrentCulture = new CultureInfo("en-US");
 
             var exportFailedNames = new List<string>();
 
-            // TODO: Async export bugged for assets that uses common objects (AnimatorOverrideController)
-            // ExportAssetsAsync(savePath, toExportAssets, exportType, exportFailedNames);
-            
-            ExportAssetsSync(savePath, toExportAssets, exportType, exportFailedNames);
+            switch (processType)
+            {
+                case ProcessType.Async:
+                    // TODO: Async export bugged for assets that uses common objects (AnimatorOverrideController)
+                    try
+                    {
+                        ExportAssetsAsync(savePath, toExportAssets, exportType, exportFailedNames);
+                    }
+                    catch (Exception e)
+                    {
+                        StatusStripUpdate(
+                            $"Error occurred during async processing, fall back to sync processing. ({e})");
+                        ExportAssetsSync(savePath, toExportAssets, exportType, exportFailedNames);
+                    }
+
+                    break;
+                case ProcessType.Sync:
+                    ExportAssetsSync(savePath, toExportAssets, exportType, exportFailedNames);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(processType), processType, "Undefined process type");
+            }
 
             StatusStripUpdate(toExportAssets.Count == 0 ? "Nothing exported." : "Finished exporting assets.");
 

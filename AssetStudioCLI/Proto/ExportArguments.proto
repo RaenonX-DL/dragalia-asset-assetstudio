@@ -7,6 +7,7 @@ message ExportContainerWithType {
 	repeated string Types = 1;
 	repeated string Containers = 2;
 	string ExportType = 3;
+	string ProcessType = 4;
 }
 
 message ExportArguments {
