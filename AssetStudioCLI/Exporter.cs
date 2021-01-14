@@ -472,8 +472,8 @@ namespace AssetStudioCLI
             {
                 {"Name", m_AnimatorOverrideController.m_Name}
             };
-            var components = new JArray();
-            nodes.Add("Components", components);
+            var clips = new JArray();
+            nodes.Add("Clips", clips);
             foreach (var clip in m_AnimatorOverrideController.m_Clips)
             {
                 if (!clip.m_OverrideClip.TryGet(out var c))
@@ -499,7 +499,10 @@ namespace AssetStudioCLI
                     continue;
                 }
 
-                components.Add(JObject.FromObject(type));
+                type.Insert(0, "$originalClip", clip.m_OriginalClip);
+                type.Insert(1, "$overrideClip", clip.m_OverrideClip);
+
+                clips.Add(JObject.FromObject(type));
             }
 
             var str = nodes.ToString(Formatting.Indented);
