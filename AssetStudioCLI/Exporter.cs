@@ -475,7 +475,12 @@ namespace AssetStudioCLI
                     continue;
                 }
 
-                clips.Add(JObject.FromObject(type));
+                clips.Add(new JObject
+                {
+                    {"$PathID", c.m_PathID},
+                    {"$Name", c.m_Name},
+                    {"$StopTime", c.m_MuscleClip.m_StopTime}
+                });
             }
 
             var str = nodes.ToString(Formatting.Indented);
@@ -491,10 +496,10 @@ namespace AssetStudioCLI
             var m_AnimatorOverrideController = (AnimatorOverrideController) item.Asset;
             var nodes = new JObject
             {
-                {"Name", m_AnimatorOverrideController.m_Name}
+                {"$Name", m_AnimatorOverrideController.m_Name}
             };
             var clips = new JArray();
-            nodes.Add("Clips", clips);
+            nodes.Add("$Clips", clips);
             foreach (var clip in m_AnimatorOverrideController.m_Clips)
             {
                 if (!clip.m_OverrideClip.TryGet(out var c))
@@ -514,16 +519,13 @@ namespace AssetStudioCLI
                 //     throw new ArgumentException($"ByteStart {c.reader.byteStart} > Stream Length {c.reader.BaseStream.Length}");
                 // }
 
-                var type = c.ToType();
-                if (type == null)
+                clips.Add(new JObject
                 {
-                    continue;
-                }
-
-                type.Insert(0, "$originalClip", clip.m_OriginalClip);
-                type.Insert(1, "$overrideClip", clip.m_OverrideClip);
-
-                clips.Add(JObject.FromObject(type));
+                    {"$OriginalClip", JObject.FromObject(clip.m_OriginalClip)},
+                    {"$OverrideClip", JObject.FromObject(clip.m_OverrideClip)},
+                    {"$Name", c.m_Name},
+                    {"$StopTime", c.m_MuscleClip.m_StopTime}
+                });
             }
 
             var str = nodes.ToString(Formatting.Indented);
