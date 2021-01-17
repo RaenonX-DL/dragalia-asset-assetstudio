@@ -456,8 +456,29 @@ namespace AssetStudioCLI
             if (!TryExportFile(exportPath, item, ".json", out var exportFullPath))
                 return false;
             var m_AnimatorController = (AnimatorController) item.Asset;
-            var type = m_AnimatorController.ToType();
-            var str = JsonConvert.SerializeObject(type, Formatting.Indented);
+            var nodes = new JObject
+            {
+                {"$Controller", JObject.FromObject(m_AnimatorController.ToType())}
+            };
+            var clips = new JArray();
+            nodes.Add("$Clips", clips);
+            foreach (var pptr in m_AnimatorController.m_AnimationClips)
+            {
+                if (!pptr.TryGet(out var c))
+                {
+                    continue;
+                }
+
+                var type = c.ToType();
+                if (type == null)
+                {
+                    continue;
+                }
+
+                clips.Add(JObject.FromObject(type));
+            }
+
+            var str = nodes.ToString(Formatting.Indented);
             File.WriteAllText(exportFullPath, str);
             return true;
         }
