@@ -724,5 +724,10 @@ namespace AssetStudioCLI
 
             return str;
         }
+
+        public static void LoadAsset(string filePath)
+        {
+            assetsManager.LoadFiles(filePath);
+        }
     }
 }

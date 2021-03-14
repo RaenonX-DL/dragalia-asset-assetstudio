@@ -13,10 +13,11 @@ namespace AssetStudioCLI
         private static int Main(string[] args)
         {
             Console.WriteLine("AssetStudio CLI activated.");
-            var exitCode = Parser.Default.ParseArguments<ExtractOptions, ConvertOptions>(args)
+            var exitCode = Parser.Default.ParseArguments<ExtractOptions, ConvertOptions, LoadOptions>(args)
                 .MapResult(
                     (ExtractOptions o) => ExtractFolder(o),
                     (ConvertOptions o) => ConvertPath(o),
+                    (LoadOptions o) => LoadAsset(o),
                     error => 1
                 );
             return exitCode;
@@ -26,13 +27,13 @@ namespace AssetStudioCLI
         {
             if (!Directory.Exists(opt.SourceFolder))
             {
-                Console.WriteLine("Source folder not eixsts");
+                Console.WriteLine("Source folder not exists");
                 return 1;
             }
 
             Directory.CreateDirectory(opt.TargetFolder);
 
-            using (var pro = new CLIProgress())
+            using (new CLIProgress())
             {
                 Studio.ExtractFolder(opt.SourceFolder, opt.TargetFolder);
             }
@@ -47,7 +48,7 @@ namespace AssetStudioCLI
             {
                 if (!File.Exists(opt.SourcePath))
                 {
-                    Console.WriteLine("Source path not eixsts");
+                    Console.WriteLine("Source path not exists");
                     return 1;
                 }
             }
@@ -95,6 +96,13 @@ namespace AssetStudioCLI
                     Studio.ExportAssets(opt.TargetFolder, Studio.visibleAssets, ExportType.Convert, ProcessType.Async);
                 }
             }
+
+            return 0;
+        }
+
+        private static int LoadAsset(LoadOptions opt)
+        {
+            Studio.LoadAsset(opt.AssetPath);
 
             return 0;
         }
@@ -147,7 +155,7 @@ namespace AssetStudioCLI
             [Value(1, HelpText = "Target Folder")] public string TargetFolder { get; set; }
         }
 
-        [Verb("convert", HelpText = "Covert assets")]
+        [Verb("convert", HelpText = "Convert assets")]
         public class ConvertOptions
         {
             [Value(0, HelpText = "Source Path")] public string SourcePath { get; set; }
@@ -171,6 +179,12 @@ namespace AssetStudioCLI
 
             [Option("skip-exists", HelpText = "do not overwrite exists target")]
             public bool SkipExists { get; set; }
+        }
+
+        [Verb("load", HelpText = "Load assets")]
+        public class LoadOptions
+        {
+            [Value(0, HelpText = "Asset Path")] public string AssetPath { get; set; }
         }
     }
 }
