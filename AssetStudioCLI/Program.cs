@@ -123,6 +123,14 @@ namespace AssetStudioCLI
                 list = list.FindAll(x => filterContainerPaths.Any(r => r.IsMatch(x.Container)));
             }
 
+            if (arg.HasName)
+            {
+                var filterNameRegex = new Regex(arg.Name, RegexOptions.IgnoreCase);
+                {
+                    list = list.FindAll(x => filterNameRegex.IsMatch(x.Text));
+                }
+            }
+
             Studio.visibleAssets = list;
         }
 
