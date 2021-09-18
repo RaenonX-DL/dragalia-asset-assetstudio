@@ -1,5 +1,7 @@
 # Dragalia AssetStudio
 
+**Deprecated.** Utilizations are replaced by `UnityPy` in [dragalia-asset-downloader-2].
+
 Custom [AssetStudio](as) for exporting Dragalia Lost game assets.
 
 Comparing to the original [AssetStudio](as), this adds the following:
@@ -23,3 +25,4 @@ dotnet
 Build the project as Release, the compiled exe file will be usable then.
 
 [as]: https://github.com/Perfare/AssetStudio
+[dragalia-asset-downloader-2]: https://github.com/RaenonX-DL/dragalia-asset-downloader-2
